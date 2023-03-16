@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/AvventuraMAP.iml" filepath="$PROJECT_DIR$/AvventuraMAP.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Maven.iml" filepath="$PROJECT_DIR$/Maven.iml" />
     </modules>
   </component>
 </project>
