@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="AvventuraMAP" target="12" />
+      <module name="AvventuraMAP" target="1.8" />
       <module name="Maven" target="12" />
     </bytecodeTargetLevel>
   </component>
