@@ -69,7 +69,7 @@ public class AdventureGameGUI extends JFrame {
         sidePanel.add(statsLabel);
 
 
-        ImageIcon backgroundImageIcon = new ImageIcon("resources/2023-05-19[17-15]_-280.2, 1.6, -346.9_0.0, 0.6, 0.0, 0.8 (0).png");
+        ImageIcon backgroundImageIcon = new ImageIcon("resources/1.png");
         Image backgroundImage = backgroundImageIcon.getImage().getScaledInstance(600, 1900, Image.SCALE_SMOOTH);
         // Creazione del pannello per l'immagine sopra l'inputPanel e a sinistra del sidePanel
         JPanel backgroundPanel = new JPanel() {
@@ -121,6 +121,22 @@ public class AdventureGameGUI extends JFrame {
             String inputText = textField.getText(); // Ottieni il testo inserito nella JTextField
             textArea.append(inputText + "\n"); // Aggiungi il testo alla JTextArea, aggiungendo un a capo
             textField.setText(""); // Resetta il contenuto della JTextField
+
+            int lineCount = textArea.getLineCount();
+
+            // Se abbiamo superato il 15 append
+            if (lineCount > 15) {
+                // Ottieni l'offset del testo corrispondente alla prima riga
+                int offset = 0;
+                try {
+                    offset = textArea.getLineEndOffset(1);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
+
+                textArea.replaceRange("", 0, offset);
+            }
 
             // Scrolla la JTextArea fino alla fine
             textArea.setCaretPosition(textArea.getDocument().getLength());
