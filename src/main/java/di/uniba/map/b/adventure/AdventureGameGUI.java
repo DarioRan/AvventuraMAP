@@ -3,6 +3,8 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 
 public class AdventureGameGUI extends JFrame {
@@ -11,7 +13,8 @@ public class AdventureGameGUI extends JFrame {
     private JPanel sidePanel;
     private JTextField inputField;
     private JLabel statsLabel;
-
+    private JPanel startPanel;
+    private JButton startButton;
     public AdventureGameGUI() {
 
         setTitle("Adventure Game");
@@ -32,6 +35,44 @@ public class AdventureGameGUI extends JFrame {
         mainPanel.setLayout(new BorderLayout());
         add(mainPanel);
 
+        startPanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                ImageIcon backgroundImageIcon = new ImageIcon("resources/start.png");
+                Image backgroundImage = backgroundImageIcon.getImage();
+                g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+            }
+        };
+        startPanel.setLayout(new BorderLayout());
+        mainPanel.add(startPanel, BorderLayout.CENTER);
+
+        // Creazione del pulsante di avvio del gioco
+        startButton = new JButton() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                ImageIcon backgroundImageIcon = new ImageIcon("resources/button.png");
+                Image backgroundImage = backgroundImageIcon.getImage();
+                g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+            }
+        };
+        startButton.setPreferredSize(new Dimension(200, 50));
+        startButton.setFont(new Font("Arial", Font.BOLD, 16));
+        startButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                startGame();
+            }
+        });
+        startPanel.add(startButton, BorderLayout.SOUTH);
+
+        setVisible(true);
+    }
+
+
+    private void startGame() {
+        mainPanel.remove(startPanel);
 
         // Immagine laterale
         ImageIcon latImage = new ImageIcon("resources/logo3.jpg");
@@ -142,12 +183,13 @@ public class AdventureGameGUI extends JFrame {
             textArea.setCaretPosition(textArea.getDocument().getLength());
         });
 
-    // Imposta la JTextArea per lo scorrimento automatico
+        // Imposta la JTextArea per lo scorrimento automatico
         DefaultCaret caret = (DefaultCaret) textArea.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
         // Mostra la finestra
         setVisible(true);
+        revalidate();
     }
 
     public static void main(String[] args) {
