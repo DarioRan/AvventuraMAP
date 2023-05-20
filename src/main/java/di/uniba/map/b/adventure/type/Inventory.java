@@ -14,21 +14,21 @@ import java.util.List;
  */
 public class Inventory {
 
-    private List<AdvObject> list = new ArrayList<>();
+    private List<PickableObject> list = new ArrayList<>();
 
-    public List<AdvObject> getList() {
+    public List<PickableObject> getList() {
         return list;
     }
 
-    public void setList(List<AdvObject> list) {
+    public void setList(List<PickableObject> list) {
         this.list = list;
     }
 
-    public void add(AdvObject o) {
+    public void add(PickableObject o) {
         list.add(o);
     }
 
-    public void remove(AdvObject o) {
+    public void remove(PickableObject o) {
         list.remove(o);
     }
 }
