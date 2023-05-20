@@ -5,6 +5,8 @@ import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 
 public class AdventureGameGUI extends JFrame {
@@ -15,6 +17,9 @@ public class AdventureGameGUI extends JFrame {
     private JLabel statsLabel;
     private JPanel startPanel;
     private JButton startButton;
+
+    int panelWidth = getWidth();
+    int panelHeight = getHeight();
     public AdventureGameGUI() {
 
         setTitle("Adventure Game");
@@ -35,6 +40,7 @@ public class AdventureGameGUI extends JFrame {
         mainPanel.setLayout(new BorderLayout());
         add(mainPanel);
 
+        // Creazione del pannello di avvio del gioco
         startPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -44,10 +50,18 @@ public class AdventureGameGUI extends JFrame {
                 g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
             }
         };
-        startPanel.setLayout(new BorderLayout());
+        startPanel.setLayout(null); // Imposta il layout come null per utilizzare un layout personalizzato
         mainPanel.add(startPanel, BorderLayout.CENTER);
 
-        // Creazione del pulsante di avvio del gioco
+// Calcola le dimensioni del pannello
+        int panelWidth = getWidth();
+        int panelHeight = getHeight();
+
+// Imposta le dimensioni e la posizione del pulsante
+        int buttonWidth = 200;
+        int buttonHeight = 50;
+        int buttonX = (panelWidth - buttonWidth) / 2; // Posiziona il pulsante al centro orizzontalmente
+        int buttonY = panelHeight - 100 - buttonHeight; // Posiziona il pulsante a 100 pixel dal fondo
         startButton = new JButton() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -57,7 +71,7 @@ public class AdventureGameGUI extends JFrame {
                 g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
             }
         };
-        startButton.setPreferredSize(new Dimension(200, 50));
+        startButton.setBounds(buttonX, buttonY, buttonWidth, buttonHeight);
         startButton.setFont(new Font("Arial", Font.BOLD, 16));
         startButton.addActionListener(new ActionListener() {
             @Override
@@ -65,7 +79,9 @@ public class AdventureGameGUI extends JFrame {
                 startGame();
             }
         });
-        startPanel.add(startButton, BorderLayout.SOUTH);
+        startPanel.add(startButton); // Aggiungi il pulsante al pannello
+
+
 
         setVisible(true);
     }
@@ -111,7 +127,7 @@ public class AdventureGameGUI extends JFrame {
 
 
         ImageIcon backgroundImageIcon = new ImageIcon("resources/1.png");
-        Image backgroundImage = backgroundImageIcon.getImage().getScaledInstance(600, 1900, Image.SCALE_SMOOTH);
+        Image backgroundImage = backgroundImageIcon.getImage().getScaledInstance(backgroundImageIcon.getIconWidth(), backgroundImageIcon.getIconHeight(), Image.SCALE_SMOOTH);
         // Creazione del pannello per l'immagine sopra l'inputPanel e a sinistra del sidePanel
         JPanel backgroundPanel = new JPanel() {
             @Override
@@ -131,25 +147,48 @@ public class AdventureGameGUI extends JFrame {
 
 
         // Crea la JTextArea
-        JTextArea textArea = new JTextArea();
+        Color background = new Color(0, 0, 0, 150); // Colore di sfondo con opacità ridotta (valori RGB: 0, 0, 0, opacità)
+        JTextArea textArea = new JTextArea() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setColor(background);
+                g2.fillRect(0, 0, getWidth(), getHeight()); // Riempie l'area con il colore di sfondo
+                super.paintComponent(g2);
+                g2.dispose();
+            }
+        };
+        textArea.setOpaque(false);
+        textArea.setForeground(Color.WHITE);
+        textArea.setFont(new Font("Arial", Font.BOLD, 16));
         textArea.setEditable(false); // Rendi la JTextArea non modificabile
         textArea.setOpaque(false); // Rendi lo sfondo trasparente
         textArea.setForeground(Color.WHITE); // Colore del testo
         textArea.setFont(new Font("Arial", Font.BOLD, 16)); // Font del testo
+        textArea.setMaximumSize(new Dimension(Integer.MAX_VALUE, getHeight()/2)); // Imposta l'altezza massima della JTextArea
 
-// Crea la JScrollPane per avvolgere la JTextArea
+        // Crea la JScrollPane per avvolgere la JTextArea
         JScrollPane scrollPane = new JScrollPane(textArea);
-        scrollPane.setPreferredSize(new Dimension(scrollPane.getPreferredSize().width, 100));
+        scrollPane.setPreferredSize(new Dimension(scrollPane.getPreferredSize().width, getHeight()/2));
         scrollPane.setOpaque(false); // Rendi lo sfondo trasparente
         scrollPane.getViewport().setOpaque(false); // Rendi lo sfondo del viewport trasparente
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        backgroundPanel.add(scrollPane, BorderLayout.NORTH);
 
-// Imposta l'altezza massima della JTextArea
-        textArea.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
+        backgroundPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                if(scrollPane.isVisible())
+                    scrollPane.setVisible(false);
+                else
+                    scrollPane.setVisible(true);
+            }
+        });
 
-// Aggiungi la JScrollPane al pannello di sfondo
-        backgroundPanel.add(scrollPane, BorderLayout.CENTER);
-
-// Aggiungi la JTextField al pannello di sfondo
+        // Aggiungi la JTextField al pannello di sfondo
         JTextField textField = new JTextField();
         textField.setOpaque(false); // Rendi lo sfondo trasparente
         textField.setPreferredSize(new Dimension(textField.getPreferredSize().width, 50));
@@ -162,23 +201,7 @@ public class AdventureGameGUI extends JFrame {
             String inputText = textField.getText(); // Ottieni il testo inserito nella JTextField
             textArea.append(inputText + "\n"); // Aggiungi il testo alla JTextArea, aggiungendo un a capo
             textField.setText(""); // Resetta il contenuto della JTextField
-
-            int lineCount = textArea.getLineCount();
-
-            // Se abbiamo superato il 15 append
-            if (lineCount > 15) {
-                // Ottieni l'offset del testo corrispondente alla prima riga
-                int offset = 0;
-                try {
-                    offset = textArea.getLineEndOffset(1);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-
-
-                textArea.replaceRange("", 0, offset);
-            }
-
+            scrollPane.setVisible(true); // Mostra la JScrollPane
             // Scrolla la JTextArea fino alla fine
             textArea.setCaretPosition(textArea.getDocument().getLength());
         });
@@ -193,8 +216,6 @@ public class AdventureGameGUI extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new AdventureGameGUI();
-        });
+        SwingUtilities.invokeLater(AdventureGameGUI::new);
     }
 }
