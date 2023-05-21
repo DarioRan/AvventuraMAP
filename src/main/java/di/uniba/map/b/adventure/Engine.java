@@ -5,6 +5,7 @@
  */
 package di.uniba.map.b.adventure;
 
+import di.uniba.map.b.adventure.games.EscapeFromLabGame;
 import di.uniba.map.b.adventure.games.FireHouseGame;
 import di.uniba.map.b.adventure.parser.Parser;
 import di.uniba.map.b.adventure.parser.ParserOutput;
@@ -70,7 +71,8 @@ public class Engine {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Engine engine = new Engine(new FireHouseGame());
+        AdventureGameGUI gui = new AdventureGameGUI();
+        Engine engine = new Engine(new EscapeFromLabGame(gui));
         engine.execute();
     }
 

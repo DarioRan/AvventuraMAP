@@ -228,6 +228,11 @@ public class AdventureGameGUI extends JFrame {
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
     }
 
+    public void setBackgroundImage(Image backgroundImage) {
+        this.backgroundImage = backgroundImage;
+        backgroundPanel.repaint();
+    }
+
     private void startGame() {
         mainPanel.remove(startPanel);
         initSidePanel();
