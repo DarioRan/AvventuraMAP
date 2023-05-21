@@ -33,12 +33,12 @@ public class Engine {
 
     public Engine(GameDescription game) {
         this.game = game;
-        this.gui = new AdventureGameGUI(this);
         try {
             this.game.init();
         } catch (Exception ex) {
             System.err.println(ex);
         }
+        this.gui = new AdventureGameGUI(this);
         try {
             Set<String> stopwords = Utils.loadFileListInSet(new File("./resources/stopwords"));
             parser = new Parser(stopwords);
@@ -61,7 +61,7 @@ public class Engine {
     }
 
     public CommandGUIOutput executeCommand(String command) {
-        String response;
+        String response = "";
         CommandGUIOutput commandGUIOutput;
         CommandType commType;
         ParserOutput p = parser.parse(command, game.getCommands(), game.getCurrentRoom().getObjects(), game.getInventory());
@@ -75,6 +75,7 @@ public class Engine {
             //Se è un comando di movimento, cambia background
             if (commType==CommandType.EAST || commType==CommandType.NORD || commType==CommandType.SOUTH || commType==CommandType.WEST)
             {
+
                 commandGUIOutput = new CommandGUIOutput(CommandGUIType.MOVE, response, game.getCurrentRoom().getBackgroundImage());
                 System.out.println("Sono in " + game.getCurrentRoom().getId());
                 System.out.println(commType);
