@@ -8,16 +8,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class AdventureGameGUI extends JFrame {
-    private JPanel mainPanel;
-    private JPanel inputPanel;
-    private JPanel sidePanel;
-    private JTextField inputField;
-    private JLabel statsLabel;
-    private JPanel startPanel;
-    private JButton startButton;
+    private final JPanel mainPanel;
+    private final JPanel startPanel;
 
-    int panelWidth = getWidth();
-    int panelHeight = getHeight();
     public AdventureGameGUI() {
 
         setTitle("Adventure Game");
@@ -60,13 +53,15 @@ public class AdventureGameGUI extends JFrame {
         int buttonHeight = 50;
         int buttonX = (panelWidth - buttonWidth) / 2; // Posiziona il pulsante al centro orizzontalmente
         int buttonY = panelHeight - 100 - buttonHeight; // Posiziona il pulsante a 100 pixel dal fondo
-        startButton = new JButton() {
+        JButton startButton = new JButton() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                ImageIcon backgroundImageIcon = new ImageIcon("resources/button.png");
+                ImageIcon backgroundImageIcon =
+                        new ImageIcon("resources/button.png");
                 Image backgroundImage = backgroundImageIcon.getImage();
-                g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+                g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(),
+                        this);
             }
         };
         startButton.setBounds(buttonX, buttonY, buttonWidth, buttonHeight);
@@ -93,7 +88,8 @@ public class AdventureGameGUI extends JFrame {
         Image lat = latImage.getImage().getScaledInstance(600, 1900, Image.SCALE_SMOOTH);
 
         // Pannello laterale per le statistiche
-        sidePanel = new JPanel() {
+        // Carica l'immagine di sfondo
+        JPanel sidePanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -120,7 +116,7 @@ public class AdventureGameGUI extends JFrame {
 
 
         // Etichetta per le statistiche
-        statsLabel = new JLabel();
+        JLabel statsLabel = new JLabel();
         sidePanel.add(statsLabel);
 
 
@@ -163,6 +159,8 @@ public class AdventureGameGUI extends JFrame {
         textArea.setOpaque(false); // Rendi lo sfondo trasparente
         textArea.setForeground(Color.WHITE); // Colore del testo
         textArea.setMaximumSize(new Dimension(Integer.MAX_VALUE, getHeight()/2)); // Imposta l'altezza massima della JTextArea
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true); // Rendi il testo a capo quando raggiunge il bordo della JTextArea
 
         // Crea la JScrollPane per avvolgere la JTextArea
         JScrollPane scrollPane = new JScrollPane(textArea);
