@@ -1,5 +1,6 @@
 package di.uniba.map.b.adventure.games;
 
+import di.uniba.map.b.adventure.AdventureGameGUI;
 import di.uniba.map.b.adventure.GameDescription;
 import di.uniba.map.b.adventure.parser.ParserOutput;
 import di.uniba.map.b.adventure.type.AdvObject;
@@ -12,6 +13,13 @@ import java.io.PrintStream;
 import java.util.Iterator;
 
 public class EscapeFromLabGame extends GameDescription {
+
+    AdventureGameGUI gui;
+
+    public EscapeFromLabGame(AdventureGameGUI gui) {
+        super();
+        this.gui = gui;
+    }
 
     /**
      * Inizializza i comandi del gioco

@@ -71,7 +71,8 @@ public class Engine {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Engine engine = new Engine(new EscapeFromLabGame());
+        AdventureGameGUI gui = new AdventureGameGUI();
+        Engine engine = new Engine(new EscapeFromLabGame(gui));
         engine.execute();
     }
 
