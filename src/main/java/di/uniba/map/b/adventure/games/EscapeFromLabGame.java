@@ -257,6 +257,7 @@ public class EscapeFromLabGame extends GameDescription {
     private void goNorth(boolean noroom, boolean move){
         if (getCurrentRoom().getNorth() != null) {
             setCurrentRoom(getCurrentRoom().getNorth());
+            gui.setBackgroundImage(getCurrentRoom().getBackgroundImage());
             move = true;
         } else {
             noroom = true;
@@ -265,7 +266,8 @@ public class EscapeFromLabGame extends GameDescription {
 
     private void goSouth(boolean noroom, boolean move){
         if (getCurrentRoom().getSouth() != null) {
-            setCurrentRoom(getCurrentRoom().getNorth());
+            setCurrentRoom(getCurrentRoom().getSouth());
+            gui.setBackgroundImage(getCurrentRoom().getBackgroundImage());
             move = true;
         } else {
             noroom = true;
@@ -274,7 +276,8 @@ public class EscapeFromLabGame extends GameDescription {
 
     private void goEast(boolean noroom, boolean move){
         if (getCurrentRoom().getEast() != null) {
-            setCurrentRoom(getCurrentRoom().getNorth());
+            setCurrentRoom(getCurrentRoom().getEast());
+            gui.setBackgroundImage(getCurrentRoom().getBackgroundImage());
             move = true;
         } else {
             noroom = true;
@@ -283,7 +286,8 @@ public class EscapeFromLabGame extends GameDescription {
 
     private void goWest(boolean noroom, boolean move){
         if (getCurrentRoom().getWest() != null) {
-            setCurrentRoom(getCurrentRoom().getNorth());
+            setCurrentRoom(getCurrentRoom().getWest());
+            gui.setBackgroundImage(getCurrentRoom().getBackgroundImage());
             move = true;
         } else {
             noroom = true;
