@@ -18,6 +18,7 @@ public class AdventureGameGUI extends JFrame {
     private JTextField textField = null;
     private JPanel sidePanel = null;
     private JPanel backgroundPanel = null;
+    private Image backgroundImage = null;
 
     public AdventureGameGUI() {
         setTitle("Escape from LABS");
@@ -137,7 +138,7 @@ public class AdventureGameGUI extends JFrame {
      */
     private void initBackgroundPanel(){
         ImageIcon backgroundImageIcon = new ImageIcon("resources/1.png");
-        Image backgroundImage = backgroundImageIcon.getImage().getScaledInstance(backgroundImageIcon.getIconWidth(), backgroundImageIcon.getIconHeight(), Image.SCALE_SMOOTH);
+        backgroundImage = backgroundImageIcon.getImage().getScaledInstance(backgroundImageIcon.getIconWidth(), backgroundImageIcon.getIconHeight(), Image.SCALE_SMOOTH);
         // Creazione del pannello per l'immagine sopra l'inputPanel e a sinistra del sidePanel
         backgroundPanel = new JPanel() {
             @Override
