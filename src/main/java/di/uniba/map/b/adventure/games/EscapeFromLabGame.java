@@ -1,12 +1,13 @@
 package di.uniba.map.b.adventure.games;
 
-import di.uniba.map.b.adventure.AdventureGameGUI;
 import di.uniba.map.b.adventure.GameDescription;
 import di.uniba.map.b.adventure.parser.ParserOutput;
 import di.uniba.map.b.adventure.type.AdvObject;
 import di.uniba.map.b.adventure.type.AdvObjectContainer;
 import di.uniba.map.b.adventure.type.Command;
 import di.uniba.map.b.adventure.type.CommandType;
+import di.uniba.map.b.adventure.type.GameObject;
+import di.uniba.map.b.adventure.type.PickableObject;
 import di.uniba.map.b.adventure.type.Room;
 
 import java.io.PrintStream;
@@ -14,11 +15,10 @@ import java.util.Iterator;
 
 public class EscapeFromLabGame extends GameDescription {
 
-    AdventureGameGUI gui;
 
-    public EscapeFromLabGame(AdventureGameGUI gui) {
+
+    public EscapeFromLabGame() {
         super();
-        this.gui = gui;
     }
 
     /**
@@ -99,6 +99,10 @@ public class EscapeFromLabGame extends GameDescription {
         Room room35 = new Room(35, "Sala server", "Sei nella sala server");
         Room room36 = new Room(36, "Sala server", "Sei nella sala server");
 
+        AdvObject key1 = new AdvObject(1, "chiave", "Una KeyCard", new String[]{"KeyCard"});
+        AdvObject key2 = new AdvObject(2, "chiave", "Una KeyCard", new String[]{"KeyCard"});
+
+
         room1.setNorth(room10);
         room1.setEast(room5);
         room1.setWest(room2);
@@ -122,6 +126,7 @@ public class EscapeFromLabGame extends GameDescription {
 
         room8.setNorth(room9);
         room8.setSouth(room5);
+        room8.setKey(key1);
 
         room9.setSouth(room8);
 
@@ -254,106 +259,161 @@ public class EscapeFromLabGame extends GameDescription {
         initRooms();
     }
 
-    private void goNorth(boolean noroom, boolean move){
+    private boolean goNorth(boolean isKeyNeeded){
+        Room nextroom;
+        isKeyNeeded= false;
         if (getCurrentRoom().getNorth() != null) {
-            setCurrentRoom(getCurrentRoom().getNorth());
-            gui.setBackgroundImage(getCurrentRoom().getBackgroundImage());
-            move = true;
+            nextroom = getCurrentRoom().getNorth();
+            if (nextroom.isAccessible()) {
+                setCurrentRoom(nextroom);
+                return true;
+            } else {
+                isKeyNeeded = true;
+                if(canAccessRoom(nextroom)){
+                    setCurrentRoom(nextroom);
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
         } else {
-            noroom = true;
+            return false;
         }
+
     }
 
-    private void goSouth(boolean noroom, boolean move){
+    private boolean goSouth(boolean isKeyNeeded){
+        Room nextroom;
+        isKeyNeeded= false;
         if (getCurrentRoom().getSouth() != null) {
-            setCurrentRoom(getCurrentRoom().getSouth());
-            gui.setBackgroundImage(getCurrentRoom().getBackgroundImage());
-            move = true;
+            nextroom = getCurrentRoom().getSouth();
+            if (nextroom.isAccessible()) {
+                setCurrentRoom(nextroom);
+                return true;
+            } else {
+                isKeyNeeded = true;
+                if(canAccessRoom(nextroom)){
+                    setCurrentRoom(nextroom);
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            }
         } else {
-            noroom = true;
+            return false;
         }
     }
 
-    private void goEast(boolean noroom, boolean move){
+    private boolean goEast(boolean isKeyNeeded){
+        Room nextroom;
+        isKeyNeeded= false;
         if (getCurrentRoom().getEast() != null) {
-            setCurrentRoom(getCurrentRoom().getEast());
-            gui.setBackgroundImage(getCurrentRoom().getBackgroundImage());
-            move = true;
+            nextroom = getCurrentRoom().getEast();
+            if (nextroom.isAccessible()) {
+                setCurrentRoom(nextroom);
+                return true;
+            } else {
+                isKeyNeeded = true;
+                if(canAccessRoom(nextroom)){
+                    setCurrentRoom(nextroom);
+                    return true;
+                }
+                return false;
+            }
         } else {
-            noroom = true;
+            return false;
         }
     }
 
-    private void goWest(boolean noroom, boolean move){
+    private boolean goWest(boolean isKeyNeeded){
+        Room nextroom;
+        isKeyNeeded= false;
         if (getCurrentRoom().getWest() != null) {
-            setCurrentRoom(getCurrentRoom().getWest());
-            gui.setBackgroundImage(getCurrentRoom().getBackgroundImage());
-            move = true;
+            nextroom = getCurrentRoom().getWest();
+            if (nextroom.isAccessible()) {
+                setCurrentRoom(nextroom);
+                return true;
+            } else {
+                isKeyNeeded = true;
+                if(canAccessRoom(nextroom)){
+                    setCurrentRoom(nextroom);
+                    return true;
+                }
+                return false;
+            }
         } else {
-            noroom = true;
+            return false;
         }
     }
 
-    private void checkInventory(PrintStream out){
-        out.println("Nel tuo inventario ci sono:");
+    private String checkInventory(){
+        String response = "Nel tuo inventario ci sono:";
         for (AdvObject o : getInventory()) {
-            out.println(o.getName() + ": " + o.getDescription());
+            response=response + o.getName() + ": " + o.getDescription()+ "\n";
         }
+        return response;
     }
 
-    private void checkRoom(PrintStream out){
+    private String checkRoom(){
+        String response = "In questa stanza ci sono:";
         if (getCurrentRoom().getLook() != null) {
-            out.println(getCurrentRoom().getLook());
+            response = response + getCurrentRoom().getLook();
         } else {
-            out.println("Non c'è niente di interessante qui.");
+            response="Non c'è niente di interessante qui.";
         }
+        return response;
     }
 
-    private void pickUpObject(ParserOutput p, PrintStream out){
+    private String pickUpObject(ParserOutput p){
+        String response = "";
         if (p.getObject() != null) {
             if (p.getObject().isPickupable()) {
                 getInventory().add(p.getObject());
                 getCurrentRoom().getObjects().remove(p.getObject());
-                out.println("Hai raccolto: " + p.getObject().getDescription());
+                response = "Hai raccolto: " + p.getObject().getDescription();
             } else {
-                out.println("Non puoi raccogliere questo oggetto.");
+                response="Non puoi raccogliere questo oggetto.";
             }
         } else {
-            out.println("Non c'è niente da raccogliere qui.");
+            response="Non c'è niente da raccogliere qui.";
         }
+        return response;
     }
 
-    private void openObject(ParserOutput p, PrintStream out){
+    private String openObject(ParserOutput p){
         /*ATTENZIONE: quando un oggetto contenitore viene aperto, tutti gli oggetti contenuti
          * vengongo inseriti nella stanza o nell'inventario a seconda di dove si trova l'oggetto contenitore.
          * Potrebbe non esssere la soluzione ottimale.
          */
+        String response = "";
         if (p.getObject() == null && p.getInvObject() == null) {
-            out.println("Non c'è niente da aprire qui.");
+            response="Non c'è niente da aprire qui.";
         } else {
             if (p.getObject() != null) {
                 if (p.getObject().isOpenable() && p.getObject().isOpen() == false) {
                     if (p.getObject() instanceof AdvObjectContainer) {
-                        out.println("Hai aperto: " + p.getObject().getName());
+                        response="Hai aperto: " + p.getObject().getName()+"/n";
                         AdvObjectContainer c = (AdvObjectContainer) p.getObject();
                         if (!c.getList().isEmpty()) {
-                            out.print(c.getName() + " contiene:");
+                            response=c.getName() + " contiene:";
                             Iterator<AdvObject> it = c.getList().iterator();
                             while (it.hasNext()) {
                                 AdvObject next = it.next();
                                 getCurrentRoom().getObjects().add(next);
-                                out.print(" " + next.getName());
+                                response=" " + next.getName()+"/n";
                                 it.remove();
                             }
-                            out.println();
+                            return response;
                         }
                         p.getObject().setOpen(true);
                     } else {
-                        out.println("Hai aperto: " + p.getObject().getName());
+                        response="Hai aperto: " + p.getObject().getName();
                         p.getObject().setOpen(true);
                     }
                 } else {
-                    out.println("Non puoi aprire questo oggetto.");
+                    response="Non puoi aprire questo oggetto.";
                 }
             }
             if (p.getInvObject() != null) {
@@ -361,26 +421,27 @@ public class EscapeFromLabGame extends GameDescription {
                     if (p.getInvObject() instanceof AdvObjectContainer) {
                         AdvObjectContainer c = (AdvObjectContainer) p.getInvObject();
                         if (!c.getList().isEmpty()) {
-                            out.print(c.getName() + " contiene:");
+                            response=c.getName() + " contiene:"+"/n";
                             Iterator<AdvObject> it = c.getList().iterator();
                             while (it.hasNext()) {
                                 AdvObject next = it.next();
                                 getInventory().add(next);
-                                out.print(" " + next.getName());
+                                response=" " + next.getName()+"/n";
                                 it.remove();
                             }
-                            out.println();
+                            return response;
                         }
                         p.getInvObject().setOpen(true);
                     } else {
                         p.getInvObject().setOpen(true);
                     }
-                    out.println("Hai aperto nel tuo inventario: " + p.getInvObject().getName());
+                    response="Hai aperto nel tuo inventario: " + p.getInvObject().getName();
                 } else {
-                    out.println("Non puoi aprire questo oggetto.");
+                    response="Non puoi aprire questo oggetto.";
                 }
             }
         }
+        return response;
     }
 
     private void pushObject(ParserOutput p, PrintStream out){
@@ -399,41 +460,67 @@ public class EscapeFromLabGame extends GameDescription {
             out.println("Non ci sono oggetti che puoi premere qui.");
         }
     }
-    @Override
-    public void nextMove(ParserOutput p, PrintStream out) {
-        if (p.getCommand() == null) {
-            out.println("Non ho capito cosa devo fare! Prova con un altro comando.");
-        } else {
-            //move
-            boolean noroom = false;
-            boolean move = false;
-            if (p.getCommand().getType() == CommandType.NORD) {
-                goNorth(noroom, move);
-            } else if (p.getCommand().getType() == CommandType.SOUTH) {
-                goSouth(noroom, move);
-            } else if (p.getCommand().getType() == CommandType.EAST) {
-                goEast(noroom, move);
-            } else if (p.getCommand().getType() == CommandType.WEST) {
-                goWest(noroom, move);
-            } else if (p.getCommand().getType() == CommandType.INVENTORY) {
-                checkInventory(out);
-            } else if (p.getCommand().getType() == CommandType.LOOK_AT) {
-                checkRoom(out);
-            } else if (p.getCommand().getType() == CommandType.PICK_UP) {
-                pickUpObject(p, out);
-            } else if (p.getCommand().getType() == CommandType.OPEN) {
-                openObject(p, out);
-            } else if (p.getCommand().getType() == CommandType.PUSH) {
-               pushObject(p, out);
+
+    public boolean canAccessRoom(Room room)
+    {
+        AdvObject key;
+        if (room.isAccessible()){
+            return true;
+        }
+        else {
+            key = room.getKey();
+            if (getInventory().contains(key)){
+                return true;
             }
-            if (noroom) {
-                out.println("Da quella parte non si può andare c'è un muro!\nNon hai ancora acquisito i poteri per oltrepassare i muri...");
-            } else if (move) {
-                out.println(getCurrentRoom().getName());
-                out.println("================================================");
-                out.println(getCurrentRoom().getDescription());
+            return false;
+        }
+    }
+    @Override
+    public String nextMove(ParserOutput p) {
+        //move
+        String response = "";
+        boolean noroom = false;
+        boolean move = false;
+        boolean isKeyNeeded = false;
+        if (p.getCommand().getType() == CommandType.NORD) {
+           move = goNorth(isKeyNeeded);
+        } else if (p.getCommand().getType() == CommandType.SOUTH) {
+            move = goSouth(isKeyNeeded);
+        } else if (p.getCommand().getType() == CommandType.EAST) {
+            move = goEast(isKeyNeeded);
+        } else if (p.getCommand().getType() == CommandType.WEST) {
+            move = goWest(isKeyNeeded);
+        } else if (p.getCommand().getType() == CommandType.INVENTORY) {
+            response= checkInventory();
+        } else if (p.getCommand().getType() == CommandType.LOOK_AT) {
+            response= checkRoom();
+        } else if (p.getCommand().getType() == CommandType.PICK_UP) {
+            response=pickUpObject(p);
+        } else if (p.getCommand().getType() == CommandType.OPEN) {
+           response= openObject(p);
+        } else if (p.getCommand().getType() == CommandType.PUSH) {
+           // pushObject();
+        }
+
+        if(move){
+            response = getCurrentRoom().getName();
+            response = response + "\n================================================\n";
+            response = response + getCurrentRoom().getDescription()+"\n";
+        }
+        else
+        {
+            if(isKeyNeeded)
+            {
+                response = "Devi avere la chiave per aprire la porta";
+            }
+            else
+            {
+                response = "Non puoi andare in quella direzione";
             }
         }
+
+        return response;
+
     }
 
     private void end (PrintStream out) {
