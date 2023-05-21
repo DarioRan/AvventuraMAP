@@ -48,11 +48,11 @@ public class AdvObject {
         this.description = description;
     }
 
-    public AdvObject(int id, String name, String description, Set<String> alias) {
+    public AdvObject(int id, String name, String description, String[] alias) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.alias = alias;
+        this.alias = new HashSet<>(Arrays.asList(alias));
     }
 
     public String getName() {

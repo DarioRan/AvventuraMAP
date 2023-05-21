@@ -6,9 +6,9 @@
 package di.uniba.map.b.adventure;
 
 import di.uniba.map.b.adventure.games.EscapeFromLabGame;
-import di.uniba.map.b.adventure.games.FireHouseGame;
 import di.uniba.map.b.adventure.parser.Parser;
 import di.uniba.map.b.adventure.parser.ParserOutput;
+import di.uniba.map.b.adventure.type.Command;
 import di.uniba.map.b.adventure.type.CommandType;
 import java.io.File;
 import java.io.IOException;
@@ -27,9 +27,11 @@ public class Engine {
     private final GameDescription game;
 
     private Parser parser;
+    private AdventureGameGUI gui;
 
     public Engine(GameDescription game) {
         this.game = game;
+        this.gui = new AdventureGameGUI(this);
         try {
             this.game.init();
         } catch (Exception ex) {
@@ -44,35 +46,50 @@ public class Engine {
     }
 
     public void execute() {
+        String response;
         System.out.println("================================");
         System.out.println("* Adventure v. 0.3 - 2021-2022 *");
         System.out.println("================================");
-        System.out.println(game.getCurrentRoom().getName());
-        System.out.println();
-        System.out.println(game.getCurrentRoom().getDescription());
-        System.out.println();
-        Scanner scanner = new Scanner(System.in);
-        while (scanner.hasNextLine()) {
-            String command = scanner.nextLine();
-            ParserOutput p = parser.parse(command, game.getCommands(), game.getCurrentRoom().getObjects(), game.getInventory());
-            if (p == null || p.getCommand() == null) {
-                System.out.println("Non capisco quello che mi vuoi dire.");
-            } else if (p.getCommand() != null && p.getCommand().getType() == CommandType.END) {
-                System.out.println("Addio!");
-                break;
-            } else {
-                game.nextMove(p, System.out);
-                System.out.println();
+        response = game.getCurrentRoom().getName();
+        response = response + "\n================================================\n";
+        response = response + game.getCurrentRoom().getDescription()+"\n";
+        gui.appendAreaText(response);
+
+
+    }
+
+    public String executeCommand(String command) {
+        String response;
+        CommandType commType;
+        ParserOutput p = parser.parse(command, game.getCommands(), game.getCurrentRoom().getObjects(), game.getInventory());
+        if (p == null || p.getCommand() == null) {
+            response="Non capisco quello che mi vuoi dire.";
+        } else if (p.getCommand() != null && p.getCommand().getType() == CommandType.END) {
+            response="Addio!";
+        } else {
+            commType = p.getCommand().getType();
+            response=game.nextMove(p);
+            //Se è un comando di movimento, cambia background
+            if (commType==CommandType.EAST || commType==CommandType.NORD || commType==CommandType.SOUTH || commType==CommandType.WEST)
+            {
+                gui.setBackgroundImage(game.getCurrentRoom().getBackgroundImage());
+                System.out.println("Sono in " + game.getCurrentRoom().getId());
+                System.out.println(commType);
             }
+            return response;
+            /*gui.appendTextAreaText(response);
+            System.out.println("Sei in " + game.getCurrentRoom().getName());
+            System.out.println(game.getCurrentRoom().getDescription());
+            System.out.println();*/
         }
+        return response;
     }
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        AdventureGameGUI gui = new AdventureGameGUI();
-        Engine engine = new Engine(new EscapeFromLabGame(gui));
+        Engine engine= new Engine(new EscapeFromLabGame());
         engine.execute();
     }
 

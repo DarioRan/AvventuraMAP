@@ -36,6 +36,11 @@ public class Room {
 
     private Image backgroundImage;
 
+    private boolean accessible = true;
+
+    private AdvObject key = null;
+
+
     private final List<AdvObject> objects=new ArrayList<>();
 
     public Room(int id) {
@@ -47,6 +52,19 @@ public class Room {
         this.name = name;
         this.description = description;
         setBackgroundImage();
+    }
+
+    public Room(int id, String name, String description, boolean accessible, AdvObject key) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        setBackgroundImage();
+        this.accessible = accessible;
+        this.key = key;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getName() {
@@ -108,6 +126,9 @@ public class Room {
     public List<AdvObject> getObjects() {
         return objects;
     }
+    public void addObject(AdvObjectContainer object){
+        this.objects.add(object);
+    }
 
     @Override
     public int hashCode() {
@@ -150,5 +171,21 @@ public class Room {
 
     public Image getBackgroundImage(){
         return this.backgroundImage;
+    }
+
+    public boolean isAccessible() {
+        return accessible;
+    }
+
+    public boolean setAccessible(boolean accessible) {
+        return this.accessible = accessible;
+    }
+
+    public AdvObject getKey() {
+        return key;
+    }
+
+    public AdvObject setKey(AdvObject key) {
+        return this.key = key;
     }
 }

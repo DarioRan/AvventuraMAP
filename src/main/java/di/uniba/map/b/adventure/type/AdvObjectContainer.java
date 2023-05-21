@@ -29,7 +29,7 @@ public class AdvObjectContainer extends AdvObject {
         super(id, name, description);
     }
 
-    public AdvObjectContainer(int id, String name, String description, Set<String> alias) {
+    public AdvObjectContainer(int id, String name, String description, String[] alias) {
         super(id, name, description, alias);
     }
 

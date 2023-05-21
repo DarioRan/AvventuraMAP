@@ -1,5 +1,4 @@
 package di.uniba.map.b.adventure;
-import di.uniba.map.b.adventure.type.Room;
 
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
@@ -20,11 +19,16 @@ public class AdventureGameGUI extends JFrame {
     private JPanel backgroundPanel = null;
     private Image backgroundImage = null;
 
-    public AdventureGameGUI() {
+    private Engine engine;
+
+    private Printer printer;
+
+    public AdventureGameGUI(Engine engine) {
         setTitle("Escape from LABS");
         initMainPanel();
         initStartPanel();
         setVisible(true);
+        this.engine = engine;
     }
 
     /**
@@ -174,6 +178,7 @@ public class AdventureGameGUI extends JFrame {
                 g2.dispose();
             }
         };
+        printer= new Printer(textArea, 15);
         textArea.setOpaque(false);
         textArea.setForeground(Color.WHITE);
         textArea.setFont(new Font("Consolas", Font.BOLD, 18));
@@ -215,9 +220,12 @@ public class AdventureGameGUI extends JFrame {
         backgroundPanel.add(textField, BorderLayout.SOUTH);
 
         textField.addActionListener(e -> {
+            String response;
+            Printer printer = new Printer(textArea, 15);
+            printer.setDelay(15);
             String inputText = textField.getText(); // Ottieni il testo inserito nella JTextField
-            Printer printer = new Printer(textArea, 15); // Crea un'istanza di Printer con il ritardo desiderato
-            printer.printText(inputText); // Stampa il testo carattere per carattere nella JTextArea
+            response=engine.executeCommand(inputText); // Esegui il comando inserito nella JTextField
+            appendAreaText(response); // Stampa la risposta carattere per carattere nella JTextArea
             textField.setText(""); // Resetta il contenuto della JTextField
             scrollPane.setVisible(true); // Mostra la JScrollPane
             textArea.setCaretPosition(textArea.getDocument().getLength()); // Scrolla la JTextArea fino alla fine del testo
@@ -233,6 +241,10 @@ public class AdventureGameGUI extends JFrame {
         backgroundPanel.repaint();
     }
 
+    public void appendAreaText(String text) {
+        printer.printText(text);
+    }
+
     private void startGame() {
         mainPanel.remove(startPanel);
         initSidePanel();
@@ -242,16 +254,19 @@ public class AdventureGameGUI extends JFrame {
         revalidate();
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(AdventureGameGUI::new);
-    }
 
     public static class Printer {
-        private final JTextArea textArea;
-        private final int delay;
+        private JTextArea textArea;
+        private int delay;
 
+        public Printer() {
+            this.delay = 15;
+        }
         public Printer(JTextArea textArea, int delay) {
             this.textArea = textArea;
+            this.delay = delay;
+        }
+        public void setDelay(int delay) {
             this.delay = delay;
         }
 
@@ -278,5 +293,6 @@ public class AdventureGameGUI extends JFrame {
             worker.execute();
             textArea.append("\n"); // Aggiungi un a capo alla fine del testo
         }
+
     }
 }

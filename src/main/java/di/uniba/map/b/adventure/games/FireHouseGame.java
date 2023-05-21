@@ -11,6 +11,7 @@ import di.uniba.map.b.adventure.type.AdvObject;
 import di.uniba.map.b.adventure.type.AdvObjectContainer;
 import di.uniba.map.b.adventure.type.Command;
 import di.uniba.map.b.adventure.type.CommandType;
+import di.uniba.map.b.adventure.type.ContainerObject;
 import di.uniba.map.b.adventure.type.Room;
 import java.io.PrintStream;
 import java.util.Iterator;
@@ -116,8 +117,8 @@ public class FireHouseGame extends GameDescription {
     }
 
     @Override
-    public void nextMove(ParserOutput p, PrintStream out) {
-        if (p.getCommand() == null) {
+    public String nextMove(ParserOutput p) {
+        /*if (p.getCommand() == null) {
             out.println("Non ho capito cosa devo fare! Prova con un altro comando.");
         } else {
             //move
@@ -178,13 +179,13 @@ public class FireHouseGame extends GameDescription {
                 /*ATTENZIONE: quando un oggetto contenitore viene aperto, tutti gli oggetti contenuti
                 * vengongo inseriti nella stanza o nell'inventario a seconda di dove si trova l'oggetto contenitore.
                 * Potrebbe non esssere la soluzione ottimale.
-                 */
+
                 if (p.getObject() == null && p.getInvObject() == null) {
                     out.println("Non c'è niente da aprire qui.");
                 } else {
                     if (p.getObject() != null) {
                         if (p.getObject().isOpenable() && p.getObject().isOpen() == false) {
-                            if (p.getObject() instanceof AdvObjectContainer) {
+                            if (p.getObject() instanceof ContainerObject) {
                                 out.println("Hai aperto: " + p.getObject().getName());
                                 AdvObjectContainer c = (AdvObjectContainer) p.getObject();
                                 if (!c.getList().isEmpty()) {
@@ -256,6 +257,8 @@ public class FireHouseGame extends GameDescription {
                 out.println(getCurrentRoom().getDescription());
             }
         }
+        */
+        return null;
     }
 
     private void end(PrintStream out) {
