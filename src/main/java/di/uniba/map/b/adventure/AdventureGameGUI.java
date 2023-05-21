@@ -1,5 +1,4 @@
 package di.uniba.map.b.adventure;
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
 import java.awt.*;
@@ -7,7 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
 
 public class AdventureGameGUI extends JFrame {
     private JPanel mainPanel;
@@ -160,11 +158,10 @@ public class AdventureGameGUI extends JFrame {
         };
         textArea.setOpaque(false);
         textArea.setForeground(Color.WHITE);
-        textArea.setFont(new Font("Arial", Font.BOLD, 16));
+        textArea.setFont(new Font("Consolas", Font.BOLD, 18));
         textArea.setEditable(false); // Rendi la JTextArea non modificabile
         textArea.setOpaque(false); // Rendi lo sfondo trasparente
         textArea.setForeground(Color.WHITE); // Colore del testo
-        textArea.setFont(new Font("Arial", Font.BOLD, 16)); // Font del testo
         textArea.setMaximumSize(new Dimension(Integer.MAX_VALUE, getHeight()/2)); // Imposta l'altezza massima della JTextArea
 
         // Crea la JScrollPane per avvolgere la JTextArea
@@ -193,17 +190,17 @@ public class AdventureGameGUI extends JFrame {
         textField.setOpaque(false); // Rendi lo sfondo trasparente
         textField.setPreferredSize(new Dimension(textField.getPreferredSize().width, 50));
         textField.setForeground(Color.WHITE); // Colore del testo
-        textField.setFont(new Font("Arial", Font.BOLD, 16)); // Font del testo
+        textField.setFont(new Font("Consolas", Font.BOLD, 18)); // Font del testo
         backgroundPanel.add(textField, BorderLayout.SOUTH);
 
 
         textField.addActionListener(e -> {
             String inputText = textField.getText(); // Ottieni il testo inserito nella JTextField
-            textArea.append(inputText + "\n"); // Aggiungi il testo alla JTextArea, aggiungendo un a capo
+            Printer printer = new Printer(textArea, 15); // Crea un'istanza di Printer con il ritardo desiderato
+            printer.printText(inputText); // Stampa il testo carattere per carattere nella JTextArea
             textField.setText(""); // Resetta il contenuto della JTextField
             scrollPane.setVisible(true); // Mostra la JScrollPane
-            // Scrolla la JTextArea fino alla fine
-            textArea.setCaretPosition(textArea.getDocument().getLength());
+            textArea.setCaretPosition(textArea.getDocument().getLength()); // Scrolla la JTextArea fino alla fine del testo
         });
 
         // Imposta la JTextArea per lo scorrimento automatico
@@ -217,5 +214,39 @@ public class AdventureGameGUI extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(AdventureGameGUI::new);
+    }
+
+    public static class Printer {
+        private final JTextArea textArea;
+        private final int delay;
+
+        public Printer(JTextArea textArea, int delay) {
+            this.textArea = textArea;
+            this.delay = delay;
+        }
+
+        public void printText(String inputText) {
+            SwingWorker<Void, String> worker = new SwingWorker<Void, String>() {
+                @Override
+                protected Void doInBackground() throws Exception {
+                    String[] chars = inputText.split("");
+                    for (String c : chars) {
+                        publish(c);
+                        Thread.sleep(delay);
+                    }
+                    return null;
+                }
+
+                @Override
+                protected void process(java.util.List<String> chunks) {
+                    for (String c : chunks) {
+                        textArea.append(c); // Aggiungi il testo alla JTextArea, aggiungendo un a capo
+                    }
+                }
+            };
+
+            worker.execute();
+            textArea.append("\n"); // Aggiungi un a capo alla fine del testo
+        }
     }
 }
