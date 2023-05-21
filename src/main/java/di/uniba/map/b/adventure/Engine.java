@@ -9,6 +9,8 @@ import di.uniba.map.b.adventure.games.EscapeFromLabGame;
 import di.uniba.map.b.adventure.parser.Parser;
 import di.uniba.map.b.adventure.parser.ParserOutput;
 import di.uniba.map.b.adventure.type.Command;
+import di.uniba.map.b.adventure.type.CommandGUIOutput;
+import di.uniba.map.b.adventure.type.CommandGUIType;
 import di.uniba.map.b.adventure.type.CommandType;
 import java.io.File;
 import java.io.IOException;
@@ -31,12 +33,12 @@ public class Engine {
 
     public Engine(GameDescription game) {
         this.game = game;
-        this.gui = new AdventureGameGUI(this);
         try {
             this.game.init();
         } catch (Exception ex) {
             System.err.println(ex);
         }
+        this.gui = new AdventureGameGUI(this);
         try {
             Set<String> stopwords = Utils.loadFileListInSet(new File("./resources/stopwords"));
             parser = new Parser(stopwords);
@@ -45,7 +47,7 @@ public class Engine {
         }
     }
 
-    public void execute() {
+    public CommandGUIOutput execute() {
         String response;
         System.out.println("================================");
         System.out.println("* Adventure v. 0.3 - 2021-2022 *");
@@ -53,13 +55,14 @@ public class Engine {
         response = game.getCurrentRoom().getName();
         response = response + "\n================================================\n";
         response = response + game.getCurrentRoom().getDescription()+"\n";
-        gui.appendAreaText(response);
+        return new CommandGUIOutput(CommandGUIType.SHOW_TEXT, response);
 
 
     }
 
-    public String executeCommand(String command) {
-        String response;
+    public CommandGUIOutput executeCommand(String command) {
+        String response = "";
+        CommandGUIOutput commandGUIOutput;
         CommandType commType;
         ParserOutput p = parser.parse(command, game.getCommands(), game.getCurrentRoom().getObjects(), game.getInventory());
         if (p == null || p.getCommand() == null) {
@@ -72,25 +75,30 @@ public class Engine {
             //Se è un comando di movimento, cambia background
             if (commType==CommandType.EAST || commType==CommandType.NORD || commType==CommandType.SOUTH || commType==CommandType.WEST)
             {
-                gui.setBackgroundImage(game.getCurrentRoom().getBackgroundImage());
+
+                commandGUIOutput = new CommandGUIOutput(CommandGUIType.MOVE, response, game.getCurrentRoom().getBackgroundImage());
                 System.out.println("Sono in " + game.getCurrentRoom().getId());
                 System.out.println(commType);
             }
-            return response;
+            else
+            {
+                commandGUIOutput = new CommandGUIOutput(CommandGUIType.SHOW_TEXT, response, null);
+            }
+            return commandGUIOutput;
             /*gui.appendTextAreaText(response);
             System.out.println("Sei in " + game.getCurrentRoom().getName());
             System.out.println(game.getCurrentRoom().getDescription());
             System.out.println();*/
         }
-        return response;
+        return commandGUIOutput = new CommandGUIOutput(CommandGUIType.SHOW_TEXT, response, null);
     }
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Engine engine= new Engine(new EscapeFromLabGame());
-        engine.execute();
+        Engine engine;
+        engine = new Engine(new EscapeFromLabGame());
     }
 
 }

@@ -13,6 +13,8 @@ import di.uniba.map.b.adventure.type.Room;
 import java.io.PrintStream;
 import java.util.Iterator;
 
+import org.apache.commons.lang3.mutable.MutableBoolean;
+
 public class EscapeFromLabGame extends GameDescription {
 
 
@@ -106,6 +108,7 @@ public class EscapeFromLabGame extends GameDescription {
         room1.setNorth(room10);
         room1.setEast(room5);
         room1.setWest(room2);
+        room1.getObjects().add(key2);
 
         room2.setNorth(room3);
         room2.setSouth(room1);
@@ -119,6 +122,8 @@ public class EscapeFromLabGame extends GameDescription {
         room5.setSouth(room1);
         room5.setEast(room7);
         room5.setWest(room6);
+        room5.setAccessible(false);
+        room5.setKey(key2);
 
         room6.setSouth(room5);
 
@@ -259,16 +264,16 @@ public class EscapeFromLabGame extends GameDescription {
         initRooms();
     }
 
-    private boolean goNorth(boolean isKeyNeeded){
+    private boolean goNorth(MutableBoolean isKeyNeeded){
         Room nextroom;
-        isKeyNeeded= false;
+        isKeyNeeded.setFalse();
         if (getCurrentRoom().getNorth() != null) {
             nextroom = getCurrentRoom().getNorth();
             if (nextroom.isAccessible()) {
                 setCurrentRoom(nextroom);
                 return true;
             } else {
-                isKeyNeeded = true;
+                isKeyNeeded.setTrue();
                 if(canAccessRoom(nextroom)){
                     setCurrentRoom(nextroom);
                     return true;
@@ -283,16 +288,16 @@ public class EscapeFromLabGame extends GameDescription {
 
     }
 
-    private boolean goSouth(boolean isKeyNeeded){
+    private boolean goSouth(MutableBoolean isKeyNeeded){
         Room nextroom;
-        isKeyNeeded= false;
+        isKeyNeeded.setFalse();
         if (getCurrentRoom().getSouth() != null) {
             nextroom = getCurrentRoom().getSouth();
             if (nextroom.isAccessible()) {
                 setCurrentRoom(nextroom);
                 return true;
             } else {
-                isKeyNeeded = true;
+                isKeyNeeded.setTrue();
                 if(canAccessRoom(nextroom)){
                     setCurrentRoom(nextroom);
                     return true;
@@ -306,16 +311,17 @@ public class EscapeFromLabGame extends GameDescription {
         }
     }
 
-    private boolean goEast(boolean isKeyNeeded){
+    private boolean goEast(MutableBoolean isKeyNeeded){
         Room nextroom;
-        isKeyNeeded= false;
+        isKeyNeeded.setFalse();
         if (getCurrentRoom().getEast() != null) {
             nextroom = getCurrentRoom().getEast();
             if (nextroom.isAccessible()) {
                 setCurrentRoom(nextroom);
                 return true;
             } else {
-                isKeyNeeded = true;
+                isKeyNeeded.setTrue();
+                System.out.println(isKeyNeeded);
                 if(canAccessRoom(nextroom)){
                     setCurrentRoom(nextroom);
                     return true;
@@ -327,16 +333,16 @@ public class EscapeFromLabGame extends GameDescription {
         }
     }
 
-    private boolean goWest(boolean isKeyNeeded){
+    private boolean goWest(MutableBoolean isKeyNeeded){
         Room nextroom;
-        isKeyNeeded= false;
+        isKeyNeeded.setFalse();
         if (getCurrentRoom().getWest() != null) {
             nextroom = getCurrentRoom().getWest();
             if (nextroom.isAccessible()) {
                 setCurrentRoom(nextroom);
                 return true;
             } else {
-                isKeyNeeded = true;
+                isKeyNeeded.setTrue();
                 if(canAccessRoom(nextroom)){
                     setCurrentRoom(nextroom);
                     return true;
@@ -349,7 +355,7 @@ public class EscapeFromLabGame extends GameDescription {
     }
 
     private String checkInventory(){
-        String response = "Nel tuo inventario ci sono:";
+        String response = "Nel tuo inventario ci sono:\n";
         for (AdvObject o : getInventory()) {
             response=response + o.getName() + ": " + o.getDescription()+ "\n";
         }
@@ -357,10 +363,13 @@ public class EscapeFromLabGame extends GameDescription {
     }
 
     private String checkRoom(){
-        String response = "In questa stanza ci sono:";
-        if (getCurrentRoom().getLook() != null) {
-            response = response + getCurrentRoom().getLook();
-        } else {
+        String response = "In questa stanza ci sono:\n";
+        if (getCurrentRoom().getObjects().size() > 0) {
+            for (AdvObject o : getCurrentRoom().getObjects()) {
+                response=response + o.getName() + ": " + o.getDescription()+ "\n";
+            }
+
+            } else {
             response="Non c'è niente di interessante qui.";
         }
         return response;
@@ -481,41 +490,58 @@ public class EscapeFromLabGame extends GameDescription {
         String response = "";
         boolean noroom = false;
         boolean move = false;
-        boolean isKeyNeeded = false;
-        if (p.getCommand().getType() == CommandType.NORD) {
-           move = goNorth(isKeyNeeded);
-        } else if (p.getCommand().getType() == CommandType.SOUTH) {
-            move = goSouth(isKeyNeeded);
-        } else if (p.getCommand().getType() == CommandType.EAST) {
-            move = goEast(isKeyNeeded);
-        } else if (p.getCommand().getType() == CommandType.WEST) {
-            move = goWest(isKeyNeeded);
-        } else if (p.getCommand().getType() == CommandType.INVENTORY) {
-            response= checkInventory();
-        } else if (p.getCommand().getType() == CommandType.LOOK_AT) {
-            response= checkRoom();
-        } else if (p.getCommand().getType() == CommandType.PICK_UP) {
-            response=pickUpObject(p);
-        } else if (p.getCommand().getType() == CommandType.OPEN) {
-           response= openObject(p);
-        } else if (p.getCommand().getType() == CommandType.PUSH) {
-           // pushObject();
+        MutableBoolean isKeyNeeded = new MutableBoolean(false);
+        CommandType commandType = p.getCommand().getType();
+        switch (commandType)
+        {
+            case NORD:
+                move = goNorth(isKeyNeeded);
+                break;
+            case SOUTH:
+                move = goSouth(isKeyNeeded);
+                break;
+            case EAST:
+                move = goEast(isKeyNeeded);
+                break;
+            case WEST:
+                move = goWest(isKeyNeeded);
+                break;
+            case INVENTORY:
+                response= checkInventory();
+                break;
+            case LOOK_AT:
+                response= checkRoom();
+                break;
+            case PICK_UP:
+                response=pickUpObject(p);
+                break;
+            case OPEN:
+                response= openObject(p);
+                break;
+            case PUSH:
+                // pushObject(p);
+                break;
         }
 
-        if(move){
-            response = getCurrentRoom().getName();
-            response = response + "\n================================================\n";
-            response = response + getCurrentRoom().getDescription()+"\n";
-        }
-        else
-        {
-            if(isKeyNeeded)
-            {
-                response = "Devi avere la chiave per aprire la porta";
+        System.out.println(isKeyNeeded);
+
+        if (commandType == CommandType.EAST ||commandType ==  CommandType.WEST
+                || commandType ==  CommandType.SOUTH ||commandType ==  CommandType.NORD){
+            if(move){
+                response = getCurrentRoom().getName();
+                response = response + "\n================================================\n";
+                response = response + getCurrentRoom().getDescription()+"\n";
             }
             else
             {
-                response = "Non puoi andare in quella direzione";
+                if(isKeyNeeded.booleanValue())
+                {
+                    response = "Devi avere la chiave per aprire la porta";
+                }
+                else
+                {
+                    response = "Non puoi andare in quella direzione";
+                }
             }
         }
 

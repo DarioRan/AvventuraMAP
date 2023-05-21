@@ -1,5 +1,8 @@
 package di.uniba.map.b.adventure;
 
+import di.uniba.map.b.adventure.type.CommandGUIOutput;
+import di.uniba.map.b.adventure.type.CommandGUIType;
+
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
 import java.awt.*;
@@ -179,6 +182,7 @@ public class AdventureGameGUI extends JFrame {
             }
         };
         printer= new Printer(textArea, 15);
+        performCommand(engine.execute());
         textArea.setOpaque(false);
         textArea.setForeground(Color.WHITE);
         textArea.setFont(new Font("Consolas", Font.BOLD, 18));
@@ -221,11 +225,12 @@ public class AdventureGameGUI extends JFrame {
 
         textField.addActionListener(e -> {
             String response;
+            CommandGUIOutput responseToGUI;
             Printer printer = new Printer(textArea, 15);
             printer.setDelay(15);
             String inputText = textField.getText(); // Ottieni il testo inserito nella JTextField
-            response=engine.executeCommand(inputText); // Esegui il comando inserito nella JTextField
-            appendAreaText(response); // Stampa la risposta carattere per carattere nella JTextArea
+            responseToGUI=engine.executeCommand(inputText); // Esegui il comando inserito nella JTextField
+            performCommand(responseToGUI); // Stampa la risposta carattere per carattere nella JTextArea
             textField.setText(""); // Resetta il contenuto della JTextField
             scrollPane.setVisible(true); // Mostra la JScrollPane
             textArea.setCaretPosition(textArea.getDocument().getLength()); // Scrolla la JTextArea fino alla fine del testo
@@ -239,6 +244,22 @@ public class AdventureGameGUI extends JFrame {
     public void setBackgroundImage(Image backgroundImage) {
         this.backgroundImage = backgroundImage;
         backgroundPanel.repaint();
+    }
+
+    public void performCommand(CommandGUIOutput command)
+    {
+        switch (command.getType())
+        {
+            case MOVE:
+                this.setBackgroundImage((Image) command.getResource());
+                appendAreaText(command.getText());
+                break;
+            case SHOW_TEXT:
+                appendAreaText(command.getText());
+                break;
+
+
+        }
     }
 
     public void appendAreaText(String text) {
