@@ -1,4 +1,6 @@
 package di.uniba.map.b.adventure;
+import di.uniba.map.b.adventure.type.Room;
+
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
 import java.awt.*;
@@ -8,19 +10,33 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class AdventureGameGUI extends JFrame {
-    private final JPanel mainPanel;
-    private final JPanel startPanel;
+
+    private JPanel mainPanel = null;
+    private JPanel startPanel = null;
+    private JTextArea textArea = null;
+    private JScrollPane scrollPane = null;
+    private JTextField textField = null;
+    private JPanel sidePanel = null;
+    private JPanel backgroundPanel = null;
+    private Image backgroundImage = null;
 
     public AdventureGameGUI() {
+        setTitle("Escape from LABS");
+        initMainPanel();
+        initStartPanel();
+        setVisible(true);
+    }
 
-        setTitle("Adventure Game");
+    /**
+     * Inizializza il pannello principale
+     */
+    private void initMainPanel() {
         // Ottieni le dimensioni dello schermo
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int screenWidth = (int) screenSize.getWidth();
         int screenHeight = (int) screenSize.getHeight();
 
         // Impostazioni della finestra principale
-        setTitle("Adventure Game");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(screenWidth, screenHeight);
         setLocationRelativeTo(null);
@@ -30,8 +46,12 @@ public class AdventureGameGUI extends JFrame {
         mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
         add(mainPanel);
+    }
 
-        // Creazione del pannello di avvio del gioco
+    /**
+     * Inizializza il pannello di avvio del gioco
+     */
+    private void initStartPanel(){
         startPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -44,11 +64,11 @@ public class AdventureGameGUI extends JFrame {
         startPanel.setLayout(null); // Imposta il layout come null per utilizzare un layout personalizzato
         mainPanel.add(startPanel, BorderLayout.CENTER);
 
-// Calcola le dimensioni del pannello
+        // Calcola le dimensioni del pannello
         int panelWidth = getWidth();
         int panelHeight = getHeight();
 
-// Imposta le dimensioni e la posizione del pulsante
+        // Imposta le dimensioni e la posizione del pulsante
         int buttonWidth = 200;
         int buttonHeight = 50;
         int buttonX = (panelWidth - buttonWidth) / 2; // Posiziona il pulsante al centro orizzontalmente
@@ -69,20 +89,16 @@ public class AdventureGameGUI extends JFrame {
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                startGame();
+                startGame(); // Avvia il gioco
             }
         });
-        startPanel.add(startButton); // Aggiungi il pulsante al pannello
-
-
-
-        setVisible(true);
+        startPanel.add(startButton); // Aggiungi il pulsante al pannello di avvio
     }
 
-
-    private void startGame() {
-        mainPanel.remove(startPanel);
-
+    /**
+     * Inizializza il pannello laterale
+     */
+    private void initSidePanel(){
         // Immagine laterale
         ImageIcon latImage = new ImageIcon("resources/logo3.jpg");
         Image lat = latImage.getImage().getScaledInstance(600, 1900, Image.SCALE_SMOOTH);
@@ -110,20 +126,21 @@ public class AdventureGameGUI extends JFrame {
         int progressBarBottomPadding = 10; // Spazio desiderato dal bordo inferiore
         progressBar.setBorder(BorderFactory.createEmptyBorder(0, 0, progressBarBottomPadding, 0));
         sidePanel.add(progressBar, BorderLayout.SOUTH);
-
-
         mainPanel.add(sidePanel, BorderLayout.EAST);
-
 
         // Etichetta per le statistiche
         JLabel statsLabel = new JLabel();
         sidePanel.add(statsLabel);
+    }
 
-
+    /**
+     * Inizializza il pannello di sfondo
+     */
+    private void initBackgroundPanel(){
         ImageIcon backgroundImageIcon = new ImageIcon("resources/1.png");
-        Image backgroundImage = backgroundImageIcon.getImage().getScaledInstance(backgroundImageIcon.getIconWidth(), backgroundImageIcon.getIconHeight(), Image.SCALE_SMOOTH);
+        backgroundImage = backgroundImageIcon.getImage().getScaledInstance(backgroundImageIcon.getIconWidth(), backgroundImageIcon.getIconHeight(), Image.SCALE_SMOOTH);
         // Creazione del pannello per l'immagine sopra l'inputPanel e a sinistra del sidePanel
-        JPanel backgroundPanel = new JPanel() {
+        backgroundPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -138,11 +155,16 @@ public class AdventureGameGUI extends JFrame {
         backgroundPanel.setPreferredSize(new Dimension(getWidth()-250, 0));
         backgroundPanel.setLayout(new BorderLayout());
         mainPanel.add(backgroundPanel, BorderLayout.WEST);
+    }
 
+    /**
+     * Inizializza il pannello di output
+     */
+    private void initOutputArea(){
 
         // Crea la JTextArea
         Color background = new Color(0, 0, 0, 150); // Colore di sfondo con opacità ridotta (valori RGB: 0, 0, 0, opacità)
-        JTextArea textArea = new JTextArea() {
+        textArea = new JTextArea() {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
@@ -163,7 +185,7 @@ public class AdventureGameGUI extends JFrame {
         textArea.setWrapStyleWord(true); // Rendi il testo a capo quando raggiunge il bordo della JTextArea
 
         // Crea la JScrollPane per avvolgere la JTextArea
-        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane = new JScrollPane(textArea);
         scrollPane.setPreferredSize(new Dimension(scrollPane.getPreferredSize().width, getHeight()/2));
         scrollPane.setOpaque(false); // Rendi lo sfondo trasparente
         scrollPane.getViewport().setOpaque(false); // Rendi lo sfondo del viewport trasparente
@@ -171,26 +193,26 @@ public class AdventureGameGUI extends JFrame {
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
         backgroundPanel.add(scrollPane, BorderLayout.NORTH);
-
         backgroundPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                if(scrollPane.isVisible())
-                    scrollPane.setVisible(false);
-                else
-                    scrollPane.setVisible(true);
+                scrollPane.setVisible(!scrollPane.isVisible());
             }
         });
+    }
 
+    /**
+     * Inizializza il pannello di input
+     */
+    private void initInputArea(){
         // Aggiungi la JTextField al pannello di sfondo
-        JTextField textField = new JTextField();
+        textField = new JTextField();
         textField.setOpaque(false); // Rendi lo sfondo trasparente
         textField.setPreferredSize(new Dimension(textField.getPreferredSize().width, 50));
         textField.setForeground(Color.WHITE); // Colore del testo
         textField.setFont(new Font("Consolas", Font.BOLD, 18)); // Font del testo
         backgroundPanel.add(textField, BorderLayout.SOUTH);
-
 
         textField.addActionListener(e -> {
             String inputText = textField.getText(); // Ottieni il testo inserito nella JTextField
@@ -204,9 +226,14 @@ public class AdventureGameGUI extends JFrame {
         // Imposta la JTextArea per lo scorrimento automatico
         DefaultCaret caret = (DefaultCaret) textArea.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+    }
 
-        // Mostra la finestra
-        setVisible(true);
+    private void startGame() {
+        mainPanel.remove(startPanel);
+        initSidePanel();
+        initBackgroundPanel();
+        initOutputArea();
+        initInputArea();
         revalidate();
     }
 

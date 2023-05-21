@@ -5,6 +5,8 @@
  */
 package di.uniba.map.b.adventure.type;
 
+import javax.swing.ImageIcon;
+import java.awt.Image;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +33,9 @@ public class Room {
     private Room east = null;
 
     private Room west = null;
-    
+
+    private Image backgroundImage;
+
     private final List<AdvObject> objects=new ArrayList<>();
 
     public Room(int id) {
@@ -42,6 +46,7 @@ public class Room {
         this.id = id;
         this.name = name;
         this.description = description;
+        setBackgroundImage();
     }
 
     public String getName() {
@@ -137,4 +142,13 @@ public class Room {
         this.look = look;
     }
 
+    private void setBackgroundImage() {
+        ImageIcon backgroundImageIcon = new ImageIcon("resources/"+this.id+".png");
+        Image backgroundImage = backgroundImageIcon.getImage().getScaledInstance(backgroundImageIcon.getIconWidth(), backgroundImageIcon.getIconHeight(), Image.SCALE_SMOOTH);
+        this.backgroundImage = backgroundImage;
+    }
+
+    public Image getBackgroundImage(){
+        return this.backgroundImage;
+    }
 }
