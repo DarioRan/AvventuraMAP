@@ -61,17 +61,17 @@ public class Engine {
     }
 
     public CommandGUIOutput executeCommand(String command) {
-        String response = "";
+        String response =command + "\n\n";
         CommandGUIOutput commandGUIOutput;
         CommandType commType;
         ParserOutput p = parser.parse(command, game.getCommands(), game.getCurrentRoom().getObjects(), game.getInventory());
         if (p == null || p.getCommand() == null) {
-            response="Non capisco quello che mi vuoi dire.";
+            response= response + "Non capisco quello che mi vuoi dire.\n";
         } else if (p.getCommand() != null && p.getCommand().getType() == CommandType.END) {
-            response="Addio!";
+            response= response + "Addio!\n";
         } else {
             commType = p.getCommand().getType();
-            response=game.nextMove(p);
+            response = response + game.nextMove(p);
             //Se è un comando di movimento, cambia background
             if (commType==CommandType.EAST || commType==CommandType.NORD || commType==CommandType.SOUTH || commType==CommandType.WEST)
             {

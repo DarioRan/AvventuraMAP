@@ -471,8 +471,7 @@ public class EscapeFromLabGame extends GameDescription {
         }
     }
 
-    public boolean canAccessRoom(Room room)
-    {
+    public boolean canAccessRoom(Room room) {
         AdvObject key;
         if (room.isAccessible()){
             return true;
@@ -493,6 +492,7 @@ public class EscapeFromLabGame extends GameDescription {
         boolean move = false;
         MutableBoolean isKeyNeeded = new MutableBoolean(false);
         CommandType commandType = p.getCommand().getType();
+        System.out.println("aaaa" + commandType);
         switch (commandType)
         {
             case NORD:
