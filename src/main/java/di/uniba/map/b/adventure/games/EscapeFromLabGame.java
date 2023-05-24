@@ -1,6 +1,7 @@
 package di.uniba.map.b.adventure.games;
 
 import di.uniba.map.b.adventure.GameDescription;
+import di.uniba.map.b.adventure.misc.RoomDesc;
 import di.uniba.map.b.adventure.parser.ParserOutput;
 import di.uniba.map.b.adventure.type.AdvObject;
 import di.uniba.map.b.adventure.type.AdvObjectContainer;
@@ -17,7 +18,7 @@ import org.apache.commons.lang3.mutable.MutableBoolean;
 
 public class EscapeFromLabGame extends GameDescription {
 
-
+    RoomDesc desc = new RoomDesc();
 
     public EscapeFromLabGame() {
         super();
@@ -63,43 +64,43 @@ public class EscapeFromLabGame extends GameDescription {
      * Inizializza le stanze del gioco e definisce la mappa
      */
     private void initRooms(){
-        Room room1 = new Room(1, "Atrio", "Sei nell'atrio del laboratorio");
-        Room room2 = new Room(2, "Laboratorio", "Sei nel laboratorio");
-        Room room3 = new Room(3, "Ufficio", "Sei nell'ufficio");
-        Room room4 = new Room(4, "Magazzino", "Sei nel magazzino");
-        Room room5 = new Room(5, "Sala riunioni", "Sei nella sala riunioni");
-        Room room6 = new Room(6, "Sala server", "Sei nella sala server");
-        Room room7 = new Room(7, "Sala server", "Sei nella sala server");
-        Room room8 = new Room(8, "Sala server", "Sei nella sala server");
-        Room room9 = new Room(9, "Sala server", "Sei nella sala server");
-        Room room10 = new Room(10, "Sala server", "Sei nella sala server");
-        Room room11 = new Room(11, "Sala server", "Sei nella sala server");
-        Room room12 = new Room(12, "Sala server", "Sei nella sala server");
-        Room room13 = new Room(13, "Sala server", "Sei nella sala server");
-        Room room14 = new Room(14, "Sala server", "Sei nella sala server");
-        Room room15 = new Room(15, "Sala server", "Sei nella sala server");
-        Room room16 = new Room(16, "Sala server", "Sei nella sala server");
-        Room room17 = new Room(17, "Sala server", "Sei nella sala server");
-        Room room18 = new Room(18, "Sala server", "Sei nella sala server");
-        Room room19 = new Room(19, "Sala server", "Sei nella sala server");
-        Room room20 = new Room(20, "Sala server", "Sei nella sala server");
-        Room room21 = new Room(21, "Sala server", "Sei nella sala server");
-        Room room221 = new Room(221, "Sala server", "Sei nella sala server");
-        Room room222 = new Room(222, "Sala server", "Sei nella sala server");
-        Room room23 = new Room(23, "Sala server", "Sei nella sala server");
-        Room room24 = new Room(24, "Sala server", "Sei nella sala server");
-        Room room25 = new Room(25, "Sala server", "Sei nella sala server");
-        Room room26 = new Room(26, "Sala server", "Sei nella sala server");
-        Room room27 = new Room(27, "Sala server", "Sei nella sala server");
-        Room room28 = new Room(28, "Sala server", "Sei nella sala server");
-        Room room29 = new Room(29, "Sala server", "Sei nella sala server");
-        Room room30 = new Room(30, "Sala server", "Sei nella sala server");
-        Room room31 = new Room(31, "Sala server", "Sei nella sala server");
-        Room room32 = new Room(32, "Sala server", "Sei nella sala server");
-        Room room33 = new Room(33, "Sala server", "Sei nella sala server");
-        Room room34 = new Room(34, "Sala server", "Sei nella sala server");
-        Room room35 = new Room(35, "Sala server", "Sei nella sala server");
-        Room room36 = new Room(36, "Sala server", "Sei nella sala server");
+        Room room1 = new Room(1,desc.getTITLE_1() ,desc.getDESC_1());
+        Room room2 = new Room(2,desc.getTITLE_2() , desc.getDESC_2());
+        Room room3 = new Room(3,desc.getTITLE_3() , desc.getDESC_3());
+        Room room4 = new Room(4,desc.getTITLE_4() , desc.getDESC_4());
+        Room room5 = new Room(5,desc.getTITLE_5() , desc.getDESC_5());
+        Room room6 = new Room(6,desc.getTITLE_6() , desc.getDESC_6());
+        Room room7 = new Room(7,desc.getTITLE_7() , desc.getDESC_7());
+        Room room8 = new Room(8,desc.getTITLE_8() , desc.getDESC_8());
+        Room room9 = new Room(9,desc.getTITLE_9() , desc.getDESC_9());
+        Room room10 = new Room(10,desc.getTITLE_10() , desc.getDESC_10());
+        Room room11 = new Room(11,desc.getTITLE_11() , desc.getDESC_11());
+        Room room12 = new Room(12,desc.getTITLE_12() , desc.getDESC_12());
+        Room room13 = new Room(13,desc.getTITLE_13() , desc.getDESC_13());
+        Room room14 = new Room(14,desc.getTITLE_14() , desc.getDESC_14());
+        Room room15 = new Room(15,desc.getTITLE_15() , desc.getDESC_15());
+        Room room16 = new Room(16,desc.getTITLE_16() , desc.getDESC_16());
+        Room room17 = new Room(17,desc.getTITLE_17() , desc.getDESC_17());
+        Room room18 = new Room(18,desc.getTITLE_18() , desc.getDESC_18());
+        Room room19 = new Room(19,desc.getTITLE_19() , desc.getDESC_19());
+        Room room20 = new Room(20,desc.getTITLE_20() , desc.getDESC_20());
+        Room room21 = new Room(21,desc.getTITLE_21() , desc.getDESC_21());
+        Room room221 = new Room(221,desc.getTITLE_22() , desc.getDESC_22());
+        Room room222 = new Room(222,desc.getTITLE_22() , desc.getDESC_22());
+        Room room23 = new Room(23,desc.getTITLE_23() , desc.getDESC_23());
+        Room room24 = new Room(24,desc.getTITLE_24() , desc.getDESC_24());
+        Room room25 = new Room(25,desc.getTITLE_25() , desc.getDESC_25());
+        Room room26 = new Room(26,desc.getTITLE_26() , desc.getDESC_26());
+        Room room27 = new Room(27,desc.getTITLE_27() , desc.getDESC_27());
+        Room room28 = new Room(28,desc.getTITLE_28() , desc.getDESC_28());
+        Room room29 = new Room(29,desc.getTITLE_29() , desc.getDESC_29());
+        Room room30 = new Room(30,desc.getTITLE_30() , desc.getDESC_30());
+        Room room31 = new Room(31,desc.getTITLE_31() , desc.getDESC_31());
+        Room room32 = new Room(32,desc.getTITLE_32(), desc.getDESC_32());
+        Room room33 = new Room(33,desc.getTITLE_33() , desc.getDESC_33());
+        Room room34 = new Room(34,desc.getTITLE_34(), desc.getDESC_34());
+        Room room35 = new Room(35,desc.getTITLE_35() , desc.getDESC_35());
+        Room room36 = new Room(36,desc.getTITLE_36() , desc.getDESC_36());
 
         AdvObject key1 = new AdvObject(1, "chiave", "Una KeyCard", new String[]{"KeyCard"});
         AdvObject key2 = new AdvObject(2, "chiave", "Una KeyCard", new String[]{"KeyCard"});
