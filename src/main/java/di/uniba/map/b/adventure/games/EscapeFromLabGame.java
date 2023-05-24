@@ -12,6 +12,7 @@ import di.uniba.map.b.adventure.type.PickableObject;
 import di.uniba.map.b.adventure.type.Room;
 
 import java.io.PrintStream;
+import java.sql.PreparedStatement;
 import java.util.Iterator;
 
 import org.apache.commons.lang3.mutable.MutableBoolean;
@@ -102,14 +103,9 @@ public class EscapeFromLabGame extends GameDescription {
         Room room35 = new Room(35,desc.getTITLE_35() , desc.getDESC_35());
         Room room36 = new Room(36,desc.getTITLE_36() , desc.getDESC_36());
 
-        AdvObject key1 = new AdvObject(1, "chiave", "Una KeyCard", new String[]{"KeyCard"});
-        AdvObject key2 = new AdvObject(2, "chiave", "Una KeyCard", new String[]{"KeyCard"});
-
-
         room1.setNorth(room10);
         room1.setEast(room5);
         room1.setWest(room2);
-        room1.getObjects().add(key2);
 
         room2.setNorth(room3);
         room2.setSouth(room1);
@@ -123,8 +119,6 @@ public class EscapeFromLabGame extends GameDescription {
         room5.setSouth(room1);
         room5.setEast(room7);
         room5.setWest(room6);
-        room5.setAccessible(false);
-        room5.setKey(key2);
 
         room6.setSouth(room5);
 
@@ -132,7 +126,6 @@ public class EscapeFromLabGame extends GameDescription {
 
         room8.setNorth(room9);
         room8.setSouth(room5);
-        room8.setKey(key1);
 
         room9.setSouth(room8);
 
@@ -258,6 +251,17 @@ public class EscapeFromLabGame extends GameDescription {
         getRooms().add(room36);
 
         setCurrentRoom(room1);
+
+        AdvObjectContainer toolbox = new AdvObjectContainer(1, "Cassetta per gli attrezzi", "Una cassetta per gli attrezzi");
+        toolbox.setAlias(new String[]{"cassetta", "attrezzi", "cassetta per gli attrezzi"});
+        room6.getObjects().add(toolbox);
+
+        AdvObject hammer = new AdvObject(2, "Martello", "Un martello");
+        hammer.setAlias(new String[]{"martello"});
+
+        toolbox.setOpenable(true);
+        toolbox.setPickupable(false);
+        toolbox.add(hammer);
     }
     @Override
     public void init() throws Exception {
@@ -364,12 +368,12 @@ public class EscapeFromLabGame extends GameDescription {
     }
 
     private String checkRoom(){
-        String response = "In questa stanza ci sono:\n";
+        String response = "";
+        response = getCurrentRoom().getDescription() + "\nIn questa stanza ci sono:\n";
         if (getCurrentRoom().getObjects().size() > 0) {
             for (AdvObject o : getCurrentRoom().getObjects()) {
                 response=response + o.getName() + ": " + o.getDescription()+ "\n";
             }
-
             } else {
             response="Non c'è niente di interessante qui.";
         }
@@ -404,7 +408,7 @@ public class EscapeFromLabGame extends GameDescription {
             if (p.getObject() != null) {
                 if (p.getObject().isOpenable() && p.getObject().isOpen() == false) {
                     if (p.getObject() instanceof AdvObjectContainer) {
-                        response="Hai aperto: " + p.getObject().getName()+"/n";
+                        response="Hai aperto: " + p.getObject().getName()+"\n";
                         AdvObjectContainer c = (AdvObjectContainer) p.getObject();
                         if (!c.getList().isEmpty()) {
                             response=c.getName() + " contiene:";
@@ -471,6 +475,11 @@ public class EscapeFromLabGame extends GameDescription {
         }
     }
 
+    public String useObject(ParserOutput p){
+        String response = "";
+        return response;
+    }
+
     public boolean canAccessRoom(Room room) {
         AdvObject key;
         if (room.isAccessible()){
@@ -492,7 +501,6 @@ public class EscapeFromLabGame extends GameDescription {
         boolean move = false;
         MutableBoolean isKeyNeeded = new MutableBoolean(false);
         CommandType commandType = p.getCommand().getType();
-        System.out.println("aaaa" + commandType);
         switch (commandType)
         {
             case NORD:
@@ -519,6 +527,9 @@ public class EscapeFromLabGame extends GameDescription {
             case OPEN:
                 response= openObject(p);
                 break;
+            case USE:
+                response = useObject(p);
+                break;
             case PUSH:
                 // pushObject(p);
                 break;
@@ -529,9 +540,12 @@ public class EscapeFromLabGame extends GameDescription {
         if (commandType == CommandType.EAST ||commandType ==  CommandType.WEST
                 || commandType ==  CommandType.SOUTH ||commandType ==  CommandType.NORD){
             if(move){
-                response = getCurrentRoom().getName();
-                response = response + "\n================================================\n";
-                response = response + getCurrentRoom().getDescription()+"\n";
+                if(getCurrentRoom().isVisited()){
+                    response = getCurrentRoom().getName();
+                    response = response + "\n================================================\n";
+                }else{
+                    response = response + getCurrentRoom().getDescription()+"\n";
+                }
             }
             else
             {

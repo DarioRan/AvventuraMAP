@@ -55,9 +55,8 @@ public class Engine {
         response = game.getCurrentRoom().getName();
         response = response + "\n================================================\n";
         response = response + game.getCurrentRoom().getDescription()+"\n";
+        game.getCurrentRoom().setVisited(true);
         return new CommandGUIOutput(CommandGUIType.SHOW_TEXT, response);
-
-
     }
 
     public CommandGUIOutput executeCommand(String command) {

@@ -40,6 +40,8 @@ public class Room {
 
     private AdvObject key = null;
 
+    private boolean isVisited = false;
+
 
     private final List<AdvObject> objects=new ArrayList<>();
 
@@ -179,6 +181,14 @@ public class Room {
 
     public boolean setAccessible(boolean accessible) {
         return this.accessible = accessible;
+    }
+
+    public boolean isVisited(){
+        return this.isVisited;
+    }
+
+    public void setVisited(boolean isVisited){
+        this.isVisited = isVisited;
     }
 
     public AdvObject getKey() {
