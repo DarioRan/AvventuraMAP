@@ -33,6 +33,10 @@ public class AdvObject {
 
     private boolean push = false;
 
+    private boolean usable = false;
+
+    private boolean switchable = false;
+
     public AdvObject(int id) {
         this.id = id;
     }
@@ -109,6 +113,22 @@ public class AdvObject {
 
     public void setPush(boolean push) {
         this.push = push;
+    }
+
+    public boolean isUsable() {
+        return usable;
+    }
+
+    public void setUsable(boolean usable) {
+        this.usable = usable;
+    }
+
+    public void setSwitchable(boolean switchable) {
+        this.switchable = switchable;
+    }
+
+    public boolean isSwitchable() {
+        return switchable;
     }
 
     public Set<String> getAlias() {
