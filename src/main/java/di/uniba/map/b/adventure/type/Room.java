@@ -36,9 +36,15 @@ public class Room {
 
     private Image backgroundImage;
 
+    private Image backgroundEnlightedImage;
+
     private boolean accessible = true;
 
     private AdvObject key = null;
+
+    private boolean isVisited = false;
+
+    private boolean isDark = false;
 
 
     private final List<AdvObject> objects=new ArrayList<>();
@@ -169,6 +175,16 @@ public class Room {
         this.backgroundImage = backgroundImage;
     }
 
+    public void setBackgroundEnlightedImage(){
+        ImageIcon backgroundImageEnglightedIcon = new ImageIcon("resources/"+this.id+"d.png");
+        Image backgroundEnlightedImage = backgroundImageEnglightedIcon.getImage().getScaledInstance(backgroundImageEnglightedIcon.getIconWidth(), backgroundImageEnglightedIcon.getIconHeight(), Image.SCALE_SMOOTH);
+        this.backgroundEnlightedImage = backgroundEnlightedImage;
+    }
+
+    public Image getBackgroundEnlightedImage(){
+        return this.backgroundEnlightedImage;
+    }
+
     public Image getBackgroundImage(){
         return this.backgroundImage;
     }
@@ -179,6 +195,22 @@ public class Room {
 
     public boolean setAccessible(boolean accessible) {
         return this.accessible = accessible;
+    }
+
+    public boolean isVisited(){
+        return this.isVisited;
+    }
+
+    public void setVisited(boolean isVisited){
+        this.isVisited = isVisited;
+    }
+
+    public boolean isDark(){
+        return this.isDark;
+    }
+
+    public void isDark(boolean isDark){
+        this.isDark = isDark;
     }
 
     public AdvObject getKey() {

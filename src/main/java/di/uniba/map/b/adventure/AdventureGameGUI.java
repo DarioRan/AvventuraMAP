@@ -10,6 +10,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class AdventureGameGUI extends JFrame {
 
@@ -42,9 +44,21 @@ public class AdventureGameGUI extends JFrame {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int screenWidth = (int) screenSize.getWidth();
         int screenHeight = (int) screenSize.getHeight();
+        JOptionPane frame = new JOptionPane();
 
         // Impostazioni della finestra principale
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                int scelta = JOptionPane.showConfirmDialog(frame, "Vuoi salvare la partita in corso?", "Conferma", JOptionPane.YES_NO_OPTION);
+                if (scelta == JOptionPane.YES_OPTION) {
+                    System.exit(0);
+                } else {
+                    System.exit(0);
+                }
+            }
+        });
         setSize(screenWidth, screenHeight);
         setLocationRelativeTo(null);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -251,14 +265,14 @@ public class AdventureGameGUI extends JFrame {
         switch (command.getType())
         {
             case MOVE:
+            case TURN_ON:
+            case TURN_OFF:
                 this.setBackgroundImage((Image) command.getResource());
                 appendAreaText(command.getText());
                 break;
             case SHOW_TEXT:
                 appendAreaText(command.getText());
                 break;
-
-
         }
     }
 

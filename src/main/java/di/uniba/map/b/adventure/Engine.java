@@ -55,9 +55,8 @@ public class Engine {
         response = game.getCurrentRoom().getName();
         response = response + "\n================================================\n";
         response = response + game.getCurrentRoom().getDescription()+"\n";
+        game.getCurrentRoom().setVisited(true);
         return new CommandGUIOutput(CommandGUIType.SHOW_TEXT, response);
-
-
     }
 
     public CommandGUIOutput executeCommand(String command) {
@@ -66,22 +65,29 @@ public class Engine {
         CommandType commType;
         ParserOutput p = parser.parse(command, game.getCommands(), game.getCurrentRoom().getObjects(), game.getInventory());
         if (p == null || p.getCommand() == null) {
-            response= response + "Non capisco quello che mi vuoi dire.\n";
+            response = response + "Non capisco quello che mi vuoi dire.\n";
         } else if (p.getCommand() != null && p.getCommand().getType() == CommandType.END) {
-            response= response + "Addio!\n";
+            response = response + "Addio!\n";
         } else {
             commType = p.getCommand().getType();
             response = response + game.nextMove(p);
             //Se è un comando di movimento, cambia background
             if (commType==CommandType.EAST || commType==CommandType.NORD || commType==CommandType.SOUTH || commType==CommandType.WEST)
             {
-
                 commandGUIOutput = new CommandGUIOutput(CommandGUIType.MOVE, response, game.getCurrentRoom().getBackgroundImage());
                 System.out.println("Sono in " + game.getCurrentRoom().getId());
                 System.out.println(commType);
             }
-            else
+            else if(commType==CommandType.TURN_ON)
             {
+                if(game.getCurrentRoom().isDark())
+                    commandGUIOutput = new CommandGUIOutput(CommandGUIType.TURN_ON, response, game.getCurrentRoom().getBackgroundEnlightedImage());
+                else
+                    commandGUIOutput = new CommandGUIOutput(CommandGUIType.TURN_ON, response, game.getCurrentRoom().getBackgroundImage());
+            } else if(commType==CommandType.TURN_OFF)
+            {
+                commandGUIOutput = new CommandGUIOutput(CommandGUIType.TURN_OFF, response, game.getCurrentRoom().getBackgroundImage());
+            }else {
                 commandGUIOutput = new CommandGUIOutput(CommandGUIType.SHOW_TEXT, response, null);
             }
             return commandGUIOutput;
