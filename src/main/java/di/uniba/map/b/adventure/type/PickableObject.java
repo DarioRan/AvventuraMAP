@@ -1,6 +1,6 @@
 package di.uniba.map.b.adventure.type;
 
-public class PickableObject extends GameObject{
+public class PickableObject extends AdvObject{
     private boolean pickupable = true;
 
     public PickableObject(int id) {

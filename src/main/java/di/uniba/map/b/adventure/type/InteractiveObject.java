@@ -1,6 +1,6 @@
 package di.uniba.map.b.adventure.type;
 
-public abstract class InteractiveObject extends GameObject{
+public abstract class InteractiveObject extends AdvObject{
 
     public InteractiveObject(int id) {
         super(id);
