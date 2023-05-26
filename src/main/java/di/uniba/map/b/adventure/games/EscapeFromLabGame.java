@@ -519,7 +519,6 @@ public class EscapeFromLabGame extends GameDescription {
             if (p.getInvObject().isSwitchable()) {
                 response = "Hai acceso: " + p.getInvObject().getDescription();
                 if(getCurrentRoom().getId()==4 && p.getInvObject().getId()==3){ //si accende la torcia
-                    getCurrentRoom().isDark(false); //la stanza non è più buia
                     getCurrentRoom().setBackgroundEnlightedImage(); //si cambia l'immagine di sfondo
                 }
             } else {

@@ -64,7 +64,6 @@ public class Engine {
         CommandGUIOutput commandGUIOutput;
         CommandType commType;
         ParserOutput p = parser.parse(command, game.getCommands(), game.getCurrentRoom().getObjects(), game.getInventory());
-        System.out.println(p.getCommand());
         if (p == null || p.getCommand() == null) {
             response = response + "Non capisco quello che mi vuoi dire.\n";
         } else if (p.getCommand() != null && p.getCommand().getType() == CommandType.END) {
@@ -81,7 +80,10 @@ public class Engine {
             }
             else if(commType==CommandType.TURN_ON)
             {
-                commandGUIOutput = new CommandGUIOutput(CommandGUIType.TURN_ON, response, game.getCurrentRoom().getBackgroundEnlightedImage());
+                if(game.getCurrentRoom().isDark())
+                    commandGUIOutput = new CommandGUIOutput(CommandGUIType.TURN_ON, response, game.getCurrentRoom().getBackgroundEnlightedImage());
+                else
+                    commandGUIOutput = new CommandGUIOutput(CommandGUIType.TURN_ON, response, game.getCurrentRoom().getBackgroundImage());
             } else if(commType==CommandType.TURN_OFF)
             {
                 commandGUIOutput = new CommandGUIOutput(CommandGUIType.TURN_OFF, response, game.getCurrentRoom().getBackgroundImage());
