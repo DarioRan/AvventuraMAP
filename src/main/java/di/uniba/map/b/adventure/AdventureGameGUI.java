@@ -141,19 +141,17 @@ public class AdventureGameGUI extends JFrame {
                 startGame(); // Carica il gioco
             }
         });
-        JButton loadGameButton = new JButton();
-        loadGameButton.setText("LOAD GAME");
-        /*JButton loadGameButton = new JButton() {
+        JButton loadGameButton = new JButton() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 ImageIcon backgroundImageIcon =
-                        new ImageIcon("resources/button.png");
+                        new ImageIcon("resources/button2.png");
                 Image backgroundImage = backgroundImageIcon.getImage();
                 g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(),
                         this);
             }
-        };*/
+        };
         loadGameButton.setBounds(buttonX, buttonY2, buttonWidth, buttonHeight);
         loadGameButton.setFont(new Font("Arial", Font.BOLD, 16));
         loadGameButton.addActionListener(new ActionListener() {
