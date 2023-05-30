@@ -14,6 +14,13 @@ import di.uniba.map.b.adventure.type.CommandGUIType;
 import di.uniba.map.b.adventure.type.CommandType;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -99,6 +106,34 @@ public class Engine {
         return commandGUIOutput = new CommandGUIOutput(CommandGUIType.SHOW_TEXT, response, null);
     }
 
+    public List<GameDescription> getSavedGames() throws SQLException {
+        List<GameDescription> savedGames = null;
+        /*String url = "jdbc:h2:~/path/to/your/database";
+        String username = "your-username";
+        String password = "your-password";
+
+// Stabilisci la connessione al database
+        Connection
+                connection = DriverManager.getConnection(url, username, password);
+        Statement statement = connection.createStatement();
+
+// Esegui la query per selezionare i dati dalla tabella
+        String query = "SELECT * FROM game_table";
+        ResultSet resultSet = statement.executeQuery(query);
+        List<GameDescription> savedGames = new ArrayList<>();
+
+        while (resultSet.next()) {
+            // Leggi i valori delle colonne dal risultato della query
+            int gameId = resultSet.getInt("game_id");
+
+            // ...
+
+            // Crea un oggetto GameDescriptor e aggiungilo alla lista
+            GameDescription game = new EscapeFromLabGame();
+            savedGames.add(game);
+        }*/
+        return savedGames;
+    }
     /**
      * @param args the command line arguments
      */
