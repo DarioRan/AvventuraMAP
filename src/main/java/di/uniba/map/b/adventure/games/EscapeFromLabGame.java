@@ -69,6 +69,11 @@ public class EscapeFromLabGame extends GameDescription {
         Command push = new Command(CommandType.PUSH, "premi");
         push.setAlias(new String[]{"spingi", "attiva"});
         getCommands().add(push);
+        Command unlock = new Command(CommandType.LOCK, "sblocca");
+        push.setAlias(new String[]{"blocca"});
+        getCommands().add(unlock);
+
+
     }
 
     /**
@@ -124,7 +129,7 @@ public class EscapeFromLabGame extends GameDescription {
         room3.setSouth(room2);
 
         room4.setSouth(room2);
-        room4.isDark(true);
+        room4.setDark(true);
 
         room5.setNorth(room8);
         room5.setSouth(room1);
@@ -268,14 +273,31 @@ public class EscapeFromLabGame extends GameDescription {
 
 
         AdvObject hammer = new AdvObject(2, "Martello", "Un martello");
-        hammer.setAlias(new String[]{"martello"});
+        hammer.setAlias(new String[]{"martello", "martello da muratore", "martello da carpentiere", "martello da falegname", "martello da fabbro"});
 
         AdvObject torch = new AdvObject(3, "Torcia", "Una torcia");
-        torch.setAlias(new String[]{"torcia"});
+        torch.setAlias(new String[]{"torcia", "lanterna", "lanterna elettrica", "torcia elettrica"});
 
+        AdvObject metalKey = new AdvObject(4, "Chiave", "Una chiave metallica");
+        metalKey.setAlias(new String[]{"chiave", "chiave metallica", "chiave di metallo", "chiave di ferro", "chiave ferrea"});
 
-        AdvObject key = new AdvObject(4, "Chiave", "Una chiave");
-        key.setAlias(new String[]{"chiave", "KeyCard"});
+        AdvObject redKeyCard = new AdvObject(5, "RedKeycard", "Una KeyCard rossa");
+        redKeyCard.setAlias(new String[]{"red keycard", "chiave rossa", "chiave di colore rosso", "keycard rossa", "keycard di colore rosso"});
+
+        AdvObject yellowKeyCard = new AdvObject(6, "YellowKeycard", "Una KeyCard gialla");
+        yellowKeyCard.setAlias(new String[]{"yellow keycard", "chiave gialla", "chiave di colore giallo", "keycard gialla", "keycard di colore giallo"});
+
+        AdvObject paper = new AdvObject(7, "Pezzo di carta", "123..-.-.,,-.721");
+        paper.setAlias(new String[]{"carta", "pezzo di carta", "foglio", "foglio di carta", "pezzo di foglio", "pezzo di foglio di carta"});
+
+        AdvObject memo = new AdvObject(8, "Post It", "-.-.--,,loco,,..--.-.");
+        memo.setAlias(new String[]{"post it", "memo"});
+
+        AdvObject bracelet = new AdvObject(9, "Bracciale", "-.-11--,..,.,,..11.-.");
+        bracelet.setAlias(new String[]{"bracciale", "braccialetto", "bracciale di metallo", "braccialetto di metallo", "bracciale metallico", "braccialetto metallico"});
+
+        AdvObject palmares = new AdvObject(10, "Palmares", "Palmares elettronico, potrebbe essere utile per qualcosa");
+        palmares.setAlias(new String[]{"palmares", "palmares elettronico"});
 
 
 
@@ -283,18 +305,30 @@ public class EscapeFromLabGame extends GameDescription {
         toolbox.setPickupable(false);
         toolbox.add(hammer);
         torch.setSwitchable(true);
+        palmares.setUsable(true);
+        palmares.setLocakble(true);
+        palmares.setPassword("12311loco11721");
 
-
-
-        getListObjects().add(key);
+        getListObjects().add(metalKey);
         getListObjects().add(toolbox);
         getListObjects().add(hammer);
         getListObjects().add(torch);
+        getListObjects().add(yellowKeyCard);
+        getListObjects().add(redKeyCard);
+        getListObjects().add(paper);
+        getListObjects().add(memo);
+        getListObjects().add(bracelet);
+        getListObjects().add(palmares);
 
-
-        room1.getObjects().add(key);
+        room1.getObjects().add(metalKey);
         room10.getObjects().add(torch);
         room6.getObjects().add(toolbox);
+        room18.getObjects().add(yellowKeyCard);
+        room31.getObjects().add(redKeyCard);
+        room14.getObjects().add(paper);
+        room13.getObjects().add(memo);
+        room16.getObjects().add(bracelet);
+        room15.getObjects().add(palmares);
 
     }
     @Override
@@ -518,13 +552,33 @@ public class EscapeFromLabGame extends GameDescription {
     public String useObject(ParserOutput p){
         String response = "";
         if (p.getInvObject() != null) {
-            if (p.getInvObject().isUsable()) {
-                response = "Hai usato la: " + p.getInvObject().getDescription();
+            if (p.getInvObject().isUsable() && p.getInvObject().isLocakble()==false) {
+                if(p.getInvObject().getId()==10){ //usa palmares
+                    response = "Hai usato il palmares: la password è 3215" ;
+                }
             } else {
                 response="Non puoi usare questo oggetto.";
             }
         } else {
             response="Non hai niente da usare.";
+        }
+        return response;
+    }
+
+    public String unlockObject(ParserOutput p, String password){
+        String response = "";
+        if (p.getInvObject() != null) {
+            if (p.getInvObject().isUsable()) {
+                System.out.println(("fsfsf: " + p.getInvObject().getPassword().equals(password)));
+                if(p.getInvObject().getId()==10 && p.getInvObject().getPassword().equals(password)){ //si sblocca il palmares
+                    p.getInvObject().setLocakble(false);
+                    response = "Hai sbloccato la: " + p.getInvObject().getDescription();
+                }
+            } else {
+                response="Non puoi usare questo oggetto.";
+            }
+        } else {
+            response="Non hai niente da sbloccare.";
         }
         return response;
     }
@@ -552,7 +606,7 @@ public class EscapeFromLabGame extends GameDescription {
             if (p.getInvObject().isSwitchable()) {
                 response = "Hai spento: " + p.getInvObject().getDescription();
                 if(getCurrentRoom().getId()==4 && p.getInvObject().getId()==3){ //si accende la torcia
-                    getCurrentRoom().isDark(true); //la stanza è buia
+                    getCurrentRoom().setDark(true); //la stanza è buia
                 }
             } else {
                 response="Non puoi spegnere questo oggetto.";
@@ -621,6 +675,9 @@ public class EscapeFromLabGame extends GameDescription {
                 break;
             case PUSH:
                 // pushObject(p);
+                break;
+            case LOCK:
+                response = unlockObject(p, "12311loco11721");
                 break;
         }
 

@@ -209,7 +209,7 @@ public class Room {
         return this.isDark;
     }
 
-    public void isDark(boolean isDark){
+    public void setDark(boolean isDark){
         this.isDark = isDark;
     }
 
