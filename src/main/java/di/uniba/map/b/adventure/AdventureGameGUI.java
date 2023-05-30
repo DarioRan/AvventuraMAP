@@ -12,6 +12,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Set;
 
 public class AdventureGameGUI extends JFrame {
 
@@ -93,7 +96,8 @@ public class AdventureGameGUI extends JFrame {
         int buttonWidth = 200;
         int buttonHeight = 50;
         int buttonX = (panelWidth - buttonWidth) / 2; // Posiziona il pulsante al centro orizzontalmente
-        int buttonY = panelHeight - 100 - buttonHeight; // Posiziona il pulsante a 100 pixel dal fondo
+        int buttonY = panelHeight - (2 * buttonHeight) - 170; // Posiziona il pulsante a 100 pixel dal fondo
+        int buttonY2 = panelHeight - 150 - buttonHeight; // Posiziona il pulsante a 100 pixel dal fondo
         JButton startButton = new JButton() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -110,10 +114,36 @@ public class AdventureGameGUI extends JFrame {
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                startGame(); // Avvia il gioco
+                startGame(); // Carica il gioco
+            }
+        });
+        JButton loadGameButton = new JButton();
+        loadGameButton.setText("LOAD GAME");
+        /*JButton loadGameButton = new JButton() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                ImageIcon backgroundImageIcon =
+                        new ImageIcon("resources/button.png");
+                Image backgroundImage = backgroundImageIcon.getImage();
+                g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(),
+                        this);
+            }
+        };*/
+        loadGameButton.setBounds(buttonX, buttonY2, buttonWidth, buttonHeight);
+        loadGameButton.setFont(new Font("Arial", Font.BOLD, 16));
+        loadGameButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    loadGame(); // Avvia il gioco
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         startPanel.add(startButton); // Aggiungi il pulsante al pannello di avvio
+        startPanel.add(loadGameButton); // Aggiungi il pulsante al pannello di avvio
     }
 
     /**
@@ -178,10 +208,29 @@ public class AdventureGameGUI extends JFrame {
         mainPanel.add(backgroundPanel, BorderLayout.WEST);
     }
 
+    private void initLoadGameBackgroundPanel(){
+        ImageIcon backgroundImageIcon = new ImageIcon("resources/start.png");
+        backgroundImage = backgroundImageIcon.getImage().getScaledInstance(backgroundImageIcon.getIconWidth(), backgroundImageIcon.getIconHeight(), Image.SCALE_SMOOTH);
+        // Creazione del pannello per l'immagine sopra l'inputPanel e a sinistra del sidePanel
+        backgroundPanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                // Carica l'immagine di sfondo
+                try {
+                    g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        mainPanel.add(backgroundPanel, BorderLayout.CENTER);
+    }
+
     /**
      * Inizializza il pannello di output
      */
-    private void initOutputArea(){
+    private void initOutputArea(int option){
 
         // Crea la JTextArea
         Color background = new Color(0, 0, 0, 150); // Colore di sfondo con opacità ridotta (valori RGB: 0, 0, 0, opacità)
@@ -195,34 +244,52 @@ public class AdventureGameGUI extends JFrame {
                 g2.dispose();
             }
         };
-        printer= new Printer(textArea, 15);
-        performCommand(engine.execute());
+        if(option == 1){
+            printer= new Printer(textArea, 15);
+            performCommand(engine.execute());
+        }
         textArea.setOpaque(false);
         textArea.setForeground(Color.WHITE);
         textArea.setFont(new Font("Consolas", Font.BOLD, 18));
         textArea.setEditable(false); // Rendi la JTextArea non modificabile
         textArea.setOpaque(false); // Rendi lo sfondo trasparente
         textArea.setForeground(Color.WHITE); // Colore del testo
-        textArea.setMaximumSize(new Dimension(Integer.MAX_VALUE, getHeight()/2)); // Imposta l'altezza massima della JTextArea
+        if(option==1) { //option 1 = gioco nuovo, option 2 = schermata laod game
+            textArea.setPreferredSize(new Dimension(getWidth() - 250,
+                    getHeight() / 2)); // Imposta la dimensione della JTextArea
+            textArea.setMaximumSize(new Dimension(Integer.MAX_VALUE,
+                    getHeight() /
+                            2)); // Imposta l'altezza massima della JTextArea
+        } else
+            textArea.setPreferredSize(new Dimension(getWidth(), getHeight())); // Imposta la dimensione della JTextArea
+
+
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true); // Rendi il testo a capo quando raggiunge il bordo della JTextArea
 
         // Crea la JScrollPane per avvolgere la JTextArea
         scrollPane = new JScrollPane(textArea);
-        scrollPane.setPreferredSize(new Dimension(scrollPane.getPreferredSize().width, getHeight()/2));
+        if(option==1)
+            scrollPane.setPreferredSize(new Dimension(scrollPane.getPreferredSize().width, getHeight()/2));
+        else
+            scrollPane.setPreferredSize(new Dimension(scrollPane.getPreferredSize().width, getHeight()));
+
         scrollPane.setOpaque(false); // Rendi lo sfondo trasparente
         scrollPane.getViewport().setOpaque(false); // Rendi lo sfondo del viewport trasparente
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
         backgroundPanel.add(scrollPane, BorderLayout.NORTH);
-        backgroundPanel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-                scrollPane.setVisible(!scrollPane.isVisible());
-            }
-        });
+        if(option == 1){
+            backgroundPanel.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    super.mouseClicked(e);
+                    scrollPane.setVisible(!scrollPane.isVisible());
+                }
+            });
+        }
+
     }
 
     /**
@@ -284,9 +351,26 @@ public class AdventureGameGUI extends JFrame {
         mainPanel.remove(startPanel);
         initSidePanel();
         initBackgroundPanel();
-        initOutputArea();
+        initOutputArea(1);
         initInputArea();
         revalidate();
+    }
+
+    private void loadGame() throws SQLException {
+        mainPanel.remove(startPanel);
+        initLoadGameBackgroundPanel();
+        System.out.println("Caricamento partita...");
+        initOutputArea(2);
+        showSavedGames();
+        revalidate();
+    }
+
+    private void showSavedGames() throws SQLException {
+        textArea.setText("Partite salvate: ");
+        /*List<GameDescription> savedGames = engine.getSavedGames();
+        for(GameDescription game : savedGames){
+            textArea.append("\n" + game.getId());
+        }*/
     }
 
 

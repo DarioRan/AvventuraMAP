@@ -20,6 +20,8 @@ import java.util.List;
  */
 public abstract class GameDescription {
 
+    private int id;
+
     private final List<Room> rooms = new ArrayList<>();
 
     private final List<Command> commands = new ArrayList<>();
@@ -42,6 +44,14 @@ public abstract class GameDescription {
 
     public void setCurrentRoom(Room currentRoom) {
         this.currentRoom = currentRoom;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id){
+        this.id=id;
     }
 
     public List<AdvObject> getInventory() {
