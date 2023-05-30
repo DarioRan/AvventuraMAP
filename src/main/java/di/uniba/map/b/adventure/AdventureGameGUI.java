@@ -5,6 +5,8 @@ import di.uniba.map.b.adventure.type.CommandGUIOutput;
 import di.uniba.map.b.adventure.type.CommandGUIType;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -252,7 +254,7 @@ public class AdventureGameGUI extends JFrame {
     /**
      * Inizializza il pannello di output
      */
-    private void initOutputArea(int option){
+    private void initOutputArea(){
 
         // Crea la JTextArea
         Color background = new Color(0, 0, 0, 150); // Colore di sfondo con opacità ridotta (valori RGB: 0, 0, 0, opacità)
@@ -266,52 +268,74 @@ public class AdventureGameGUI extends JFrame {
                 g2.dispose();
             }
         };
-        if(option == 1){
-            printer= new Printer(textArea, 15);
-            performCommand(engine.execute());
-        }
-        textArea.setOpaque(false);
-        textArea.setForeground(Color.WHITE);
+        printer= new Printer(textArea, 15);
+        performCommand(engine.execute());
+
         textArea.setFont(new Font("Consolas", Font.BOLD, 18));
         textArea.setEditable(false); // Rendi la JTextArea non modificabile
         textArea.setOpaque(false); // Rendi lo sfondo trasparente
         textArea.setForeground(Color.WHITE); // Colore del testo
-        if(option==1) { //option 1 = gioco nuovo, option 2 = schermata laod game
-            textArea.setPreferredSize(new Dimension(getWidth() - 250,
-                    getHeight() / 2)); // Imposta la dimensione della JTextArea
-            textArea.setMaximumSize(new Dimension(Integer.MAX_VALUE,
-                    getHeight() /
-                            2)); // Imposta l'altezza massima della JTextArea
-        } else
-            textArea.setPreferredSize(new Dimension(getWidth(), getHeight())); // Imposta la dimensione della JTextArea
-
-
+        textArea.setMaximumSize(new Dimension(Integer.MAX_VALUE, getHeight()/2)); // Imposta l'altezza massima della JTextArea
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true); // Rendi il testo a capo quando raggiunge il bordo della JTextArea
 
         // Crea la JScrollPane per avvolgere la JTextArea
         scrollPane = new JScrollPane(textArea);
-        if(option==1)
-            scrollPane.setPreferredSize(new Dimension(scrollPane.getPreferredSize().width, getHeight()/2));
-        else
-            scrollPane.setPreferredSize(new Dimension(scrollPane.getPreferredSize().width, getHeight()));
-
+        scrollPane.setPreferredSize(new Dimension(scrollPane.getPreferredSize().width, getHeight()/2));
         scrollPane.setOpaque(false); // Rendi lo sfondo trasparente
         scrollPane.getViewport().setOpaque(false); // Rendi lo sfondo del viewport trasparente
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
         backgroundPanel.add(scrollPane, BorderLayout.NORTH);
-        if(option == 1){
-            backgroundPanel.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    super.mouseClicked(e);
-                    scrollPane.setVisible(!scrollPane.isVisible());
-                }
-            });
-        }
+        backgroundPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                scrollPane.setVisible(!scrollPane.isVisible());
+            }
+        });
+    }
 
+    private void initOutputLoadedGamesArea(){
+
+        Color background = new Color(0, 0, 0, 150); // Colore di sfondo con opacità ridotta (valori RGB: 0, 0, 0, opacità)
+        JPanel contentPanel = new JPanel(){
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setColor(background);
+                g2.fillRect(0, 0, getWidth(), getHeight()); // Riempie l'area con il colore di sfondo
+                super.paintComponent(g2);
+                g2.dispose();
+            }
+        };; // Pannello principale che conterrà i pannelli delle righe
+        contentPanel.setOpaque(false);
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS)); // Layout per allineare verticalmente gli elementi
+        this.setContentPane(contentPanel);
+
+
+        // Crea la JTextArea
+
+        scrollPane = new JScrollPane(){
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setColor(background);
+                g2.fillRect(0, 0, getWidth(), getHeight()); // Riempie l'area con il colore di sfondo
+                super.paintComponent(g2);
+                g2.dispose();
+            }
+        };;
+        scrollPane.setPreferredSize(new Dimension(getWidth(),getHeight()));
+        scrollPane.setOpaque(false); // Rendi lo sfondo trasparente
+        scrollPane.getViewport().setOpaque(false); // Rendi lo sfondo del viewport trasparente
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        backgroundPanel.add(scrollPane, BorderLayout.CENTER);
+
+        contentPanel.add(scrollPane, BorderLayout.CENTER);
     }
 
     /**
@@ -373,7 +397,7 @@ public class AdventureGameGUI extends JFrame {
         mainPanel.remove(startPanel);
         initSidePanel();
         initBackgroundPanel();
-        initOutputArea(1);
+        initOutputArea();
         initInputArea();
         revalidate();
     }
@@ -382,20 +406,46 @@ public class AdventureGameGUI extends JFrame {
         mainPanel.remove(startPanel);
         initLoadGameBackgroundPanel();
         System.out.println("Caricamento partita...");
-        initOutputArea(2);
+        initOutputLoadedGamesArea();
         showSavedGames();
         revalidate();
     }
 
     private void showSavedGames() throws SQLException {
-        textArea.setText("Partite salvate: ");
-        List<GameStatus> savedGames = engine.getSavedGames();
-        for(GameStatus game : savedGames){
-            textArea.append("\n" + game.getUsername()+ " - " + game.getLastRoomId()+ " - " + game.getTime().toString());
-        }
 
-        engine.loadGame(savedGames.get(0).getUsername());
+
+        List<GameStatus> savedGames = engine.getSavedGames();
+        scrollPane.setViewportView(new SavedGame(savedGames));
+
+        // Aggiorna la visualizzazione della scroll pane
+        scrollPane.revalidate();
+        scrollPane.repaint();
     }
+
+    public static class SavedGame extends JPanel {
+        /**
+         * Create the panel.
+         */
+        public SavedGame(List<GameStatus> savedGames) {
+            setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+            for(GameStatus game : savedGames){
+                JPanel panel = new JPanel();
+                panel.setBorder(new LineBorder(Color.WHITE));
+                String rowString = game.getUsername() + " - " + game.getLastRoomId() + " - " + game.getTime().toString();
+                JLabel rowLabel = new JLabel(rowString);
+                rowLabel.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        System.out.println("ciao");
+                    }
+                });
+                panel.add(rowLabel);
+                add(panel);
+            }
+        }
+    }
+
 
 
     public static class Printer {
@@ -439,3 +489,4 @@ public class AdventureGameGUI extends JFrame {
 
     }
 }
+

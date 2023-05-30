@@ -148,10 +148,6 @@ public class Engine {
                 commandGUIOutput = new CommandGUIOutput(CommandGUIType.SHOW_TEXT, response, null);
             }
             return commandGUIOutput;
-            /*gui.appendTextAreaText(response);
-            System.out.println("Sei in " + game.getCurrentRoom().getName());
-            System.out.println(game.getCurrentRoom().getDescription());
-            System.out.println();*/
         }
         return commandGUIOutput = new CommandGUIOutput(CommandGUIType.SHOW_TEXT, response, null);
     }
