@@ -265,14 +265,19 @@ public class EscapeFromLabGame extends GameDescription {
 
         AdvObjectContainer toolbox = new AdvObjectContainer(1, "Cassetta per gli attrezzi", "Una cassetta per gli attrezzi");
         toolbox.setAlias(new String[]{"cassetta", "attrezzi", "cassetta per gli attrezzi"});
-        room6.getObjects().add(toolbox);
+
 
         AdvObject hammer = new AdvObject(2, "Martello", "Un martello");
         hammer.setAlias(new String[]{"martello"});
 
         AdvObject torch = new AdvObject(3, "Torcia", "Una torcia");
         torch.setAlias(new String[]{"torcia"});
-        room10.getObjects().add(torch);
+
+
+        AdvObject key = new AdvObject(4, "Chiave", "Una chiave");
+        key.setAlias(new String[]{"chiave", "KeyCard"});
+
+
 
         toolbox.setOpenable(true);
         toolbox.setPickupable(false);
@@ -281,10 +286,15 @@ public class EscapeFromLabGame extends GameDescription {
 
 
 
-
+        getListObjects().add(key);
         getListObjects().add(toolbox);
         getListObjects().add(hammer);
         getListObjects().add(torch);
+
+
+        room1.getObjects().add(key);
+        room10.getObjects().add(torch);
+        room6.getObjects().add(toolbox);
 
     }
     @Override

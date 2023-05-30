@@ -68,7 +68,7 @@ public abstract class GameDescription {
 
 
     public List<AdvObject> getListObjects() {
-        return inventory;
+        return objectsInGame;
     }
     public List<AdvObject> filterObjects(Predicate<AdvObject> predicate)
     {

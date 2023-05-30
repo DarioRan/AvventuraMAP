@@ -3,6 +3,7 @@ package di.uniba.map.b.adventure.db;
 import di.uniba.map.b.adventure.type.Inventory;
 import di.uniba.map.b.adventure.type.Room;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,10 +14,16 @@ public class GameStatus {
     //an array list of the ids of the object in the inventory
     List<Integer> inventory;
 
-    public GameStatus(String username, Integer lastRoomId, List<Integer> inventoryIds){
+    LocalDateTime time;
+
+
+
+    public GameStatus(String username, Integer lastRoomId, List<Integer> inventoryIds, LocalDateTime time){
         this.username = username;
         this.lastRoom_id = lastRoomId;
         this.inventory = inventoryIds;
+        this.time = time;
+
     }
 
     public String getUsername(){
@@ -51,5 +58,14 @@ public class GameStatus {
     public void setInventoryIds(ArrayList<Integer> inventory){
         this.inventory = inventory;
     }
+
+    public LocalDateTime getTime(){
+        return time;
+    }
+
+    public void setTime(LocalDateTime time){
+        this.time = time;
+    }
+
 
 }

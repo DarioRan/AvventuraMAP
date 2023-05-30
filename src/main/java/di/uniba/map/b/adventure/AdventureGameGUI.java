@@ -1,5 +1,6 @@
 package di.uniba.map.b.adventure;
 
+import di.uniba.map.b.adventure.db.GameStatus;
 import di.uniba.map.b.adventure.type.CommandGUIOutput;
 import di.uniba.map.b.adventure.type.CommandGUIType;
 
@@ -87,7 +88,7 @@ public class AdventureGameGUI extends JFrame {
         if (option == JOptionPane.OK_OPTION) {
             String username = usernameField.getText();
             System.out.println("Username: " + username);
-            // Fai qualcosa con lo username inserito...
+            engine.saveGame(username);
 
 
 
@@ -390,10 +391,12 @@ public class AdventureGameGUI extends JFrame {
 
     private void showSavedGames() throws SQLException {
         textArea.setText("Partite salvate: ");
-        /*List<GameDescription> savedGames = engine.getSavedGames();
-        for(GameDescription game : savedGames){
-            textArea.append("\n" + game.getId());
-        }*/
+        List<GameStatus> savedGames = engine.getSavedGames();
+        for(GameStatus game : savedGames){
+            textArea.append("\n" + game.getUsername()+ " - " + game.getLastRoomId()+ " - " + game.getTime().toString());
+        }
+
+        engine.loadGame(savedGames.get(0).getUsername());
     }
 
 

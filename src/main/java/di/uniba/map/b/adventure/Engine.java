@@ -20,6 +20,7 @@ import di.uniba.map.b.adventure.type.Room;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -79,6 +80,10 @@ public class Engine {
 
         game.setCurrentRoom(lastRoom.get(0));
         game.setInventory(inventory);
+
+        System.out.println("Game loaded");
+        System.out.println("Current room: "+game.getCurrentRoom().getName());
+        System.out.println("Inventory: "+game.getInventory());
     }
 
     public void saveGame(String username)
@@ -87,8 +92,11 @@ public class Engine {
         for (AdvObject o: game.getInventory())
         {
             inventoryIds.add(o.getId());
+            System.out.println("ID: "+o.getId());
+            System.out.println("Name: "+o.getName());
         }
-        GameStatus gameStatus = new GameStatus(username, game.getCurrentRoom().getId(), inventoryIds);
+        GameStatus gameStatus = new GameStatus(username, game.getCurrentRoom().getId(), inventoryIds,
+                LocalDateTime.now());
         try {
             dbManager.insertNewGameStatus(gameStatus);
         } catch (SQLException e) {
@@ -148,33 +156,9 @@ public class Engine {
         return commandGUIOutput = new CommandGUIOutput(CommandGUIType.SHOW_TEXT, response, null);
     }
 
-    public List<GameDescription> getSavedGames() throws SQLException {
-        List<GameDescription> savedGames = null;
-        /*String url = "jdbc:h2:~/path/to/your/database";
-        String username = "your-username";
-        String password = "your-password";
+    public List<GameStatus> getSavedGames() throws SQLException {
 
-// Stabilisci la connessione al database
-        Connection
-                connection = DriverManager.getConnection(url, username, password);
-        Statement statement = connection.createStatement();
-
-// Esegui la query per selezionare i dati dalla tabella
-        String query = "SELECT * FROM game_table";
-        ResultSet resultSet = statement.executeQuery(query);
-        List<GameDescription> savedGames = new ArrayList<>();
-
-        while (resultSet.next()) {
-            // Leggi i valori delle colonne dal risultato della query
-            int gameId = resultSet.getInt("game_id");
-
-            // ...
-
-            // Crea un oggetto GameDescriptor e aggiungilo alla lista
-            GameDescription game = new EscapeFromLabGame();
-            savedGames.add(game);
-        }*/
-        return savedGames;
+        return dbManager.getAllSavedGame();
     }
     /**
      * @param args the command line arguments
