@@ -278,6 +278,14 @@ public class EscapeFromLabGame extends GameDescription {
         toolbox.setPickupable(false);
         toolbox.add(hammer);
         torch.setSwitchable(true);
+
+
+
+
+        getListObjects().add(toolbox);
+        getListObjects().add(hammer);
+        getListObjects().add(torch);
+
     }
     @Override
     public void init() throws Exception {

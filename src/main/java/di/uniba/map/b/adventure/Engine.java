@@ -5,20 +5,21 @@
  */
 package di.uniba.map.b.adventure;
 
+import di.uniba.map.b.adventure.db.DBManager;
+import di.uniba.map.b.adventure.db.GameStatus;
 import di.uniba.map.b.adventure.games.EscapeFromLabGame;
 import di.uniba.map.b.adventure.parser.Parser;
 import di.uniba.map.b.adventure.parser.ParserOutput;
+import di.uniba.map.b.adventure.type.AdvObject;
 import di.uniba.map.b.adventure.type.Command;
 import di.uniba.map.b.adventure.type.CommandGUIOutput;
 import di.uniba.map.b.adventure.type.CommandGUIType;
 import di.uniba.map.b.adventure.type.CommandType;
+import di.uniba.map.b.adventure.type.Room;
+
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -38,6 +39,8 @@ public class Engine {
     private Parser parser;
     private AdventureGameGUI gui;
 
+    private DBManager dbManager;
+
     public Engine(GameDescription game) {
         this.game = game;
         try {
@@ -51,6 +54,45 @@ public class Engine {
             parser = new Parser(stopwords);
         } catch (IOException ex) {
             System.err.println(ex);
+        }
+
+        try {
+            dbManager=new DBManager();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public void loadGame(String username)
+    {
+        GameStatus gameStatus = null;
+        try {
+            gameStatus = dbManager.getGameStatus(username);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        List<Integer> idsInventory = gameStatus.getInventoryIds();
+        Integer lastRoom_id = gameStatus.getLastRoomId();
+        List<AdvObject> inventory = game.filterObjects((AdvObject o) -> idsInventory.contains(o.getId()));
+        List<Room> lastRoom = game.filterRoom((Room room)->room.getId() == lastRoom_id);
+
+        game.setCurrentRoom(lastRoom.get(0));
+        game.setInventory(inventory);
+    }
+
+    public void saveGame(String username)
+    {
+        List<Integer> inventoryIds = new ArrayList<>();
+        for (AdvObject o: game.getInventory())
+        {
+            inventoryIds.add(o.getId());
+        }
+        GameStatus gameStatus = new GameStatus(username, game.getCurrentRoom().getId(), inventoryIds);
+        try {
+            dbManager.insertNewGameStatus(gameStatus);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
