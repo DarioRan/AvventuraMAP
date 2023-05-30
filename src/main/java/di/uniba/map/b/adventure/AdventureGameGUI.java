@@ -56,12 +56,13 @@ public class AdventureGameGUI extends JFrame {
             public void windowClosing(WindowEvent e) {
                 int scelta = JOptionPane.showConfirmDialog(frame, "Vuoi salvare la partita in corso?", "Conferma", JOptionPane.YES_NO_OPTION);
                 if (scelta == JOptionPane.YES_OPTION) {
-                    System.exit(0);
+                    openUsernameInputDialog();
                 } else {
                     System.exit(0);
                 }
             }
         });
+
         setSize(screenWidth, screenHeight);
         setLocationRelativeTo(null);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -70,6 +71,28 @@ public class AdventureGameGUI extends JFrame {
         mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
         add(mainPanel);
+    }
+
+    private void openUsernameInputDialog() {
+        JOptionPane input = new JOptionPane();
+        JTextField usernameField = new JTextField();
+        Object[] message = {
+                "Username:", usernameField
+        };
+
+        int option = JOptionPane.showOptionDialog(input, message, "Inserisci Username",
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+                new Object[]{"OK", "Cancel"}, "OK");
+
+        if (option == JOptionPane.OK_OPTION) {
+            String username = usernameField.getText();
+            System.out.println("Username: " + username);
+            // Fai qualcosa con lo username inserito...
+
+
+
+        } else {
+        }
     }
 
     /**
