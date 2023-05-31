@@ -105,6 +105,7 @@ public class EscapeFromLabGame extends GameDescription {
         Room room21 = new Room(21,desc.getTITLE_21() , desc.getDESC_21());
         room21.setAccessible(false);
         Room room221 = new Room(221,desc.getTITLE_22() , desc.getDESC_22());
+        room221.setAccessible(false);
         Room room222 = new Room(222,desc.getTITLE_22() , desc.getDESC_22());
         Room room23 = new Room(23,desc.getTITLE_23() , desc.getDESC_23());
         Room room24 = new Room(24,desc.getTITLE_24() , desc.getDESC_24());
@@ -306,8 +307,8 @@ public class EscapeFromLabGame extends GameDescription {
         AdvObject palmares = new AdvObject(10, "Palmares", "Palmares elettronico, potrebbe essere utile per qualcosa");
         palmares.setAlias(new String[]{"palmares", "palmares elettronico"});
 
-        AdvObject telecomando = new AdvObject(12, "Telecomando", "Telecomando elettronico, potrebbe essere utile per aprire il garage");
-        telecomando.setAlias(new String[]{"telecomando", "telecomando elettronico"});
+        AdvObject commander = new AdvObject(12, "Telecomando", "Telecomando elettronico, per usarlo dovresti avere la password dell'amministratore");
+        commander.setAlias(new String[]{"telecomando", "telecomando elettronico"});
 
 
         toolbox.setOpenable(true);
@@ -317,6 +318,9 @@ public class EscapeFromLabGame extends GameDescription {
         palmares.setUsable(true);
         palmares.setLocakble(true);
         palmares.setPassword("12311loco11721");
+        commander.setUsable(true);
+        commander.setLocakble(true);
+        commander.setPassword("3215");
         generator.setOpenable(false);
         generator.setSwitchable(true);
         yellowKeyCard.setPickupable(true);
@@ -331,6 +335,7 @@ public class EscapeFromLabGame extends GameDescription {
         getListObjects().add(memo);
         getListObjects().add(bracelet);
         getListObjects().add(palmares);
+        getListObjects().add(commander);
 
         room4.getObjects().add(metalKey);
         room10.getObjects().add(torch);
@@ -345,6 +350,11 @@ public class EscapeFromLabGame extends GameDescription {
         room13.setKey(metalKey);
         room15.getObjects().add(palmares);
         room21.setKey(redKeyCard);
+        room21.getObjects().add(commander);
+
+        System.out.println("ID: " + getRooms().get(20).getName());
+        System.out.println("ID: " + getRooms().get(21).getName());
+        System.out.println("ID: " + getRooms().get(22).getName());
 
     }
     @Override
@@ -575,6 +585,10 @@ public class EscapeFromLabGame extends GameDescription {
                 if(p.getInvObject().getId()==10){ //usa palmares
                     response = "Hai usato il palmares: la password è 3215" ;
                 }
+                if(p.getInvObject().getId()==12){ //usa palmares
+                    response = "Hai usato il telecomando: il garage ora è aperto" ;
+                    getRooms().get(21).setAccessible(true);
+                }
             } else {
                 response="Non puoi usare questo oggetto.";
             }
@@ -588,9 +602,9 @@ public class EscapeFromLabGame extends GameDescription {
         String response = "";
         if (p.getInvObject() != null) {
             if (p.getInvObject().isUsable()) {
-                if(p.getInvObject().getId()==10 && p.getInvObject().getPassword().equals(password)){ //si sblocca il palmares
+                if((p.getInvObject().getId()==10 | p.getInvObject().getId()==12)  && p.getInvObject().getPassword().equals(password)){ //si sblocca il palmares
                     p.getInvObject().setLocakble(false);
-                    response = "Hai sbloccato la: " + p.getInvObject().getDescription();
+                    response = "Hai sbloccato: " + p.getInvObject().getDescription();
                 }
             } else {
                 response="Non puoi usare questo oggetto.";
@@ -657,7 +671,6 @@ public class EscapeFromLabGame extends GameDescription {
                 }
             }
             else{
-                System.out.println("entrato");
                 if(getInventory().contains(key) && Room.isPowered()){
                     return true;
                 }
@@ -713,7 +726,7 @@ public class EscapeFromLabGame extends GameDescription {
                 // pushObject(p);
                 break;
             case LOCK:
-                response = unlockObject(p, "12311loco11721");
+                response = unlockObject(p, "3215");
                 break;
         }
 
