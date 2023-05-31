@@ -89,6 +89,7 @@ public class EscapeFromLabGame extends GameDescription {
         Room room7 = new Room(7,desc.getTITLE_7() , desc.getDESC_7());
         Room room8 = new Room(8,desc.getTITLE_8() , desc.getDESC_8());
         Room room9 = new Room(9,desc.getTITLE_9() , desc.getDESC_9());
+        room9.setAccessible(false);
         Room room10 = new Room(10,desc.getTITLE_10() , desc.getDESC_10());
         Room room11 = new Room(11,desc.getTITLE_11() , desc.getDESC_11());
         Room room12 = new Room(12,desc.getTITLE_12() , desc.getDESC_12());
@@ -102,6 +103,7 @@ public class EscapeFromLabGame extends GameDescription {
         Room room19 = new Room(19,desc.getTITLE_19() , desc.getDESC_19());
         Room room20 = new Room(20,desc.getTITLE_20() , desc.getDESC_20());
         Room room21 = new Room(21,desc.getTITLE_21() , desc.getDESC_21());
+        room21.setAccessible(false);
         Room room221 = new Room(221,desc.getTITLE_22() , desc.getDESC_22());
         Room room222 = new Room(222,desc.getTITLE_22() , desc.getDESC_22());
         Room room23 = new Room(23,desc.getTITLE_23() , desc.getDESC_23());
@@ -113,6 +115,7 @@ public class EscapeFromLabGame extends GameDescription {
         Room room29 = new Room(29,desc.getTITLE_29() , desc.getDESC_29());
         Room room30 = new Room(30,desc.getTITLE_30() , desc.getDESC_30());
         Room room31 = new Room(31,desc.getTITLE_31() , desc.getDESC_31());
+        room31.setAccessible(false);
         Room room32 = new Room(32,desc.getTITLE_32(), desc.getDESC_32());
         Room room33 = new Room(33,desc.getTITLE_33() , desc.getDESC_33());
         Room room34 = new Room(34,desc.getTITLE_34(), desc.getDESC_34());
@@ -273,7 +276,7 @@ public class EscapeFromLabGame extends GameDescription {
         toolbox.setAlias(new String[]{"cassetta", "attrezzi", "cassetta per gli attrezzi"});
 
         AdvObjectContainer generator = new AdvObjectContainer(11, "Generatore", "Una generatore di energia");
-        toolbox.setAlias(new String[]{"generatore", "generatore di energia"});
+        generator.setAlias(new String[]{"generatore", "generatore di energia"});
 
 
         AdvObject hammer = new AdvObject(2, "Martello", "Un martello");
@@ -286,10 +289,10 @@ public class EscapeFromLabGame extends GameDescription {
         metalKey.setAlias(new String[]{"chiave", "chiave metallica", "chiave di metallo", "chiave di ferro", "chiave ferrea"});
 
         AdvObject redKeyCard = new AdvObject(5, "RedKeycard", "Una KeyCard rossa");
-        redKeyCard.setAlias(new String[]{"red keycard", "chiave rossa", "chiave di colore rosso", "keycard rossa", "keycard di colore rosso"});
+        redKeyCard.setAlias(new String[]{"redkeycard", "rk"});
 
         AdvObject yellowKeyCard = new AdvObject(6, "YellowKeycard", "Una KeyCard gialla");
-        yellowKeyCard.setAlias(new String[]{"yellow keycard", "chiave gialla", "chiave di colore giallo", "keycard gialla", "keycard di colore giallo"});
+        yellowKeyCard.setAlias(new String[]{"yellow keycard", "yk"});
 
         AdvObject paper = new AdvObject(7, "Pezzo di carta", "123..-.-.,,-.721");
         paper.setAlias(new String[]{"carta", "pezzo di carta", "foglio", "foglio di carta", "pezzo di foglio", "pezzo di foglio di carta"});
@@ -303,6 +306,8 @@ public class EscapeFromLabGame extends GameDescription {
         AdvObject palmares = new AdvObject(10, "Palmares", "Palmares elettronico, potrebbe essere utile per qualcosa");
         palmares.setAlias(new String[]{"palmares", "palmares elettronico"});
 
+        AdvObject telecomando = new AdvObject(12, "Telecomando", "Telecomando elettronico, potrebbe essere utile per aprire il garage");
+        telecomando.setAlias(new String[]{"telecomando", "telecomando elettronico"});
 
 
         toolbox.setOpenable(true);
@@ -314,6 +319,7 @@ public class EscapeFromLabGame extends GameDescription {
         palmares.setPassword("12311loco11721");
         generator.setOpenable(false);
         generator.setSwitchable(true);
+        yellowKeyCard.setPickupable(true);
 
         getListObjects().add(metalKey);
         getListObjects().add(toolbox);
@@ -332,11 +338,13 @@ public class EscapeFromLabGame extends GameDescription {
         room9.getObjects().add(generator);
         room9.setKey(hammer);
         room18.getObjects().add(yellowKeyCard);
+        room31.setKey(yellowKeyCard);
         room31.getObjects().add(redKeyCard);
         room14.getObjects().add(paper);
         room13.getObjects().add(memo);
         room13.setKey(metalKey);
         room15.getObjects().add(palmares);
+        room21.setKey(redKeyCard);
 
     }
     @Override
@@ -643,8 +651,16 @@ public class EscapeFromLabGame extends GameDescription {
         }
         else {
             key = room.getKey();
-            if (getInventory().contains(key)){
-                return true;
+            if(getCurrentRoom().getId()!=20) {
+                if (getInventory().contains(key)) {
+                    return true;
+                }
+            }
+            else{
+                System.out.println("entrato");
+                if(getInventory().contains(key) && Room.isPowered()){
+                    return true;
+                }
             }
             return false;
         }
@@ -717,7 +733,7 @@ public class EscapeFromLabGame extends GameDescription {
             {
                 if(isKeyNeeded.booleanValue())
                 {
-                    response = "Devi avere la chiave per aprire la porta";
+                    response = "Devi avere la chiave per aprire la porta, o devi azionare un meccanismo";
                 }
                 else
                 {
