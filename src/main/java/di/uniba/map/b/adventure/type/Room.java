@@ -16,6 +16,7 @@ import java.util.List;
  */
 public class Room {
 
+    private static boolean powered = false;
     private final int id;
 
     private String name;
@@ -134,6 +135,14 @@ public class Room {
     }
     public void addObject(AdvObjectContainer object){
         this.objects.add(object);
+    }
+
+    public static boolean isPowered() {
+        return powered;
+    }
+
+    public static void setPowered(boolean powered) {
+        Room.powered = powered;
     }
 
     @Override

@@ -93,6 +93,7 @@ public class EscapeFromLabGame extends GameDescription {
         Room room11 = new Room(11,desc.getTITLE_11() , desc.getDESC_11());
         Room room12 = new Room(12,desc.getTITLE_12() , desc.getDESC_12());
         Room room13 = new Room(13,desc.getTITLE_13() , desc.getDESC_13());
+        room13.setAccessible(false);
         Room room14 = new Room(14,desc.getTITLE_14() , desc.getDESC_14());
         Room room15 = new Room(15,desc.getTITLE_15() , desc.getDESC_15());
         Room room16 = new Room(16,desc.getTITLE_16() , desc.getDESC_16());
@@ -271,6 +272,9 @@ public class EscapeFromLabGame extends GameDescription {
         AdvObjectContainer toolbox = new AdvObjectContainer(1, "Cassetta per gli attrezzi", "Una cassetta per gli attrezzi");
         toolbox.setAlias(new String[]{"cassetta", "attrezzi", "cassetta per gli attrezzi"});
 
+        AdvObjectContainer generator = new AdvObjectContainer(11, "Generatore", "Una generatore di energia");
+        toolbox.setAlias(new String[]{"generatore", "generatore di energia"});
+
 
         AdvObject hammer = new AdvObject(2, "Martello", "Un martello");
         hammer.setAlias(new String[]{"martello", "martello da muratore", "martello da carpentiere", "martello da falegname", "martello da fabbro"});
@@ -308,6 +312,8 @@ public class EscapeFromLabGame extends GameDescription {
         palmares.setUsable(true);
         palmares.setLocakble(true);
         palmares.setPassword("12311loco11721");
+        generator.setOpenable(false);
+        generator.setSwitchable(true);
 
         getListObjects().add(metalKey);
         getListObjects().add(toolbox);
@@ -320,14 +326,16 @@ public class EscapeFromLabGame extends GameDescription {
         getListObjects().add(bracelet);
         getListObjects().add(palmares);
 
-        room1.getObjects().add(metalKey);
+        room4.getObjects().add(metalKey);
         room10.getObjects().add(torch);
         room6.getObjects().add(toolbox);
+        room9.getObjects().add(generator);
+        room9.setKey(hammer);
         room18.getObjects().add(yellowKeyCard);
         room31.getObjects().add(redKeyCard);
         room14.getObjects().add(paper);
         room13.getObjects().add(memo);
-        room16.getObjects().add(bracelet);
+        room13.setKey(metalKey);
         room15.getObjects().add(palmares);
 
     }
@@ -476,6 +484,9 @@ public class EscapeFromLabGame extends GameDescription {
          * Potrebbe non esssere la soluzione ottimale.
          */
         String response = "";
+        System.out.println("\n p" + p);
+        System.out.println("\n obj" + p.getObject());
+        System.out.println("\n inv obj" + p.getInvObject());
         if (p.getObject() == null && p.getInvObject() == null) {
             response="Non c'è niente da aprire qui.";
         } else {
@@ -569,7 +580,6 @@ public class EscapeFromLabGame extends GameDescription {
         String response = "";
         if (p.getInvObject() != null) {
             if (p.getInvObject().isUsable()) {
-                System.out.println(("fsfsf: " + p.getInvObject().getPassword().equals(password)));
                 if(p.getInvObject().getId()==10 && p.getInvObject().getPassword().equals(password)){ //si sblocca il palmares
                     p.getInvObject().setLocakble(false);
                     response = "Hai sbloccato la: " + p.getInvObject().getDescription();
@@ -585,17 +595,26 @@ public class EscapeFromLabGame extends GameDescription {
 
     public String turnOnObject(ParserOutput p){
         String response = "";
-        if (p.getInvObject() != null) {
+        if (p.getInvObject() != null && getCurrentRoom().getId()!=9) {
             if (p.getInvObject().isSwitchable()) {
                 response = "Hai acceso: " + p.getInvObject().getDescription();
                 if(getCurrentRoom().getId()==4 && p.getInvObject().getId()==3){ //si accende la torcia
                     getCurrentRoom().setBackgroundEnlightedImage(); //si cambia l'immagine di sfondo
+                    getCurrentRoom().setDark(false); //la stanza non è più buia
                 }
             } else {
                 response="Non puoi accendere questo oggetto.";
             }
         } else {
-            response="Non hai niente da usare.";
+                if(getCurrentRoom().getId()==9)
+                {
+                    Room.setPowered(true);
+                    response="Hai acceso il generatore.";
+                }
+                else
+                {
+                   response="Non hai niente da usare.";
+                }
         }
         return response;
     }
@@ -630,6 +649,7 @@ public class EscapeFromLabGame extends GameDescription {
             return false;
         }
     }
+
     @Override
     public String nextMove(ParserOutput p) {
         //move
