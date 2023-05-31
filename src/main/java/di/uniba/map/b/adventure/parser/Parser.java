@@ -41,12 +41,24 @@ public class Parser {
         return -1;
     }
 
+    private String checkForAuxText(List<String> tokens)
+    {
+        for (String s: tokens)
+        {
+            if (s.charAt(0) == '"' && s.charAt(s.length()-1) == '"'){
+                return s.substring(1, s.length()-1);
+            }
+        }
+        return null;
+    }
+
     /* ATTENZIONE: il parser è implementato in modo abbastanza independete dalla lingua, ma riconosce solo 
     * frasi semplici del tipo <azione> <oggetto> <oggetto>. Eventuali articoli o preposizioni vengono semplicemente
     * rimossi.
      */
     public ParserOutput parse(String command, List<Command> commands, List<AdvObject> objects, List<AdvObject> inventory) {
         List<String> tokens = Utils.parseString(command, stopwords);
+        String aux_text;
         if (!tokens.isEmpty()) {
             int ic = checkForCommand(tokens.get(0), commands);
             if (ic > -1) {
@@ -62,8 +74,13 @@ public class Parser {
                             ioinv = checkForObject(tokens.get(2), inventory);
                         }
                     }
+                    aux_text = checkForAuxText(tokens);
                     if (io > -1 && ioinv > -1) {
                         return new ParserOutput(commands.get(ic), objects.get(io), inventory.get(ioinv));
+                    } else if (io > -1 && aux_text != null) {
+                        return new ParserOutput(commands.get(ic), objects.get(io), null, aux_text);
+                    } else if (ioinv > -1 && aux_text != null) {
+                        return new ParserOutput(commands.get(ic), null, inventory.get(ioinv), aux_text);
                     } else if (io > -1) {
                         return new ParserOutput(commands.get(ic), objects.get(io), null);
                     } else if (ioinv > -1) {

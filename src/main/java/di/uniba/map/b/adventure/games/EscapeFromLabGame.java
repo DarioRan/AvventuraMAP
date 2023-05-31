@@ -67,10 +67,9 @@ public class EscapeFromLabGame extends GameDescription {
         open.setAlias(new String[]{});
         getCommands().add(open);
         Command push = new Command(CommandType.PUSH, "premi");
-        push.setAlias(new String[]{"spingi", "attiva"});
+        push.setAlias(new String[]{"spingi", "attiva","blocca"});
         getCommands().add(push);
-        Command unlock = new Command(CommandType.LOCK, "sblocca");
-        push.setAlias(new String[]{"blocca"});
+        Command unlock = new Command(CommandType.UNLOCK, "sblocca");
         getCommands().add(unlock);
 
 
@@ -598,11 +597,11 @@ public class EscapeFromLabGame extends GameDescription {
         return response;
     }
 
-    public String unlockObject(ParserOutput p, String password){
+    public String unlockObject(ParserOutput p){
         String response = "";
         if (p.getInvObject() != null) {
             if (p.getInvObject().isUsable()) {
-                if((p.getInvObject().getId()==10 | p.getInvObject().getId()==12)  && p.getInvObject().getPassword().equals(password)){ //si sblocca il palmares
+                if((p.getInvObject().getId()==10 | p.getInvObject().getId()==12)  && p.getInvObject().getPassword().equals(p.getAuxText())){ //si sblocca il palmares
                     p.getInvObject().setLocakble(false);
                     response = "Hai sbloccato: " + p.getInvObject().getDescription();
                 }
@@ -725,8 +724,8 @@ public class EscapeFromLabGame extends GameDescription {
             case PUSH:
                 // pushObject(p);
                 break;
-            case LOCK:
-                response = unlockObject(p, "3215");
+            case UNLOCK:
+                response = unlockObject(p);
                 break;
         }
 
