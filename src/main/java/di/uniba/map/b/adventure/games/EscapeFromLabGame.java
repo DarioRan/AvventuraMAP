@@ -278,6 +278,13 @@ public class EscapeFromLabGame extends GameDescription {
         AdvObjectContainer generator = new AdvObjectContainer(11, "Generatore", "Una generatore di energia");
         generator.setAlias(new String[]{"generatore", "generatore di energia"});
 
+        AdvObjectContainer drawer = new AdvObjectContainer(13, "Cassetto", "Un cassetto, forse contiene qualcosa");
+        drawer.setAlias(new String[]{"cassetto", "cassetta", "drawer"});
+
+        AdvObjectContainer wardrobe = new AdvObjectContainer(15, "Armadio", "Un armadio di acciaio.");
+        wardrobe.setAlias(new String[]{"armadio", "wardrobe", "armadio di acciaio"});
+
+
 
         AdvObject hammer = new AdvObject(2, "Martello", "Un martello");
         hammer.setAlias(new String[]{"martello", "martello da muratore", "martello da carpentiere", "martello da falegname", "martello da fabbro"});
@@ -289,16 +296,16 @@ public class EscapeFromLabGame extends GameDescription {
         metalKey.setAlias(new String[]{"chiave", "chiave metallica", "chiave di metallo", "chiave di ferro", "chiave ferrea"});
 
         AdvObject redKeyCard = new AdvObject(5, "RedKeycard", "Una KeyCard rossa");
-        redKeyCard.setAlias(new String[]{"redkeycard", "rk"});
+        redKeyCard.setAlias(new String[]{"redkeycard", "rk", "red keycard"  });
 
         AdvObject yellowKeyCard = new AdvObject(6, "YellowKeycard", "Una KeyCard gialla");
-        yellowKeyCard.setAlias(new String[]{"yellow keycard", "yk"});
+        yellowKeyCard.setAlias(new String[]{"yellowkeycard", "yk", "yellow keycard"});
 
         AdvObject paper = new AdvObject(7, "Pezzo di carta", "123..-.-.,,-.721");
         paper.setAlias(new String[]{"carta", "pezzo di carta", "foglio", "foglio di carta", "pezzo di foglio", "pezzo di foglio di carta"});
 
         AdvObject memo = new AdvObject(8, "Post It", "-.-.--,,loco,,..--.-.");
-        memo.setAlias(new String[]{"post it", "memo"});
+        memo.setAlias(new String[]{"postit", "memo"});
 
         AdvObject bracelet = new AdvObject(9, "Bracciale", "-.-11--,..,.,,..11.-.");
         bracelet.setAlias(new String[]{"bracciale", "braccialetto", "bracciale di metallo", "braccialetto di metallo", "bracciale metallico", "braccialetto metallico"});
@@ -309,10 +316,26 @@ public class EscapeFromLabGame extends GameDescription {
         AdvObject commander = new AdvObject(12, "Telecomando", "Telecomando elettronico, per usarlo dovresti avere la password dell'amministratore");
         commander.setAlias(new String[]{"telecomando", "telecomando elettronico"});
 
+        AdvObject rock = new AdvObject(14, "Roccia", "Una roccia solida");
+        rock.setAlias(new String[]{"roccia", "masso", "pietra", "sasso"});
+
+        AdvObject pengold = new AdvObject(16, "Penna d'oro", "Una penna di color oro");
+        pengold.setAlias(new String[]{"penna", "penna d'oro", "penna oro", "penna di oro", "penna dorata", "penna color oro"});
+
+        AdvObject tools = new AdvObject(17, "Strumentazione", "Strumentazione tecnica");
+        tools.setAlias(new String[]{"strumentazione", "strumentazione tecnica", "strumenti", "strumenti tecnici"});
+
+
+
 
         toolbox.setOpenable(true);
         toolbox.setPickupable(false);
         toolbox.add(hammer);
+        drawer.setOpenable(true);
+        drawer.setPickupable(false);
+        drawer.add(paper);
+        wardrobe.setOpenable(true);
+        wardrobe.setPickupable(false);
         torch.setSwitchable(true);
         palmares.setUsable(true);
         palmares.setLocakble(true);
@@ -335,25 +358,33 @@ public class EscapeFromLabGame extends GameDescription {
         getListObjects().add(bracelet);
         getListObjects().add(palmares);
         getListObjects().add(commander);
+        getListObjects().add(generator);
+        getListObjects().add(drawer);
+        getListObjects().add(rock);
+        getListObjects().add(wardrobe);
+        getListObjects().add(pengold);
+        getListObjects().add(tools);
 
+        room1.getObjects().add(rock);
         room4.getObjects().add(metalKey);
+        room3.getObjects().add(wardrobe);
         room10.getObjects().add(torch);
         room6.getObjects().add(toolbox);
         room9.getObjects().add(generator);
         room9.setKey(hammer);
         room18.getObjects().add(yellowKeyCard);
+        room18.getObjects().add(pengold);
         room31.setKey(yellowKeyCard);
         room31.getObjects().add(redKeyCard);
-        room14.getObjects().add(paper);
+        room14.getObjects().add(drawer);
         room13.getObjects().add(memo);
         room13.setKey(metalKey);
         room15.getObjects().add(palmares);
         room21.setKey(redKeyCard);
         room21.getObjects().add(commander);
+        room16.getObjects().add(bracelet);
+        room24.getObjects().add(tools);
 
-        System.out.println("ID: " + getRooms().get(20).getName());
-        System.out.println("ID: " + getRooms().get(21).getName());
-        System.out.println("ID: " + getRooms().get(22).getName());
 
     }
     @Override
@@ -518,7 +549,7 @@ public class EscapeFromLabGame extends GameDescription {
                             while (it.hasNext()) {
                                 AdvObject next = it.next();
                                 getCurrentRoom().getObjects().add(next);
-                                response=" " + next.getName()+"/n";
+                                response=" " + next.getName()+"\n";
                                 it.remove();
                             }
                             return response;
@@ -537,12 +568,12 @@ public class EscapeFromLabGame extends GameDescription {
                     if (p.getInvObject() instanceof AdvObjectContainer) {
                         AdvObjectContainer c = (AdvObjectContainer) p.getInvObject();
                         if (!c.getList().isEmpty()) {
-                            response=c.getName() + " contiene:"+"/n";
+                            response=c.getName() + " contiene:"+"\n";
                             Iterator<AdvObject> it = c.getList().iterator();
                             while (it.hasNext()) {
                                 AdvObject next = it.next();
                                 getInventory().add(next);
-                                response=" " + next.getName()+"/n";
+                                response=" " + next.getName()+"\n";
                                 it.remove();
                             }
                             return response;
