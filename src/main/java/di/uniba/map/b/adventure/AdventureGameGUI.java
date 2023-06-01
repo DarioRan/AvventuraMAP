@@ -2,11 +2,7 @@ package di.uniba.map.b.adventure;
 
 import di.uniba.map.b.adventure.db.GameStatus;
 import di.uniba.map.b.adventure.type.CommandGUIOutput;
-import di.uniba.map.b.adventure.type.CommandGUIType;
-
 import javax.swing.*;
-import javax.swing.border.LineBorder;
-import javax.swing.border.TitledBorder;
 import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -17,7 +13,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Set;
 
 public class AdventureGameGUI extends JFrame {
 
@@ -27,9 +22,10 @@ public class AdventureGameGUI extends JFrame {
     private JScrollPane scrollPane = null;
     private JTextField textField = null;
     private JPanel sidePanel = null;
+    private JPanel contentPanel = null;
     private JPanel backgroundPanel = null;
     private Image backgroundImage = null;
-    private Engine engine;
+    private final Engine engine;
     private boolean shouldCloseGame = false;
     private Printer printer;
 
@@ -235,8 +231,8 @@ public class AdventureGameGUI extends JFrame {
     /**
      * Inizializza il pannello di sfondo
      */
-    private void initBackgroundPanel(){
-        ImageIcon backgroundImageIcon = new ImageIcon("resources/1.png");
+    private void initBackgroundPanel(int roomId){
+        ImageIcon backgroundImageIcon = new ImageIcon("resources/" +roomId+".png");
         backgroundImage = backgroundImageIcon.getImage().getScaledInstance(backgroundImageIcon.getIconWidth(), backgroundImageIcon.getIconHeight(), Image.SCALE_SMOOTH);
         // Creazione del pannello per l'immagine sopra l'inputPanel e a sinistra del sidePanel
         backgroundPanel = new JPanel() {
@@ -323,20 +319,12 @@ public class AdventureGameGUI extends JFrame {
 
     private void initOutputLoadedGamesArea(){
 
-        Color background = new Color(0, 0, 0, 150); // Colore di sfondo con opacità ridotta (valori RGB: 0, 0, 0, opacità)
-        JPanel contentPanel = new JPanel(){
-            @Override
-            protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setColor(background);
-                g2.fillRect(0, 0, getWidth(), getHeight()); // Riempie l'area con il colore di sfondo
-                super.paintComponent(g2);
-                g2.dispose();
-            }
-        };; // Pannello principale che conterrà i pannelli delle righe
+        Color backgroundColor = new Color(0, 0, 0, 150); // Colore di sfondo con opacità ridotta (valori RGB: 0, 0, 0, opacità)
+
+        contentPanel = new JPanel(); // Pannello principale che conterrà i pannelli delle righe
         contentPanel.setOpaque(false);
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS)); // Layout per allineare verticalmente gli elementi
-        this.setContentPane(contentPanel);
+        backgroundPanel.add(contentPanel, BorderLayout.CENTER);
 
 
         // Crea la JTextArea
@@ -345,21 +333,19 @@ public class AdventureGameGUI extends JFrame {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
-                g2.setColor(background);
+                g2.setColor(backgroundColor);
                 g2.fillRect(0, 0, getWidth(), getHeight()); // Riempie l'area con il colore di sfondo
                 super.paintComponent(g2);
                 g2.dispose();
             }
-        };;
+        };
         scrollPane.setPreferredSize(new Dimension(getWidth(),getHeight()));
         scrollPane.setOpaque(false); // Rendi lo sfondo trasparente
         scrollPane.getViewport().setOpaque(false); // Rendi lo sfondo del viewport trasparente
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
-        backgroundPanel.add(scrollPane, BorderLayout.CENTER);
-
-        contentPanel.add(scrollPane, BorderLayout.CENTER);
+        contentPanel.add(scrollPane, BorderLayout.NORTH);
     }
 
     /**
@@ -375,7 +361,6 @@ public class AdventureGameGUI extends JFrame {
         backgroundPanel.add(textField, BorderLayout.SOUTH);
 
         textField.addActionListener(e -> {
-            String response;
             CommandGUIOutput responseToGUI;
             Printer printer = new Printer(textArea, 15);
             printer.setDelay(15);
@@ -410,6 +395,9 @@ public class AdventureGameGUI extends JFrame {
             case SHOW_TEXT:
                 appendAreaText(command.getText());
                 break;
+            case LOAD_GAME:
+                startLoadedGame((int) command.getResource());
+                break;
         }
     }
 
@@ -420,7 +408,15 @@ public class AdventureGameGUI extends JFrame {
     private void startGame() {
         mainPanel.remove(startPanel);
         initSidePanel();
-        initBackgroundPanel();
+        initBackgroundPanel(1);
+        initOutputArea();
+        initInputArea();
+        revalidate();
+    }
+
+    private void startLoadedGame(int id) {
+        initSidePanel();
+        initBackgroundPanel(id);
         initOutputArea();
         initInputArea();
         revalidate();
@@ -429,7 +425,6 @@ public class AdventureGameGUI extends JFrame {
     private void loadGame() throws SQLException {
         mainPanel.remove(startPanel);
         initLoadGameBackgroundPanel();
-        System.out.println("Caricamento partita...");
         initOutputLoadedGamesArea();
         showSavedGames();
         revalidate();
@@ -437,9 +432,19 @@ public class AdventureGameGUI extends JFrame {
 
     private void showSavedGames() throws SQLException {
 
-
         List<GameStatus> savedGames = engine.getSavedGames();
-        scrollPane.setViewportView(new SavedGame(savedGames));
+        Color backgroundColor = new Color(0, 0, 0, 0); // Colore di sfondo con opacità ridotta (valori RGB: 0, 0, 0, opacità)
+        scrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, savedGames.size() * 50));
+        scrollPane.setViewportView(new SavedGame(savedGames, engine, mainPanel, contentPanel) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setColor(backgroundColor);
+                g2.fillRect(0, 0, getWidth(), getHeight()); // Riempie l'area con il colore di sfondo
+                super.paintComponent(g2);
+                g2.dispose();
+            }
+        });
 
         // Aggiorna la visualizzazione della scroll pane
         scrollPane.revalidate();
@@ -450,27 +455,64 @@ public class AdventureGameGUI extends JFrame {
         /**
          * Create the panel.
          */
-        public SavedGame(List<GameStatus> savedGames) {
-            setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
-            for(GameStatus game : savedGames){
-                JPanel panel = new JPanel();
-                panel.setBorder(new LineBorder(Color.WHITE));
+        public SavedGame(List<GameStatus> savedGames, Engine engine, JPanel mainPanel, JPanel contentPanel) {
+            setLayout(new GridLayout(savedGames.size(), 1)); // Imposta il layout con una riga per ogni partita salvata
+            this.setOpaque(false);
+            this.setPreferredSize(new Dimension(this.getPreferredSize().width, savedGames.size() * 50)); // Imposta la dimensione del pannello
+            for (GameStatus game : savedGames) {
+                Color background = new Color(0, 0, 0, 0);
+                JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT)); // Imposta il layout con allineamento sinistro
+                panel.setOpaque(false); // Imposta lo sfondo trasparente
+                panel.setPreferredSize(new Dimension(panel.getPreferredSize().width, 50)); // Imposta la dimensione del pannello
                 String rowString = game.getUsername() + " - " + game.getLastRoomId() + " - " + game.getTime().toString();
-                JLabel rowLabel = new JLabel(rowString);
-                rowLabel.addMouseListener(new MouseAdapter() {
+                JLabel rowLabel = new JLabel(rowString) {
+                    @Override
+                    protected void paintComponent(Graphics g) {
+                        Graphics2D g2 = (Graphics2D) g.create();
+                        g2.setColor(background);
+                        g2.fillRect(0, 0, getWidth(), getHeight()); // Riempie l'area con il colore di sfondo
+                        super.paintComponent(g2);
+                        g2.dispose();
+                    }
+                };
+                rowLabel.setOpaque(false);
+                rowLabel.setFont(new Font("Consolas", Font.BOLD, 18));
+                rowLabel.setForeground(Color.WHITE);
+                panel.add(rowLabel);
+
+                // Aggiunge un listener per il click del mouse e per il passaggio sopra con il mouse
+                panel.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseEntered(MouseEvent e) { // Quando passi sopra con il mouse
+                        panel.setOpaque(true);
+                        Color hoverColor = new Color(70, 70, 70, 255);
+                        panel.setBackground(hoverColor); // Imposta il colore di sfondo quando passi sopra con il mouse
+                        panel.repaint(); // Forza l'aggiornamento grafico del pannello
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) { // Quando esci con il mouse
+                        panel.setOpaque(false); // Ripristina l'opacità del pannello a false
+                        panel.setBackground(new Color(0, 0, 0, 0)); // Ripristina il colore di sfondo trasparente
+                        panel.repaint(); // Forza l'aggiornamento grafico del pannello
+                    }
+
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        System.out.println("ciao");
+                        mainPanel.remove(contentPanel);
+                        mainPanel.revalidate();
+                        mainPanel.repaint();
+                        try {
+                            engine.loadGame(game.getUsername()); // Carica la partita
+                        } catch (SQLException ex) {
+                            throw new RuntimeException(ex);
+                        }
                     }
                 });
-                panel.add(rowLabel);
-                add(panel);
+                add(panel); // Aggiunge il pannello alla lista
             }
         }
     }
-
-
 
     public static class Printer {
         private JTextArea textArea;

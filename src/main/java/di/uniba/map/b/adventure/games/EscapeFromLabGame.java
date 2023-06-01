@@ -71,8 +71,9 @@ public class EscapeFromLabGame extends GameDescription {
         getCommands().add(push);
         Command unlock = new Command(CommandType.UNLOCK, "sblocca");
         getCommands().add(unlock);
-
-
+        Command load = new Command(CommandType.LOAD_GAME, "LOADGAME");
+        load.setAlias(new String[]{"LOADGAME", "loadgame"});
+        getCommands().add(load);
     }
 
     /**

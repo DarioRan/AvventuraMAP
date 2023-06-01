@@ -36,10 +36,8 @@ import java.util.Set;
 public class Engine {
 
     private final GameDescription game;
-
     private Parser parser;
     private AdventureGameGUI gui;
-
     private DBManager dbManager;
 
     public Engine(GameDescription game) {
@@ -65,8 +63,7 @@ public class Engine {
 
     }
 
-    public void loadGame(String username)
-    {
+    public void loadGame(String username) throws SQLException {
         GameStatus gameStatus = null;
         try {
             gameStatus = dbManager.getGameStatus(username);
@@ -82,8 +79,10 @@ public class Engine {
         game.setInventory(inventory);
 
         System.out.println("Game loaded");
-        System.out.println("Current room: "+game.getCurrentRoom().getName());
-        System.out.println("Inventory: "+game.getInventory());
+
+        CommandGUIOutput response = executeCommand("LOADGAME");
+        gui.performCommand(response);
+
     }
 
     public void saveGame(String username)
@@ -120,13 +119,16 @@ public class Engine {
         String response =command + "\n\n";
         CommandGUIOutput commandGUIOutput;
         CommandType commType;
+        System.out.println("Comando: " + command);
         ParserOutput p = parser.parse(command, game.getCommands(), game.getCurrentRoom().getObjects(), game.getInventory());
+        System.out.println(p.getCommand().getType());
         if (p == null || p.getCommand() == null) {
             response = response + "Non capisco quello che mi vuoi dire.\n";
         } else if (p.getCommand() != null && p.getCommand().getType() == CommandType.END) {
             response = response + "Addio!\n";
         } else {
             commType = p.getCommand().getType();
+
             response = response + game.nextMove(p);
             //Se è un comando di movimento, cambia background
             if (commType==CommandType.EAST || commType==CommandType.NORD || commType==CommandType.SOUTH || commType==CommandType.WEST)
@@ -144,6 +146,9 @@ public class Engine {
             } else if(commType==CommandType.TURN_OFF)
             {
                 commandGUIOutput = new CommandGUIOutput(CommandGUIType.TURN_OFF, response, game.getCurrentRoom().getBackgroundImage());
+            }else if(commType==CommandType.LOAD_GAME)
+            {
+                commandGUIOutput = new CommandGUIOutput(CommandGUIType.LOAD_GAME, "Caricamento partita", game.getCurrentRoom().getId());
             }else {
                 commandGUIOutput = new CommandGUIOutput(CommandGUIType.SHOW_TEXT, response, null);
             }
