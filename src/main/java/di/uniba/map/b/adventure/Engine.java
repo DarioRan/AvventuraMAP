@@ -11,7 +11,6 @@ import di.uniba.map.b.adventure.games.EscapeFromLabGame;
 import di.uniba.map.b.adventure.parser.Parser;
 import di.uniba.map.b.adventure.parser.ParserOutput;
 import di.uniba.map.b.adventure.type.AdvObject;
-import di.uniba.map.b.adventure.type.Command;
 import di.uniba.map.b.adventure.type.CommandGUIOutput;
 import di.uniba.map.b.adventure.type.CommandGUIType;
 import di.uniba.map.b.adventure.type.CommandType;
@@ -23,7 +22,6 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.Set;
 
 /**
@@ -119,9 +117,7 @@ public class Engine {
         String response =command + "\n\n";
         CommandGUIOutput commandGUIOutput;
         CommandType commType;
-        System.out.println("Comando: " + command);
         ParserOutput p = parser.parse(command, game.getCommands(), game.getCurrentRoom().getObjects(), game.getInventory());
-        System.out.println(p.getCommand().getType());
         if (p == null || p.getCommand() == null) {
             response = response + "Non capisco quello che mi vuoi dire.\n";
         } else if (p.getCommand() != null && p.getCommand().getType() == CommandType.END) {

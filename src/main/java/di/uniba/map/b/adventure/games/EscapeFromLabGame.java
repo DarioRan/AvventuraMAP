@@ -64,16 +64,18 @@ public class EscapeFromLabGame extends GameDescription {
         turn_off.setAlias(new String[]{"spegni"});
         getCommands().add(turn_off);
         Command open = new Command(CommandType.OPEN, "apri");
-        open.setAlias(new String[]{});
+        open.setAlias(new String[]{"apri"});
         getCommands().add(open);
+        Command load = new Command(CommandType.LOAD_GAME, "LOADGAME");
+        load.setAlias(new String[]{"LOADGAME", "loadgame"});
+        getCommands().add(load);
         Command push = new Command(CommandType.PUSH, "premi");
         push.setAlias(new String[]{"spingi", "attiva","blocca"});
         getCommands().add(push);
         Command unlock = new Command(CommandType.UNLOCK, "sblocca");
+        unlock.setAlias(new String[]{"sblocca"});
         getCommands().add(unlock);
-        Command load = new Command(CommandType.LOAD_GAME, "LOADGAME");
-        load.setAlias(new String[]{"LOADGAME", "loadgame"});
-        getCommands().add(load);
+
     }
 
     /**
@@ -284,8 +286,6 @@ public class EscapeFromLabGame extends GameDescription {
 
         AdvObjectContainer wardrobe = new AdvObjectContainer(15, "Armadio", "Un armadio di acciaio.");
         wardrobe.setAlias(new String[]{"armadio", "wardrobe", "armadio di acciaio"});
-
-
 
         AdvObject hammer = new AdvObject(2, "Martello", "Un martello");
         hammer.setAlias(new String[]{"martello", "martello da muratore", "martello da carpentiere", "martello da falegname", "martello da fabbro"});
@@ -653,7 +653,6 @@ public class EscapeFromLabGame extends GameDescription {
                 response = "Hai acceso: " + p.getInvObject().getDescription();
                 if(getCurrentRoom().getId()==4 && p.getInvObject().getId()==3){ //si accende la torcia
                     getCurrentRoom().setBackgroundEnlightedImage(); //si cambia l'immagine di sfondo
-                    getCurrentRoom().setDark(false); //la stanza non è più buia
                 }
             } else {
                 response="Non puoi accendere questo oggetto.";

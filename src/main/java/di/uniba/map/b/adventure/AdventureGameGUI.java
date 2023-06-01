@@ -391,6 +391,7 @@ public class AdventureGameGUI extends JFrame {
             case TURN_OFF:
                 this.setBackgroundImage((Image) command.getResource());
                 appendAreaText(command.getText());
+                System.out.println(command.getResource());
                 break;
             case SHOW_TEXT:
                 appendAreaText(command.getText());
