@@ -29,9 +29,8 @@ public class AdventureGameGUI extends JFrame {
     private JPanel sidePanel = null;
     private JPanel backgroundPanel = null;
     private Image backgroundImage = null;
-
     private Engine engine;
-
+    private boolean shouldCloseGame = false;
     private Printer printer;
 
     public AdventureGameGUI(Engine engine) {
@@ -53,15 +52,30 @@ public class AdventureGameGUI extends JFrame {
         JOptionPane frame = new JOptionPane();
 
         // Impostazioni della finestra principale
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                int scelta = JOptionPane.showConfirmDialog(frame, "Vuoi salvare la partita in corso?", "Conferma", JOptionPane.YES_NO_OPTION);
-                if (scelta == JOptionPane.YES_OPTION) {
-                    openUsernameInputDialog();
+                if (shouldCloseGame) {
+                    System.exit(0); // Chiude il gioco solo se shouldCloseGame è true
+                }
+            }
+        });
+
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                if (textArea != null) {
+                    int scelta = JOptionPane.showConfirmDialog(frame, "Vuoi salvare la partita in corso?", "Conferma", JOptionPane.YES_NO_OPTION);
+                    if (scelta == JOptionPane.YES_OPTION) {
+                        openUsernameInputDialog(e);
+                    } else {
+                        shouldCloseGame = true; // Imposta la variabile shouldCloseGame a false se si seleziona "No" per la conferma
+                        e.getWindow().dispose(); // Chiude solo la finestra
+                    }
                 } else {
-                    System.exit(0);
+                    shouldCloseGame = true; // Imposta la variabile shouldCloseGame a false se non c'è una partita in corso
+                    e.getWindow().dispose(); // Chiude solo la finestra
                 }
             }
         });
@@ -76,25 +90,35 @@ public class AdventureGameGUI extends JFrame {
         add(mainPanel);
     }
 
-    private void openUsernameInputDialog() {
-        JOptionPane input = new JOptionPane();
-        JTextField usernameField = new JTextField();
-        Object[] message = {
-                "Username:", usernameField
-        };
+    private void openUsernameInputDialog(WindowEvent e) {
+        boolean validUsername = false;
 
-        int option = JOptionPane.showOptionDialog(input, message, "Inserisci Username",
-                JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-                new Object[]{"OK", "Cancel"}, "OK");
+        while (!validUsername) {
+            JOptionPane input = new JOptionPane();
+            JTextField usernameField = new JTextField();
+            Object[] message = {
+                    "Username:", usernameField
+            };
 
-        if (option == JOptionPane.OK_OPTION) {
-            String username = usernameField.getText();
-            System.out.println("Username: " + username);
-            engine.saveGame(username);
+            int option = JOptionPane.showOptionDialog(input, message, "Inserisci Username",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+                    new Object[]{"OK", "Cancel"}, "OK");
 
-
-
-        } else {
+            if (option == JOptionPane.OK_OPTION) {
+                String username = usernameField.getText();
+                if (username.isEmpty()) {
+                    JOptionPane.showMessageDialog(input, "Il campo username non può essere vuoto.", "Errore", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    System.out.println("Username: " + username);
+                    engine.saveGame(username);
+                    validUsername = true;
+                    shouldCloseGame = true;
+                    e.getWindow().dispose();
+                }
+            } else {
+                validUsername = true;
+                shouldCloseGame = false;
+            }
         }
     }
 
