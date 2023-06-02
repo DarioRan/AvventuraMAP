@@ -126,34 +126,39 @@ public class Engine {
             commType = p.getCommand().getType();
 
             response = response + game.nextMove(p);
-            //Se è un comando di movimento, cambia background
-            if (commType==CommandType.EAST || commType==CommandType.NORD || commType==CommandType.SOUTH || commType==CommandType.WEST)
-            {
-                commandGUIOutput = new CommandGUIOutput(CommandGUIType.MOVE, response, game.getCurrentRoom().getBackgroundImage());
-                System.out.println("Sono in " + game.getCurrentRoom().getId());
-                System.out.println(commType);
-            }
-            else if(commType==CommandType.TURN_ON)
-            {
-                if(game.getCurrentRoom().isDark()) {
-                    commandGUIOutput =
-                            new CommandGUIOutput(CommandGUIType.TURN_ON,
-                                    response, game.getCurrentRoom()
-                                    .getBackgroundEnlightedImage());
-                    game.getCurrentRoom().setDark(false);
-                }
-                else
-                    commandGUIOutput = new CommandGUIOutput(CommandGUIType.TURN_ON, response, game.getCurrentRoom().getBackgroundImage());
-            } else if(commType==CommandType.TURN_OFF)
-            {
-                commandGUIOutput = new CommandGUIOutput(CommandGUIType.TURN_OFF, response, game.getCurrentRoom().getBackgroundImage());
-            }else if(commType==CommandType.LOAD_GAME)
-            {
-                commandGUIOutput = new CommandGUIOutput(CommandGUIType.LOAD_GAME, "Caricamento partita", game.getCurrentRoom().getId());
-            }else {
-                commandGUIOutput = new CommandGUIOutput(CommandGUIType.SHOW_TEXT, response, null);
+            switch (commType) {
+                case EAST:
+                case NORD:
+                case SOUTH:
+                case WEST:
+                    commandGUIOutput = new CommandGUIOutput(CommandGUIType.MOVE, response, game.getCurrentRoom().getBackgroundImage());
+                    System.out.println("Sono in " + game.getCurrentRoom().getId());
+                    System.out.println(commType);
+                    break;
+                case TURN_ON:
+                    if (game.getCurrentRoom().isDark()) {
+                        commandGUIOutput = new CommandGUIOutput(CommandGUIType.TURN_ON,
+                                response, game.getCurrentRoom().getBackgroundEnlightedImage());
+                        game.getCurrentRoom().setDark(false);
+                    } else {
+                        commandGUIOutput = new CommandGUIOutput(CommandGUIType.TURN_ON, response, game.getCurrentRoom().getBackgroundImage());
+                    }
+                    break;
+                case TURN_OFF:
+                    commandGUIOutput = new CommandGUIOutput(CommandGUIType.TURN_OFF, response, game.getCurrentRoom().getBackgroundImage());
+                    break;
+                case LOAD_GAME:
+                    commandGUIOutput = new CommandGUIOutput(CommandGUIType.LOAD_GAME, "Caricamento partita", game.getCurrentRoom().getId());
+                    break;
+                case HELP:
+                    commandGUIOutput = new CommandGUIOutput(CommandGUIType.HELP, response, null);
+                    break;
+                default:
+                    commandGUIOutput = new CommandGUIOutput(CommandGUIType.SHOW_TEXT, response, null);
+                    break;
             }
             return commandGUIOutput;
+
         }
         return commandGUIOutput = new CommandGUIOutput(CommandGUIType.SHOW_TEXT, response, null);
     }

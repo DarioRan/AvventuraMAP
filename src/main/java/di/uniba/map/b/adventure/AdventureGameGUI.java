@@ -399,11 +399,48 @@ public class AdventureGameGUI extends JFrame {
             case LOAD_GAME:
                 startLoadedGame((int) command.getResource());
                 break;
+            case HELP:
+                appendAreaText(printHelp());
+                break;
         }
     }
 
     public void appendAreaText(String text) {
         printer.printText(text);
+    }
+
+    public String printHelp(){
+        String help = ("Il tuo obbiettivo principale è uscire vivo dal laboratorio in cui ti trovi intrappolato.\n" +
+                "Per farcela dovrai affrontare molti enigmi che metteranno a dura prova la tua astuzia.\n" +
+                "\n" +
+                "Per muoverti usa:\n" +
+                "\n" +
+                "- NORD, SUD, EST, OVEST oppure soltanto:\n" +
+                "\n" +
+                "- N, S, E, O\n" +
+                "\n" +
+                "Io ti darò la descrizione completa di ogni luogo la prima volta che vi entri,\n" +
+                "poi darò solo una descrizione breve. Se vuoi la descrizione completa dimmi:\n" +
+                "\n" +
+                "- OSSERVA\n" +
+                "\n" +
+                "Azioni fondamentali sono:\n" +
+                "\n" +
+                "- PRENDI oggetto\n" +
+                "- USA oggetto\n" +
+                "- ACCENDI oggetto\n" +
+                "- APRI oggetto\n" +
+                "- SBLOCCA oggetto\n" +
+                "\n" +
+                "Se devi sbloccare un oggetto con una password usa\n" +
+                "\n" +
+                "- SBLOCCA oggetto \"password\"\n" +
+                "\n" +
+                "Altri comandi utili:\n" +
+                "\n" +
+                "- INV elenca gli oggetti nel tuo inventario\n" +
+                "- HELP ti ripete questa descrizione.\n");
+        return help;
     }
 
     private void startGame() {

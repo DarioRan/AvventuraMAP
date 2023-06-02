@@ -75,6 +75,9 @@ public class EscapeFromLabGame extends GameDescription {
         Command unlock = new Command(CommandType.UNLOCK, "sblocca");
         unlock.setAlias(new String[]{"sblocca"});
         getCommands().add(unlock);
+        Command help = new Command(CommandType.HELP, "help");
+        help.setAlias(new String[]{"HELP", "aiuto", "comandi", "help", "istruzioni"});
+        getCommands().add(help);
 
     }
 
