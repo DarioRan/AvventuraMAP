@@ -504,7 +504,8 @@ public class EscapeFromLabGame extends GameDescription {
             response = getCurrentRoom().getDescription() + "\nIn questa stanza ci sono:\n";
             if (getCurrentRoom().getObjects().size() > 0) {
                 for (AdvObject o : getCurrentRoom().getObjects()) {
-                    response=response + o.getName() + ": " + o.getDescription()+ "\n";
+                    if(!getInventory().contains(o))
+                        response=response + o.getName() + ": " + o.getDescription()+ "\n";
                 }
             } else {
                 response="Non c'è niente di interessante qui.";
