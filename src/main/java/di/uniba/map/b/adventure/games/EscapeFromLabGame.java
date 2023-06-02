@@ -496,6 +496,7 @@ public class EscapeFromLabGame extends GameDescription {
     }
 
     private String checkRoom(){
+        int count = 0;
         String response = "";
         if(getCurrentRoom().isDark()){
             response = "E' troppo bui qui, ti serve una torcia";
@@ -504,9 +505,13 @@ public class EscapeFromLabGame extends GameDescription {
             response = getCurrentRoom().getDescription() + "\nIn questa stanza ci sono:\n";
             if (getCurrentRoom().getObjects().size() > 0) {
                 for (AdvObject o : getCurrentRoom().getObjects()) {
-                    if(!getInventory().contains(o))
+                    if(!getInventory().contains(o)){
+                        count++;
                         response=response + o.getName() + ": " + o.getDescription()+ "\n";
+                    }
                 }
+                if(count == 0)
+                    response = response + "Non c'è niente di interessante qui.";
             } else {
                 response="Non c'è niente di interessante qui.";
             }
