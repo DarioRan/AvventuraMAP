@@ -135,8 +135,13 @@ public class Engine {
             }
             else if(commType==CommandType.TURN_ON)
             {
-                if(game.getCurrentRoom().isDark())
-                    commandGUIOutput = new CommandGUIOutput(CommandGUIType.TURN_ON, response, game.getCurrentRoom().getBackgroundEnlightedImage());
+                if(game.getCurrentRoom().isDark()) {
+                    commandGUIOutput =
+                            new CommandGUIOutput(CommandGUIType.TURN_ON,
+                                    response, game.getCurrentRoom()
+                                    .getBackgroundEnlightedImage());
+                    game.getCurrentRoom().setDark(false);
+                }
                 else
                     commandGUIOutput = new CommandGUIOutput(CommandGUIType.TURN_ON, response, game.getCurrentRoom().getBackgroundImage());
             } else if(commType==CommandType.TURN_OFF)
