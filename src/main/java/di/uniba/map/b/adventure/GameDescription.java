@@ -11,6 +11,8 @@ import di.uniba.map.b.adventure.type.AdvObjectContainer;
 import di.uniba.map.b.adventure.type.Command;
 import di.uniba.map.b.adventure.type.PickableObject;
 import di.uniba.map.b.adventure.type.Room;
+import di.uniba.map.b.adventure.type.TimerListener;
+
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +33,10 @@ public abstract class GameDescription {
     private  List<AdvObject> objectsInGame = new ArrayList<>();
 
     private Room currentRoom;
+
+    private TimerListener timer;
+
+
 
     public List<Room> getRooms() {
         return rooms;
@@ -60,12 +66,18 @@ public abstract class GameDescription {
     public void setCurrentRoom(Room currentRoom) {
         this.currentRoom = currentRoom;
     }
-
     public void setInventory(List<AdvObject> list_obj)
     {
         this.inventory=list_obj;
     }
 
+    public void setTimer(TimerListener timer) {
+        this.timer = timer;
+    }
+
+    public TimerListener getTimer() {
+        return timer;
+    }
 
     public List<AdvObject> getListObjects() {
         return objectsInGame;
@@ -82,9 +94,7 @@ public abstract class GameDescription {
         }
         return listObject;
     }
-
-
-
+    
     public List<AdvObject> getInventory() {
         return inventory;
     }

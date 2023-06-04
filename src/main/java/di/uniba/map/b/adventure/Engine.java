@@ -15,6 +15,7 @@ import di.uniba.map.b.adventure.type.CommandGUIOutput;
 import di.uniba.map.b.adventure.type.CommandGUIType;
 import di.uniba.map.b.adventure.type.CommandType;
 import di.uniba.map.b.adventure.type.Room;
+import di.uniba.map.b.adventure.type.TimerListener;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,6 +38,7 @@ public class Engine {
     private Parser parser;
     private AdventureGameGUI gui;
     private DBManager dbManager;
+    private TimerListener timer;
 
     public Engine(GameDescription game) {
         this.game = game;
@@ -45,7 +47,11 @@ public class Engine {
         } catch (Exception ex) {
             System.err.println(ex);
         }
+        timer = new TimerListener();
+        this.game.setTimer(timer);
         this.gui = new AdventureGameGUI(this);
+        timer.setGui(gui);
+
         try {
             Set<String> stopwords = Utils.loadFileListInSet(new File("./resources/stopwords"));
             parser = new Parser(stopwords);
@@ -58,7 +64,10 @@ public class Engine {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
 
+    public TimerListener getTimer() {
+        return this.timer;
     }
 
     public void loadGame(String username) throws SQLException {
@@ -107,7 +116,7 @@ public class Engine {
         System.out.println("* Adventure v. 0.3 - 2021-2022 *");
         System.out.println("================================");
         response = game.getCurrentRoom().getName();
-        response = response + "\n================================================\n";
+        response = response + "\n================================================\n\n";
         response = response + game.getCurrentRoom().getDescription()+"\n";
         game.getCurrentRoom().setVisited(true);
         return new CommandGUIOutput(CommandGUIType.SHOW_TEXT, response);
