@@ -120,8 +120,6 @@ public class Engine {
         ParserOutput p = parser.parse(command, game.getCommands(), game.getCurrentRoom().getObjects(), game.getInventory());
         if (p == null || p.getCommand() == null) {
             response = response + "Non capisco quello che mi vuoi dire.\n";
-        } else if (p.getCommand() != null && p.getCommand().getType() == CommandType.END) {
-            response = response + "Addio!\n";
         } else {
             commType = p.getCommand().getType();
 
@@ -153,13 +151,16 @@ public class Engine {
                 case HELP:
                     commandGUIOutput = new CommandGUIOutput(CommandGUIType.HELP, response, null);
                     break;
+                case END:
+                    commandGUIOutput = new CommandGUIOutput(CommandGUIType.END, response, null);
+                    break;
                 default:
                     commandGUIOutput = new CommandGUIOutput(CommandGUIType.SHOW_TEXT, response, null);
                     break;
             }
             return commandGUIOutput;
-
         }
+
         return commandGUIOutput = new CommandGUIOutput(CommandGUIType.SHOW_TEXT, response, null);
     }
 

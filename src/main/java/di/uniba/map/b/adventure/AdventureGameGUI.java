@@ -1,6 +1,7 @@
 package di.uniba.map.b.adventure;
 
 import di.uniba.map.b.adventure.db.GameStatus;
+import di.uniba.map.b.adventure.games.EscapeFromLabGame;
 import di.uniba.map.b.adventure.type.CommandGUIOutput;
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
@@ -27,7 +28,10 @@ public class AdventureGameGUI extends JFrame {
     private Image backgroundImage = null;
     private final Engine engine;
     private boolean shouldCloseGame = false;
+    private JProgressBar progressBar;
+    private TimerListener backgroundTimer;
     private Printer printer;
+    private boolean isDead = false;
 
     public AdventureGameGUI(Engine engine) {
         setTitle("Escape from LABS");
@@ -61,7 +65,7 @@ public class AdventureGameGUI extends JFrame {
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                if (textArea != null) {
+                if (textArea != null && !isDead) {
                     int scelta = JOptionPane.showConfirmDialog(frame, "Vuoi salvare la partita in corso?", "Conferma", JOptionPane.YES_NO_OPTION);
                     if (scelta == JOptionPane.YES_OPTION) {
                         openUsernameInputDialog(e);
@@ -70,8 +74,13 @@ public class AdventureGameGUI extends JFrame {
                         e.getWindow().dispose(); // Chiude solo la finestra
                     }
                 } else {
-                    shouldCloseGame = true; // Imposta la variabile shouldCloseGame a false se non c'è una partita in corso
-                    e.getWindow().dispose(); // Chiude solo la finestra
+                    if(isDead){
+                        e.getWindow().dispose();
+                        Engine engine = new Engine(new EscapeFromLabGame());
+                    } else {
+                        shouldCloseGame = true; // Imposta la variabile shouldCloseGame a false se non c'è una partita in corso
+                        e.getWindow().dispose(); // Chiude solo la finestra
+                    }
                 }
             }
         });
@@ -214,18 +223,36 @@ public class AdventureGameGUI extends JFrame {
         };
         sidePanel.setPreferredSize(new Dimension(250, 0));
         sidePanel.setLayout(new BorderLayout()); // Modifica il layout in BorderLayout
+        initProgressBar(sidePanel); // Inizializza la barra di avanzamento
+        mainPanel.add(sidePanel, BorderLayout.EAST);
+    }
 
-        // Aggiungi la JProgressBar nella parte inferiore del pannello laterale con uno spazio dal bordo inferiore
-        JProgressBar progressBar = new JProgressBar(0, 100);
+    /**
+     * Inizializza la barra di avanzamento
+     */
+    private void initProgressBar(JPanel sidePanel){
+        progressBar = new JProgressBar(0, 100);
         progressBar.setStringPainted(true);
+        progressBar.setPreferredSize(new Dimension(250, 50));
         int progressBarBottomPadding = 10; // Spazio desiderato dal bordo inferiore
         progressBar.setBorder(BorderFactory.createEmptyBorder(0, 0, progressBarBottomPadding, 0));
+        progressBar.setForeground(new Color(0, 200, 0));
+        // Creazione del timer
+        int delay = 700; // 6 secondi in millisecondi
+        backgroundTimer = new TimerListener(1000);
+        // Avvio del timer
+        backgroundTimer.start();
         sidePanel.add(progressBar, BorderLayout.SOUTH);
-        mainPanel.add(sidePanel, BorderLayout.EAST);
+    }
 
-        // Etichetta per le statistiche
-        JLabel statsLabel = new JLabel();
-        sidePanel.add(statsLabel);
+    public void changeProgressBarColor(int progress){
+        Color color = progressBar.getForeground();
+        int red = color.getRed();
+        int green = color.getGreen();
+        if(red < 255)
+            progressBar.setForeground(new Color(red + 5, 200, 0));
+        else
+            progressBar.setForeground(new Color(red, green - 3, 0));
     }
 
     /**
@@ -355,7 +382,7 @@ public class AdventureGameGUI extends JFrame {
         // Aggiungi la JTextField al pannello di sfondo
         textField = new JTextField();
         textField.setOpaque(false); // Rendi lo sfondo trasparente
-        textField.setPreferredSize(new Dimension(textField.getPreferredSize().width, 50));
+        textField.setPreferredSize(new Dimension(getWidth()-250, 50));
         textField.setForeground(Color.WHITE); // Colore del testo
         textField.setFont(new Font("Consolas", Font.BOLD, 18)); // Font del testo
         backgroundPanel.add(textField, BorderLayout.SOUTH);
@@ -398,6 +425,9 @@ public class AdventureGameGUI extends JFrame {
                 break;
             case LOAD_GAME:
                 startLoadedGame((int) command.getResource());
+                break;
+            case END:
+                die(command.getText());
                 break;
             case HELP:
                 appendAreaText(printHelp());
@@ -489,6 +519,18 @@ public class AdventureGameGUI extends JFrame {
         scrollPane.repaint();
     }
 
+    public void die(String command){
+        appendAreaText(command + "Il livello delle radiazioni è aumentato troppo, ti senti stanco e non riesci " +
+                "più a correre. Ti accasci a terra e muori. \n\nGAME OVER");
+        textField.setEditable(false);
+        isDead = true;
+        backgroundTimer.stopTimer();
+    }
+
+
+    /**
+     * Pannello che mostra le partite salvate
+     */
     public static class SavedGame extends JPanel {
         /**
          * Create the panel.
@@ -552,7 +594,10 @@ public class AdventureGameGUI extends JFrame {
         }
     }
 
-    public static class Printer {
+    /**
+     * Classe per la stampa del testo con un effetto di scrittura
+     */
+    public class Printer {
         private JTextArea textArea;
         private int delay;
 
@@ -592,5 +637,51 @@ public class AdventureGameGUI extends JFrame {
         }
 
     }
+
+    /**
+     * Classe che implementa un timer per la progress bar
+     */
+    private class TimerListener extends Thread {
+        private volatile boolean isRunning = true;
+        private int progress = 0;
+
+        private int delay;
+
+        public TimerListener(int delay) {
+            this.delay = delay;
+        }
+
+        @Override
+        public void run() {
+            while (progress < 100 && isRunning) {
+                try {
+                    Thread.sleep(delay);
+                    progress += 1;
+                    progressBar.setValue(progress);
+                    if (progress % 20 == 0 && progress != 100) {
+                        appendAreaText("Il livello delle radiazioni sta aumentando... Corri!\n");
+                    }
+                    changeProgressBarColor(progress);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (isRunning) {
+                die(""); // Muori
+            }
+        }
+        public void stopTimer() {
+            isRunning = false;
+        }
+
+        public void setDelay(int delay) {
+            this.delay = delay;
+        }
+
+        public int getDelay() {
+            return this.delay;
+        }
+    }
+
 }
 
