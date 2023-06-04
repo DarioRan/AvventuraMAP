@@ -27,7 +27,9 @@ public class AdventureGameGUI extends JFrame {
     private Image backgroundImage = null;
     private final Engine engine;
     private boolean shouldCloseGame = false;
-    private Printer printer;
+    private static JProgressBar progressBar;
+    private static Timer backgroundTimer;
+    private static Printer printer;
 
     public AdventureGameGUI(Engine engine) {
         setTitle("Escape from LABS");
@@ -216,12 +218,20 @@ public class AdventureGameGUI extends JFrame {
         sidePanel.setLayout(new BorderLayout()); // Modifica il layout in BorderLayout
 
         // Aggiungi la JProgressBar nella parte inferiore del pannello laterale con uno spazio dal bordo inferiore
-        JProgressBar progressBar = new JProgressBar(0, 100);
+        progressBar = new JProgressBar(0, 100);
         progressBar.setStringPainted(true);
+        progressBar.setPreferredSize(new Dimension(250, 50));
         int progressBarBottomPadding = 10; // Spazio desiderato dal bordo inferiore
         progressBar.setBorder(BorderFactory.createEmptyBorder(0, 0, progressBarBottomPadding, 0));
         sidePanel.add(progressBar, BorderLayout.SOUTH);
         mainPanel.add(sidePanel, BorderLayout.EAST);
+
+        // Creazione del timer
+        int delay = 6000; // 6 secondi in millisecondi
+        backgroundTimer = new Timer(delay, new TimerListener());
+
+        // Avvio del timer
+        backgroundTimer.start();
 
         // Etichetta per le statistiche
         JLabel statsLabel = new JLabel();
@@ -405,7 +415,7 @@ public class AdventureGameGUI extends JFrame {
         }
     }
 
-    public void appendAreaText(String text) {
+    public static void appendAreaText(String text) {
         printer.printText(text);
     }
 
@@ -489,6 +499,10 @@ public class AdventureGameGUI extends JFrame {
         scrollPane.repaint();
     }
 
+
+    /**
+     * Pannello che mostra le partite salvate
+     */
     public static class SavedGame extends JPanel {
         /**
          * Create the panel.
@@ -552,6 +566,9 @@ public class AdventureGameGUI extends JFrame {
         }
     }
 
+    /**
+     * Classe per la stampa del testo con un effetto di scrittura
+     */
     public static class Printer {
         private JTextArea textArea;
         private int delay;
@@ -591,6 +608,29 @@ public class AdventureGameGUI extends JFrame {
             textArea.append("\n"); // Aggiungi un a capo alla fine del testo
         }
 
+    }
+
+    /**
+     * Classe che implementa un timer per la progress bar
+     */
+    private static class TimerListener implements ActionListener {
+        private int progress = 0;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            progress += 1;
+            progressBar.setValue(progress);
+
+            if(progress % 20 == 0)
+                appendAreaText("Il livello delle radiazioni sta aumentando... Corri!");
+
+            if (progress >= 100) {
+                // Timer completato, ferma il timer
+                backgroundTimer.stop();
+                appendAreaText("Il livello delle radiazioni è aumentato troppo, ti senti stanco e non riesci " +
+                        "più a correre. Ti accasci a terra e muori. GAME OVER");
+            }
+        }
     }
 }
 
