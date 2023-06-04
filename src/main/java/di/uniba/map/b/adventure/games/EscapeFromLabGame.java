@@ -8,26 +8,18 @@ import di.uniba.map.b.adventure.type.AdvObjectContainer;
 import di.uniba.map.b.adventure.type.Command;
 import di.uniba.map.b.adventure.type.CommandType;
 import di.uniba.map.b.adventure.type.Room;
-
-import java.awt.Image;
 import java.io.PrintStream;
-import java.sql.PreparedStatement;
-import java.sql.Time;
 import java.util.Iterator;
 
 import di.uniba.map.b.adventure.type.TimerListener;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 
-import javax.swing.ImageIcon;
-
 public class EscapeFromLabGame extends GameDescription {
 
     RoomDesc desc = new RoomDesc();
-    private TimerListener timer;
 
-    public EscapeFromLabGame(TimerListener timer) {
+    public EscapeFromLabGame() {
         super();
-        this.timer = timer;
     }
 
     /**
@@ -683,9 +675,14 @@ public class EscapeFromLabGame extends GameDescription {
                     Room.setPowered(true);
                     response="Hai acceso il generatore.";
                 }
+                else if(getCurrentRoom().getId()==7)
+                {
+                    response="Hai acceso la cisterna. \n\nGrave errore! Il materiale radioattivo sta fuoriuscendo!\n";
+                    getTimer().setDelay(2500);
+                }
                 else
                 {
-                   response="Non hai niente da usare.";
+                    response="Non hai niente da accendere.";
                 }
         }
         return response;
@@ -693,17 +690,22 @@ public class EscapeFromLabGame extends GameDescription {
 
     public String turnOffObject(ParserOutput p){
         String response = "";
-        if (p.getInvObject() != null) {
-            if (p.getInvObject().isSwitchable()) {
-                response = "Hai spento: " + p.getInvObject().getDescription();
-                if(getCurrentRoom().getId()==4 && p.getInvObject().getId()==3){ //si accende la torcia
-                    getCurrentRoom().setDark(true); //la stanza è buia
+        if (p.getObject() != null || p.getInvObject() != null) {
+            if(p.getInvObject() != null){
+                if (p.getInvObject().isSwitchable()) {
+                    response = "Hai spento: " + p.getInvObject().getDescription();
+                    if(getCurrentRoom().getId()==4 && p.getInvObject().getId()==3){ //si accende la torcia
+                        getCurrentRoom().setDark(true); //la stanza è buia
+                    }
                 }
-            } else {
+            }
+            else {
                 if(getCurrentRoom().getId()==7)
                 {
-                    //timer.setdelay 5000
-                    response="Hai spento la cisterna.";
+                    getTimer().setDelay(5000);
+                    response="Hai spento la cisterna.\n\n" +
+                            "Buona notizia! Fortunatamente, la fuoriuscita del materiale radioattivo si è rallentata, offrendoti un prezioso respiro. " +
+                            "Tuttavia, non abbassare la guardia! C'è materiale radioattivo ovunque! Continua a muoverti con cautela e cerca di trovare un'uscita sicura il prima possibile!\n " ;
                 }
                 else
                 {

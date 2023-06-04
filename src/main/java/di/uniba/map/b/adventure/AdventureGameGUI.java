@@ -52,12 +52,12 @@ public class AdventureGameGUI extends JFrame {
         this.backgroundTimer = backgroundTimer;
     }
 
-    public AdventureGameGUI(Engine engine, TimerListener timer) {
+    public AdventureGameGUI(Engine engine) {
         setTitle("Escape from LABS");
         initMainPanel();
         initStartPanel();
         setVisible(true);
-        backgroundTimer = timer;
+        backgroundTimer = engine.getTimer();
         this.engine = engine;
     }
 
@@ -92,14 +92,17 @@ public class AdventureGameGUI extends JFrame {
                     } else {
                         shouldCloseGame = true; // Imposta la variabile shouldCloseGame a false se si seleziona "No" per la conferma
                         e.getWindow().dispose(); // Chiude solo la finestra
+                        backgroundTimer.stopTimer();
                     }
                 } else {
                     if(isDead){
                         e.getWindow().dispose();
                         Engine engine = new Engine(new EscapeFromLabGame());
+                        backgroundTimer.stopTimer();
                     } else {
                         shouldCloseGame = true; // Imposta la variabile shouldCloseGame a false se non c'è una partita in corso
                         e.getWindow().dispose(); // Chiude solo la finestra
+                        backgroundTimer.stopTimer();
                     }
                 }
             }
@@ -139,6 +142,7 @@ public class AdventureGameGUI extends JFrame {
                     validUsername = true;
                     shouldCloseGame = true;
                     e.getWindow().dispose();
+                    backgroundTimer.stopTimer();
                 }
             } else {
                 validUsername = true;
@@ -253,7 +257,7 @@ public class AdventureGameGUI extends JFrame {
     private void initProgressBar(JPanel sidePanel){
         progressBar = new JProgressBar(0, 100);
         progressBar.setStringPainted(true);
-        progressBar.setPreferredSize(new Dimension(250, 50));
+        progressBar.setPreferredSize(new Dimension(240, 50));
         int progressBarBottomPadding = 10; // Spazio desiderato dal bordo inferiore
         progressBar.setBorder(BorderFactory.createEmptyBorder(0, 0, progressBarBottomPadding, 0));
         progressBar.setForeground(new Color(0, 200, 0));
@@ -476,6 +480,7 @@ public class AdventureGameGUI extends JFrame {
                 "- PRENDI oggetto\n" +
                 "- USA oggetto\n" +
                 "- ACCENDI oggetto\n" +
+                "- SPEGNI oggetto\n" +
                 "- APRI oggetto\n" +
                 "- SBLOCCA oggetto\n" +
                 "\n" +

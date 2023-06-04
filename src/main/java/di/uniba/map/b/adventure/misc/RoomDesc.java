@@ -290,8 +290,12 @@ public class RoomDesc {
         return TITLE_36;
     }
 
-    private final String DESC_1="Sei nell'atrio dei laboratori TERRAGROUP." +
-        " Ciò che vedi attorno a te è un grande salone, ricolmo di attrezzature," +
+    private final String DESC_1="Le sirene risuonano nel laboratorio, c'è stata una fuoriuscita di materiale radioattivo e il livello di radiazioni sta rapidamente aumentando! " +
+            "Il tempo stringe e devi scappare al più presto prima che sia troppo tardi! " +
+            "Trova un'uscita sicura e mettiti in salvo dalla minaccia radioattiva che avanza " +
+            "implacabile" +
+            "\n\n================================================\n\n" +
+        "Sei nell'atrio dei laboratori TERRAGROUP. Ciò che vedi attorno a te è un grande salone, ricolmo di attrezzature," +
         " farmaci e strumenti di ogni tipo. Al centro del salone c'è un tavolo.";
 
     private final String DESC_2="Corridoio corto che sembra terminare in un " +

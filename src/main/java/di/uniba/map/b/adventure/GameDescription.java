@@ -34,6 +34,8 @@ public abstract class GameDescription {
 
     private Room currentRoom;
 
+    private TimerListener timer;
+
 
 
     public List<Room> getRooms() {
@@ -64,12 +66,18 @@ public abstract class GameDescription {
     public void setCurrentRoom(Room currentRoom) {
         this.currentRoom = currentRoom;
     }
-
     public void setInventory(List<AdvObject> list_obj)
     {
         this.inventory=list_obj;
     }
 
+    public void setTimer(TimerListener timer) {
+        this.timer = timer;
+    }
+
+    public TimerListener getTimer() {
+        return timer;
+    }
 
     public List<AdvObject> getListObjects() {
         return objectsInGame;
@@ -86,9 +94,7 @@ public abstract class GameDescription {
         }
         return listObject;
     }
-
-
-
+    
     public List<AdvObject> getInventory() {
         return inventory;
     }
