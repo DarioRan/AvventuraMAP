@@ -227,7 +227,7 @@ public class AdventureGameGUI extends JFrame {
         mainPanel.add(sidePanel, BorderLayout.EAST);
 
         // Creazione del timer
-        int delay = 6000; // 6 secondi in millisecondi
+        int delay = 700; // 6 secondi in millisecondi
         backgroundTimer = new Timer(delay, new TimerListener());
 
         // Avvio del timer
@@ -415,7 +415,7 @@ public class AdventureGameGUI extends JFrame {
         }
     }
 
-    public static void appendAreaText(String text) {
+    public void appendAreaText(String text) {
         printer.printText(text);
     }
 
@@ -569,7 +569,7 @@ public class AdventureGameGUI extends JFrame {
     /**
      * Classe per la stampa del testo con un effetto di scrittura
      */
-    public static class Printer {
+    public class Printer {
         private JTextArea textArea;
         private int delay;
 
@@ -613,7 +613,7 @@ public class AdventureGameGUI extends JFrame {
     /**
      * Classe che implementa un timer per la progress bar
      */
-    private static class TimerListener implements ActionListener {
+    private class TimerListener implements ActionListener {
         private int progress = 0;
 
         @Override
@@ -622,13 +622,15 @@ public class AdventureGameGUI extends JFrame {
             progressBar.setValue(progress);
 
             if(progress % 20 == 0)
-                appendAreaText("Il livello delle radiazioni sta aumentando... Corri!");
+                if(progress != 100)
+                    appendAreaText("Il livello delle radiazioni sta aumentando... Corri!\n");
 
             if (progress >= 100) {
                 // Timer completato, ferma il timer
                 backgroundTimer.stop();
                 appendAreaText("Il livello delle radiazioni è aumentato troppo, ti senti stanco e non riesci " +
                         "più a correre. Ti accasci a terra e muori. GAME OVER");
+                textArea.setEditable(false);
             }
         }
     }
