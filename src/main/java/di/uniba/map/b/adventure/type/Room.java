@@ -16,6 +16,7 @@ import java.util.List;
  */
 public class Room {
 
+    private static boolean powered = false;
     private final int id;
 
     private String name;
@@ -136,6 +137,14 @@ public class Room {
         this.objects.add(object);
     }
 
+    public static boolean isPowered() {
+        return powered;
+    }
+
+    public static void setPowered(boolean powered) {
+        Room.powered = powered;
+    }
+
     @Override
     public int hashCode() {
         int hash = 3;
@@ -209,7 +218,7 @@ public class Room {
         return this.isDark;
     }
 
-    public void isDark(boolean isDark){
+    public void setDark(boolean isDark){
         this.isDark = isDark;
     }
 

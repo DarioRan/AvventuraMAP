@@ -37,6 +37,10 @@ public class AdvObject {
 
     private boolean switchable = false;
 
+    private boolean locakble = false;
+
+    private String password = null;
+
     public AdvObject(int id) {
         this.id = id;
     }
@@ -127,8 +131,24 @@ public class AdvObject {
         this.switchable = switchable;
     }
 
+    public boolean isLocakble() {
+        return locakble;
+    }
+
+    public void setLocakble(boolean locakble) {
+        this.locakble = locakble;
+    }
+
     public boolean isSwitchable() {
         return switchable;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public Set<String> getAlias() {

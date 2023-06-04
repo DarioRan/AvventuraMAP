@@ -19,6 +19,7 @@ public class ParserOutput {
     private AdvObject object;
     
     private AdvObject invObject;
+    private String aux_text;
 
     public ParserOutput(Command command, AdvObject object) {
         this.command = command;
@@ -29,6 +30,13 @@ public class ParserOutput {
         this.command = command;
         this.object = object;
         this.invObject = invObejct;
+    }
+
+    public ParserOutput(Command command, AdvObject object, AdvObject invObejct, String aux_text){
+        this.command = command;
+        this.object = object;
+        this.invObject = invObejct;
+        this.aux_text = aux_text;
     }
 
     public Command getCommand() {
@@ -55,4 +63,11 @@ public class ParserOutput {
         this.invObject = invObject;
     }
 
+    public String getAuxText(){
+        return aux_text;
+    }
+
+    public void setAuxText(String aux_text){
+        this.aux_text = aux_text;
+    }
 }

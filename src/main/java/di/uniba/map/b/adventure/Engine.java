@@ -11,7 +11,6 @@ import di.uniba.map.b.adventure.games.EscapeFromLabGame;
 import di.uniba.map.b.adventure.parser.Parser;
 import di.uniba.map.b.adventure.parser.ParserOutput;
 import di.uniba.map.b.adventure.type.AdvObject;
-import di.uniba.map.b.adventure.type.Command;
 import di.uniba.map.b.adventure.type.CommandGUIOutput;
 import di.uniba.map.b.adventure.type.CommandGUIType;
 import di.uniba.map.b.adventure.type.CommandType;
@@ -23,7 +22,6 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.Set;
 
 /**
@@ -36,10 +34,8 @@ import java.util.Set;
 public class Engine {
 
     private final GameDescription game;
-
     private Parser parser;
     private AdventureGameGUI gui;
-
     private DBManager dbManager;
 
     public Engine(GameDescription game) {
@@ -65,8 +61,7 @@ public class Engine {
 
     }
 
-    public void loadGame(String username)
-    {
+    public void loadGame(String username) throws SQLException {
         GameStatus gameStatus = null;
         try {
             gameStatus = dbManager.getGameStatus(username);
@@ -82,8 +77,10 @@ public class Engine {
         game.setInventory(inventory);
 
         System.out.println("Game loaded");
-        System.out.println("Current room: "+game.getCurrentRoom().getName());
-        System.out.println("Inventory: "+game.getInventory());
+
+        CommandGUIOutput response = executeCommand("LOADGAME");
+        gui.performCommand(response);
+
     }
 
     public void saveGame(String username)
@@ -127,27 +124,41 @@ public class Engine {
             response = response + "Addio!\n";
         } else {
             commType = p.getCommand().getType();
+
             response = response + game.nextMove(p);
-            //Se è un comando di movimento, cambia background
-            if (commType==CommandType.EAST || commType==CommandType.NORD || commType==CommandType.SOUTH || commType==CommandType.WEST)
-            {
-                commandGUIOutput = new CommandGUIOutput(CommandGUIType.MOVE, response, game.getCurrentRoom().getBackgroundImage());
-                System.out.println("Sono in " + game.getCurrentRoom().getId());
-                System.out.println(commType);
-            }
-            else if(commType==CommandType.TURN_ON)
-            {
-                if(game.getCurrentRoom().isDark())
-                    commandGUIOutput = new CommandGUIOutput(CommandGUIType.TURN_ON, response, game.getCurrentRoom().getBackgroundEnlightedImage());
-                else
-                    commandGUIOutput = new CommandGUIOutput(CommandGUIType.TURN_ON, response, game.getCurrentRoom().getBackgroundImage());
-            } else if(commType==CommandType.TURN_OFF)
-            {
-                commandGUIOutput = new CommandGUIOutput(CommandGUIType.TURN_OFF, response, game.getCurrentRoom().getBackgroundImage());
-            }else {
-                commandGUIOutput = new CommandGUIOutput(CommandGUIType.SHOW_TEXT, response, null);
+            switch (commType) {
+                case EAST:
+                case NORD:
+                case SOUTH:
+                case WEST:
+                    commandGUIOutput = new CommandGUIOutput(CommandGUIType.MOVE, response, game.getCurrentRoom().getBackgroundImage());
+                    System.out.println("Sono in " + game.getCurrentRoom().getId());
+                    System.out.println(commType);
+                    break;
+                case TURN_ON:
+                    if (game.getCurrentRoom().isDark()) {
+                        commandGUIOutput = new CommandGUIOutput(CommandGUIType.TURN_ON,
+                                response, game.getCurrentRoom().getBackgroundEnlightedImage());
+                        game.getCurrentRoom().setDark(false);
+                    } else {
+                        commandGUIOutput = new CommandGUIOutput(CommandGUIType.TURN_ON, response, game.getCurrentRoom().getBackgroundImage());
+                    }
+                    break;
+                case TURN_OFF:
+                    commandGUIOutput = new CommandGUIOutput(CommandGUIType.TURN_OFF, response, game.getCurrentRoom().getBackgroundImage());
+                    break;
+                case LOAD_GAME:
+                    commandGUIOutput = new CommandGUIOutput(CommandGUIType.LOAD_GAME, "Caricamento partita", game.getCurrentRoom().getId());
+                    break;
+                case HELP:
+                    commandGUIOutput = new CommandGUIOutput(CommandGUIType.HELP, response, null);
+                    break;
+                default:
+                    commandGUIOutput = new CommandGUIOutput(CommandGUIType.SHOW_TEXT, response, null);
+                    break;
             }
             return commandGUIOutput;
+
         }
         return commandGUIOutput = new CommandGUIOutput(CommandGUIType.SHOW_TEXT, response, null);
     }
