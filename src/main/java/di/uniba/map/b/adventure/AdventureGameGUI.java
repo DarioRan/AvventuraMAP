@@ -27,9 +27,10 @@ public class AdventureGameGUI extends JFrame {
     private Image backgroundImage = null;
     private final Engine engine;
     private boolean shouldCloseGame = false;
-    private static JProgressBar progressBar;
-    private static Timer backgroundTimer;
-    private static Printer printer;
+    private JProgressBar progressBar;
+    private Timer backgroundTimer;
+    private Printer printer;
+    private boolean isDead = false;
 
     public AdventureGameGUI(Engine engine) {
         setTitle("Escape from LABS");
@@ -63,7 +64,7 @@ public class AdventureGameGUI extends JFrame {
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                if (textArea != null) {
+                if (textArea != null && !isDead) {
                     int scelta = JOptionPane.showConfirmDialog(frame, "Vuoi salvare la partita in corso?", "Conferma", JOptionPane.YES_NO_OPTION);
                     if (scelta == JOptionPane.YES_OPTION) {
                         openUsernameInputDialog(e);
@@ -409,6 +410,9 @@ public class AdventureGameGUI extends JFrame {
             case LOAD_GAME:
                 startLoadedGame((int) command.getResource());
                 break;
+            case END:
+                die();
+                break;
             case HELP:
                 appendAreaText(printHelp());
                 break;
@@ -497,6 +501,14 @@ public class AdventureGameGUI extends JFrame {
         // Aggiorna la visualizzazione della scroll pane
         scrollPane.revalidate();
         scrollPane.repaint();
+    }
+
+    public void die(){
+        appendAreaText("Il livello delle radiazioni è aumentato troppo, ti senti stanco e non riesci " +
+                "più a correre. Ti accasci a terra e muori. \n\nGAME OVER");
+        textField.setEditable(false);
+        backgroundTimer.stop();
+        isDead = true;
     }
 
 
@@ -627,10 +639,7 @@ public class AdventureGameGUI extends JFrame {
 
             if (progress >= 100) {
                 // Timer completato, ferma il timer
-                backgroundTimer.stop();
-                appendAreaText("Il livello delle radiazioni è aumentato troppo, ti senti stanco e non riesci " +
-                        "più a correre. Ti accasci a terra e muori. GAME OVER");
-                textArea.setEditable(false);
+                die(); // Muori
             }
         }
     }
