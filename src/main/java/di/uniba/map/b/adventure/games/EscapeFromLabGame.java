@@ -328,7 +328,9 @@ public class EscapeFromLabGame extends GameDescription {
         AdvObject tools = new AdvObject(17, "Strumentazione", "Strumentazione tecnica");
         tools.setAlias(new String[]{"strumentazione", "strumentazione tecnica", "strumenti", "strumenti tecnici"});
 
-
+        AdvObject shutter = new AdvObject(19, "Saracinesca", "Una saracinesca, potrebbe essere aperta o chiusa");
+        shutter.setAlias(new String[]{"saracinesca"});
+        shutter.setOpenable(true);
 
 
         toolbox.setOpenable(true);
@@ -370,6 +372,7 @@ public class EscapeFromLabGame extends GameDescription {
         getListObjects().add(pengold);
         getListObjects().add(tools);
         getListObjects().add(valve);
+        getListObjects().add(shutter);
 
         room7.getObjects().add(valve);
         room1.getObjects().add(rock);
@@ -391,7 +394,7 @@ public class EscapeFromLabGame extends GameDescription {
         room21.getObjects().add(commander);
         room16.getObjects().add(bracelet);
         room24.getObjects().add(tools);
-
+        room221.getObjects().add(shutter);
 
     }
     @Override
@@ -571,6 +574,14 @@ public class EscapeFromLabGame extends GameDescription {
                     } else {
                         response="Hai aperto: " + p.getObject().getName();
                         p.getObject().setOpen(true);
+                        if(getCurrentRoom().getId() == 221){
+                            response = "Dopo aver aperto la saracinesca, ti ritrovi di fronte all'uscita. Un'ondata di sollievo ti pervade mentre varchi la soglia, " +
+                                    "lasciando il laboratorio alle tue spalle. Finalmente sei libero.Ti ritrovi all'aperto, respirando a pieni polmoni l'aria fresca e pura. Guardi indietro e vedi il laboratorio con le sue pareti di metallo," +
+                                    " ora un ricordo di un pericolo sfiorato. Il cuore ancora palpitante, rifletti sulla tua fuga" +
+                                    " avventurosa e sull'incredibile fortuna di essere riuscito a scappare.\n\n\n\n\n\n\n" +
+                                    "" +
+                                    "COMPLIMENTI, HAI COMPLETATO IL GIOCO!";
+                        }
                     }
                 } else {
                     response="Non puoi aprire questo oggetto.";
@@ -603,24 +614,6 @@ public class EscapeFromLabGame extends GameDescription {
         }
         return response;
     }
-
-    private void pushObject(ParserOutput p, PrintStream out){
-        //ricerca oggetti pushabili
-        if (p.getObject() != null && p.getObject().isPushable()) {
-            out.println("Hai premuto: " + p.getObject().getName());
-            if (p.getObject().getId() == 3) {
-                end(out);
-            }
-        } else if (p.getInvObject() != null && p.getInvObject().isPushable()) {
-            out.println("Hai premuto: " + p.getInvObject().getName());
-            if (p.getInvObject().getId() == 3) {
-                end(out);
-            }
-        } else {
-            out.println("Non ci sono oggetti che puoi premere qui.");
-        }
-    }
-
     public String useObject(ParserOutput p){
         String response = "";
         if (p.getInvObject() != null) {
@@ -816,10 +809,5 @@ public class EscapeFromLabGame extends GameDescription {
         }
         return response;
 
-    }
-
-    private void end (PrintStream out) {
-        out.println("Premi il pulsante del giocattolo e in seguito ad una forte esplosione la tua casa prende fuoco...\ntu e tuoi famigliari cercate invano di salvarvi e venite avvolti dalle fiamme...\nè stata una morte CALOROSA...addio!");
-        System.exit(0);
     }
 }
