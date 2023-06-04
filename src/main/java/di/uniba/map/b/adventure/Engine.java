@@ -15,6 +15,7 @@ import di.uniba.map.b.adventure.type.CommandGUIOutput;
 import di.uniba.map.b.adventure.type.CommandGUIType;
 import di.uniba.map.b.adventure.type.CommandType;
 import di.uniba.map.b.adventure.type.Room;
+import di.uniba.map.b.adventure.type.TimerListener;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,7 +46,9 @@ public class Engine {
         } catch (Exception ex) {
             System.err.println(ex);
         }
-        this.gui = new AdventureGameGUI(this);
+        TimerListener timer = new TimerListener();
+        this.gui = new AdventureGameGUI(this,timer);
+        timer.setGui(gui);
         try {
             Set<String> stopwords = Utils.loadFileListInSet(new File("./resources/stopwords"));
             parser = new Parser(stopwords);
@@ -58,7 +61,6 @@ public class Engine {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     public void loadGame(String username) throws SQLException {

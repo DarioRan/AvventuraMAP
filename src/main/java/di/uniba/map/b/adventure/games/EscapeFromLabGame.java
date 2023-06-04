@@ -12,8 +12,10 @@ import di.uniba.map.b.adventure.type.Room;
 import java.awt.Image;
 import java.io.PrintStream;
 import java.sql.PreparedStatement;
+import java.sql.Time;
 import java.util.Iterator;
 
+import di.uniba.map.b.adventure.type.TimerListener;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 
 import javax.swing.ImageIcon;
@@ -21,9 +23,11 @@ import javax.swing.ImageIcon;
 public class EscapeFromLabGame extends GameDescription {
 
     RoomDesc desc = new RoomDesc();
+    private TimerListener timer;
 
-    public EscapeFromLabGame() {
+    public EscapeFromLabGame(TimerListener timer) {
         super();
+        this.timer = timer;
     }
 
     /**
@@ -284,6 +288,9 @@ public class EscapeFromLabGame extends GameDescription {
         AdvObjectContainer generator = new AdvObjectContainer(11, "Generatore", "Una generatore di energia");
         generator.setAlias(new String[]{"generatore", "generatore di energia"});
 
+        AdvObjectContainer valve = new AdvObjectContainer(18, "Cisterna", "Una cisterna, potrebbe essere spenta o accesa");
+        valve.setAlias(new String[]{"cisterna"});
+
         AdvObjectContainer drawer = new AdvObjectContainer(13, "Cassetto", "Un cassetto, forse contiene qualcosa");
         drawer.setAlias(new String[]{"cassetto", "cassetta", "drawer"});
 
@@ -349,6 +356,8 @@ public class EscapeFromLabGame extends GameDescription {
         commander.setPassword("3215");
         generator.setOpenable(false);
         generator.setSwitchable(true);
+        valve.setOpenable(false);
+        valve.setSwitchable(true);
         yellowKeyCard.setPickupable(true);
 
         getListObjects().add(metalKey);
@@ -368,7 +377,9 @@ public class EscapeFromLabGame extends GameDescription {
         getListObjects().add(wardrobe);
         getListObjects().add(pengold);
         getListObjects().add(tools);
+        getListObjects().add(valve);
 
+        room7.getObjects().add(valve);
         room1.getObjects().add(rock);
         room4.getObjects().add(metalKey);
         room3.getObjects().add(wardrobe);
@@ -689,7 +700,15 @@ public class EscapeFromLabGame extends GameDescription {
                     getCurrentRoom().setDark(true); //la stanza è buia
                 }
             } else {
-                response="Non puoi spegnere questo oggetto.";
+                if(getCurrentRoom().getId()==7)
+                {
+                    //timer.setdelay 5000
+                    response="Hai spento la cisterna.";
+                }
+                else
+                {
+                    response="Non hai niente spegnere.";
+                }
             }
         } else {
             response="Non hai niente da usare.";

@@ -13,7 +13,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.util.List;
+import di.uniba.map.b.adventure.type.TimerListener;
 
 public class AdventureGameGUI extends JFrame {
 
@@ -33,11 +35,29 @@ public class AdventureGameGUI extends JFrame {
     private Printer printer;
     private boolean isDead = false;
 
-    public AdventureGameGUI(Engine engine) {
+    public JProgressBar getProgressBar() {
+        return progressBar;
+    }
+
+    public void setProgressBar(JProgressBar progressBar) {
+        this.progressBar = progressBar;
+    }
+
+    public TimerListener getBackgroundTimer() {
+        return backgroundTimer;
+    }
+
+    public void setBackgroundTimer(
+            TimerListener backgroundTimer) {
+        this.backgroundTimer = backgroundTimer;
+    }
+
+    public AdventureGameGUI(Engine engine, TimerListener timer) {
         setTitle("Escape from LABS");
         initMainPanel();
         initStartPanel();
         setVisible(true);
+        backgroundTimer = timer;
         this.engine = engine;
     }
 
@@ -237,9 +257,6 @@ public class AdventureGameGUI extends JFrame {
         int progressBarBottomPadding = 10; // Spazio desiderato dal bordo inferiore
         progressBar.setBorder(BorderFactory.createEmptyBorder(0, 0, progressBarBottomPadding, 0));
         progressBar.setForeground(new Color(0, 200, 0));
-        // Creazione del timer
-        int delay = 700; // 6 secondi in millisecondi
-        backgroundTimer = new TimerListener(1000);
         // Avvio del timer
         backgroundTimer.start();
         sidePanel.add(progressBar, BorderLayout.SOUTH);
@@ -641,47 +658,7 @@ public class AdventureGameGUI extends JFrame {
     /**
      * Classe che implementa un timer per la progress bar
      */
-    private class TimerListener extends Thread {
-        private volatile boolean isRunning = true;
-        private int progress = 0;
 
-        private int delay;
-
-        public TimerListener(int delay) {
-            this.delay = delay;
-        }
-
-        @Override
-        public void run() {
-            while (progress < 100 && isRunning) {
-                try {
-                    Thread.sleep(delay);
-                    progress += 1;
-                    progressBar.setValue(progress);
-                    if (progress % 20 == 0 && progress != 100) {
-                        appendAreaText("Il livello delle radiazioni sta aumentando... Corri!\n");
-                    }
-                    changeProgressBarColor(progress);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (isRunning) {
-                die(""); // Muori
-            }
-        }
-        public void stopTimer() {
-            isRunning = false;
-        }
-
-        public void setDelay(int delay) {
-            this.delay = delay;
-        }
-
-        public int getDelay() {
-            return this.delay;
-        }
-    }
 
 }
 

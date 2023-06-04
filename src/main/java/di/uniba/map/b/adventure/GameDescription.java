@@ -11,6 +11,8 @@ import di.uniba.map.b.adventure.type.AdvObjectContainer;
 import di.uniba.map.b.adventure.type.Command;
 import di.uniba.map.b.adventure.type.PickableObject;
 import di.uniba.map.b.adventure.type.Room;
+import di.uniba.map.b.adventure.type.TimerListener;
+
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +33,8 @@ public abstract class GameDescription {
     private  List<AdvObject> objectsInGame = new ArrayList<>();
 
     private Room currentRoom;
+
+
 
     public List<Room> getRooms() {
         return rooms;
