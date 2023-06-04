@@ -1,6 +1,7 @@
 package di.uniba.map.b.adventure;
 
 import di.uniba.map.b.adventure.db.GameStatus;
+import di.uniba.map.b.adventure.games.EscapeFromLabGame;
 import di.uniba.map.b.adventure.type.CommandGUIOutput;
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
@@ -28,7 +29,7 @@ public class AdventureGameGUI extends JFrame {
     private final Engine engine;
     private boolean shouldCloseGame = false;
     private JProgressBar progressBar;
-    private Timer backgroundTimer;
+    private TimerListener backgroundTimer;
     private Printer printer;
     private boolean isDead = false;
 
@@ -73,8 +74,13 @@ public class AdventureGameGUI extends JFrame {
                         e.getWindow().dispose(); // Chiude solo la finestra
                     }
                 } else {
-                    shouldCloseGame = true; // Imposta la variabile shouldCloseGame a false se non c'è una partita in corso
-                    e.getWindow().dispose(); // Chiude solo la finestra
+                    if(isDead){
+                        e.getWindow().dispose();
+                        Engine engine = new Engine(new EscapeFromLabGame());
+                    } else {
+                        shouldCloseGame = true; // Imposta la variabile shouldCloseGame a false se non c'è una partita in corso
+                        e.getWindow().dispose(); // Chiude solo la finestra
+                    }
                 }
             }
         });
@@ -229,7 +235,7 @@ public class AdventureGameGUI extends JFrame {
 
         // Creazione del timer
         int delay = 700; // 6 secondi in millisecondi
-        backgroundTimer = new Timer(delay, new TimerListener());
+        backgroundTimer = new TimerListener();
 
         // Avvio del timer
         backgroundTimer.start();
@@ -366,7 +372,7 @@ public class AdventureGameGUI extends JFrame {
         // Aggiungi la JTextField al pannello di sfondo
         textField = new JTextField();
         textField.setOpaque(false); // Rendi lo sfondo trasparente
-        textField.setPreferredSize(new Dimension(textField.getPreferredSize().width, 50));
+        textField.setPreferredSize(new Dimension(getWidth()-250, 50));
         textField.setForeground(Color.WHITE); // Colore del testo
         textField.setFont(new Font("Consolas", Font.BOLD, 18)); // Font del testo
         backgroundPanel.add(textField, BorderLayout.SOUTH);
@@ -411,7 +417,7 @@ public class AdventureGameGUI extends JFrame {
                 startLoadedGame((int) command.getResource());
                 break;
             case END:
-                die();
+                die(command.getText());
                 break;
             case HELP:
                 appendAreaText(printHelp());
@@ -503,12 +509,12 @@ public class AdventureGameGUI extends JFrame {
         scrollPane.repaint();
     }
 
-    public void die(){
-        appendAreaText("Il livello delle radiazioni è aumentato troppo, ti senti stanco e non riesci " +
+    public void die(String command){
+        appendAreaText(command + "Il livello delle radiazioni è aumentato troppo, ti senti stanco e non riesci " +
                 "più a correre. Ti accasci a terra e muori. \n\nGAME OVER");
         textField.setEditable(false);
-        backgroundTimer.stop();
         isDead = true;
+        backgroundTimer.stopTimer();
     }
 
 
@@ -625,23 +631,32 @@ public class AdventureGameGUI extends JFrame {
     /**
      * Classe che implementa un timer per la progress bar
      */
-    private class TimerListener implements ActionListener {
+    private class TimerListener extends Thread {
+        private volatile boolean isRunning = true;
         private int progress = 0;
 
         @Override
-        public void actionPerformed(ActionEvent e) {
-            progress += 1;
-            progressBar.setValue(progress);
-
-            if(progress % 20 == 0)
-                if(progress != 100)
-                    appendAreaText("Il livello delle radiazioni sta aumentando... Corri!\n");
-
-            if (progress >= 100) {
-                // Timer completato, ferma il timer
-                die(); // Muori
+        public void run() {
+            while (progress < 100 && isRunning) {
+                try {
+                    Thread.sleep(1000);
+                    progress += 1;
+                    progressBar.setValue(progress);
+                    if (progress % 20 == 0 && progress != 100) {
+                        appendAreaText("Il livello delle radiazioni sta aumentando... Corri!\n");
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (isRunning) {
+                die(""); // Muori
             }
         }
+        public void stopTimer() {
+            isRunning = false;
+        }
     }
+
 }
 
