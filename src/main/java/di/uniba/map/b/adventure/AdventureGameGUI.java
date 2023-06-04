@@ -223,26 +223,36 @@ public class AdventureGameGUI extends JFrame {
         };
         sidePanel.setPreferredSize(new Dimension(250, 0));
         sidePanel.setLayout(new BorderLayout()); // Modifica il layout in BorderLayout
+        initProgressBar(sidePanel); // Inizializza la barra di avanzamento
+        mainPanel.add(sidePanel, BorderLayout.EAST);
+    }
 
-        // Aggiungi la JProgressBar nella parte inferiore del pannello laterale con uno spazio dal bordo inferiore
+    /**
+     * Inizializza la barra di avanzamento
+     */
+    private void initProgressBar(JPanel sidePanel){
         progressBar = new JProgressBar(0, 100);
         progressBar.setStringPainted(true);
         progressBar.setPreferredSize(new Dimension(250, 50));
         int progressBarBottomPadding = 10; // Spazio desiderato dal bordo inferiore
         progressBar.setBorder(BorderFactory.createEmptyBorder(0, 0, progressBarBottomPadding, 0));
-        sidePanel.add(progressBar, BorderLayout.SOUTH);
-        mainPanel.add(sidePanel, BorderLayout.EAST);
-
+        progressBar.setForeground(new Color(0, 200, 0));
         // Creazione del timer
         int delay = 700; // 6 secondi in millisecondi
         backgroundTimer = new TimerListener();
-
         // Avvio del timer
         backgroundTimer.start();
+        sidePanel.add(progressBar, BorderLayout.SOUTH);
+    }
 
-        // Etichetta per le statistiche
-        JLabel statsLabel = new JLabel();
-        sidePanel.add(statsLabel);
+    public void changeProgressBarColor(int progress){
+        Color color = progressBar.getForeground();
+        int red = color.getRed();
+        int green = color.getGreen();
+        if(red < 255)
+            progressBar.setForeground(new Color(red + 5, 200, 0));
+        else
+            progressBar.setForeground(new Color(red, green - 3, 0));
     }
 
     /**
@@ -639,12 +649,13 @@ public class AdventureGameGUI extends JFrame {
         public void run() {
             while (progress < 100 && isRunning) {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(200);
                     progress += 1;
                     progressBar.setValue(progress);
                     if (progress % 20 == 0 && progress != 100) {
                         appendAreaText("Il livello delle radiazioni sta aumentando... Corri!\n");
                     }
+                    changeProgressBarColor(progress);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
