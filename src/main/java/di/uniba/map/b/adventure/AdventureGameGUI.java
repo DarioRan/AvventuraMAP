@@ -239,7 +239,7 @@ public class AdventureGameGUI extends JFrame {
         progressBar.setForeground(new Color(0, 200, 0));
         // Creazione del timer
         int delay = 700; // 6 secondi in millisecondi
-        backgroundTimer = new TimerListener();
+        backgroundTimer = new TimerListener(1000);
         // Avvio del timer
         backgroundTimer.start();
         sidePanel.add(progressBar, BorderLayout.SOUTH);
@@ -645,11 +645,17 @@ public class AdventureGameGUI extends JFrame {
         private volatile boolean isRunning = true;
         private int progress = 0;
 
+        private int delay;
+
+        public TimerListener(int delay) {
+            this.delay = delay;
+        }
+
         @Override
         public void run() {
             while (progress < 100 && isRunning) {
                 try {
-                    Thread.sleep(200);
+                    Thread.sleep(delay);
                     progress += 1;
                     progressBar.setValue(progress);
                     if (progress % 20 == 0 && progress != 100) {
@@ -666,6 +672,14 @@ public class AdventureGameGUI extends JFrame {
         }
         public void stopTimer() {
             isRunning = false;
+        }
+
+        public void setDelay(int delay) {
+            this.delay = delay;
+        }
+
+        public int getDelay() {
+            return this.delay;
         }
     }
 
