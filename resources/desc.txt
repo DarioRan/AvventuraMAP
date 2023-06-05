@@ -1,0 +1,36 @@
+Sei nell'atrio dei laboratori TERRAGROUP. Ciò che vedi attorno a te è un salone con un tavolo, pieno di attrezzature e strumenti di ogni tipo. 
+Corridoio corto che sembra terminare in un vicolo cieco a nord. Sembra che ci sia una porta ad ovest.
+Armadio di metallo, non sembra ci siano oggetti di valore al suo interno.
+Sei in un dormitorio, ci sono molteplici letti e cabine per riporre degli oggetti.
+Sei in una stanza ricca di tubature, valvole e ingranaggi. Intravedi un corridorio a nord, delle scale ad est e una cassetta degli attrezzi a ovest.
+Cassetta degli attrezzi, sembra contenere qualcosa.
+Due grosse cisterne sono dinanzi a te, sembra che le loro valvole possano essere maneggiate in qualche modo.
+Corridoio contenente strumentazione tecnica.
+Sei nella stanza dei generatori, sembra che possano essere attivati.
+Tavolo della reception, sembra che ci sia un oggetto da qualche parte.
+Lungo corridio luminescente che sembra terminare in un vicolo cieco a nord. Sembra che ci sia un altro corridoio ad ovest.
+Cupo corridoio che porta a una stanza ad ovest.
+Sei in un ufficio del laboratorio. Ci sono scritte sul muro. Sembra che ci sia un computer a nord, una tv a ovest e una scrivania a est.
+Intravedi una tv spenta, sembra che ci sia qualcosa di importante nelle sue vicinanze.
+Intravedi un PC, sembra che possa contenere informazioni sensibili.
+Dinanzi a te è presente una scrivania, sembra che ci siano diversi oggetti.
+Sei nel bel mezzo di un grande atrio. Scorgi un grande tavolo a Nord, un corridoio a ovest e delle scale a est.
+Sei in quel che sembra essere una stanza delle riunioni, sembra ci siano oggetti di valore sul tavolo.
+Sei in un corridoio con una via che porta a Nord.
+Sei su una rampa sopraelevata. Ad ovest intravedi delle scale, a Nord una sala di comando, a est un corridoio.
+Sei all'interno di una sala di comando, sembra che ci sia un macchinario funzionante.
+Sei dinanzi a una gigantesca saracinesca.
+Sei in un quel che sembra essere un reparto del laboratorio, sembra che ci sia una stanza a est e che ci sia un corridoio a Nord.
+Sei in una stanza del laboratorio con diverse strumentazioni. A ovest vedi una stanza con delle cianfrusaglie, a Nord un corridoio.
+Sei in una stanza del laboratorio con diverse scatole contenenti qualcosa.
+Sei in un corridoio con una via che porta a Nord.
+Sei in un corridoio con una stanza a Ovest e una a Est.
+Sei in uno sgabuzzino.
+Sembri di essere all'interno di una stanza segreta, a nord c'è una porta.
+Sei all'interno di una camera di decompressione. Sembra che ci sia una porta a est.
+Sei all'interno di una stanza in cui sono stati eseguiti degli esperimenti, ci sono tracce di sangue e un odore nauseante. E' presente una scrivania.
+Sei in un corridoio con una via che porta a Nord.
+Sei in un corridoio con una via che porta a Nord.
+Sei in un corridoio con una via che porta ad una stanza a Nord ed una a Est.
+Sei in uno spogliatoio contenente molteplici cabinati.
+Sembri di essere in una stanza dedicata a operazioni mediche. Ci sono molteplici macchinari e strumenti.

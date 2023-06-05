@@ -8,17 +8,16 @@ import di.uniba.map.b.adventure.type.AdvObjectContainer;
 import di.uniba.map.b.adventure.type.Command;
 import di.uniba.map.b.adventure.type.CommandType;
 import di.uniba.map.b.adventure.type.Room;
-import java.io.PrintStream;
+
+import java.io.IOException;
 import java.util.Iterator;
 
-import di.uniba.map.b.adventure.type.TimerListener;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 
 public class EscapeFromLabGame extends GameDescription {
 
-    RoomDesc desc = new RoomDesc();
 
-    public EscapeFromLabGame() {
+    public EscapeFromLabGame() throws IOException {
         super();
     }
 
@@ -81,321 +80,343 @@ public class EscapeFromLabGame extends GameDescription {
      * Inizializza le stanze del gioco e definisce la mappa
      */
     private void initRooms(){
-        Room room1 = new Room(1,desc.getTITLE_1() ,desc.getDESC_1());
-        Room room2 = new Room(2,desc.getTITLE_2() , desc.getDESC_2());
-        Room room3 = new Room(3,desc.getTITLE_3() , desc.getDESC_3());
-        Room room4 = new Room(4,desc.getTITLE_4() , desc.getDESC_4());
-        Room room5 = new Room(5,desc.getTITLE_5() , desc.getDESC_5());
-        Room room6 = new Room(6,desc.getTITLE_6() , desc.getDESC_6());
-        Room room7 = new Room(7,desc.getTITLE_7() , desc.getDESC_7());
-        Room room8 = new Room(8,desc.getTITLE_8() , desc.getDESC_8());
-        Room room9 = new Room(9,desc.getTITLE_9() , desc.getDESC_9());
-        room9.setAccessible(false);
-        Room room10 = new Room(10,desc.getTITLE_10() , desc.getDESC_10());
-        Room room11 = new Room(11,desc.getTITLE_11() , desc.getDESC_11());
-        Room room12 = new Room(12,desc.getTITLE_12() , desc.getDESC_12());
-        Room room13 = new Room(13,desc.getTITLE_13() , desc.getDESC_13());
-        room13.setAccessible(false);
-        Room room14 = new Room(14,desc.getTITLE_14() , desc.getDESC_14());
-        Room room15 = new Room(15,desc.getTITLE_15() , desc.getDESC_15());
-        Room room16 = new Room(16,desc.getTITLE_16() , desc.getDESC_16());
-        Room room17 = new Room(17,desc.getTITLE_17() , desc.getDESC_17());
-        Room room18 = new Room(18,desc.getTITLE_18() , desc.getDESC_18());
-        Room room19 = new Room(19,desc.getTITLE_19() , desc.getDESC_19());
-        Room room20 = new Room(20,desc.getTITLE_20() , desc.getDESC_20());
-        Room room21 = new Room(21,desc.getTITLE_21() , desc.getDESC_21());
-        room21.setAccessible(false);
-        Room room221 = new Room(221,desc.getTITLE_22() , desc.getDESC_22());
-        room221.setAccessible(false);
-        Room room222 = new Room(222,desc.getTITLE_22() , desc.getDESC_22());
-        Room room23 = new Room(23,desc.getTITLE_23() , desc.getDESC_23());
-        Room room24 = new Room(24,desc.getTITLE_24() , desc.getDESC_24());
-        Room room25 = new Room(25,desc.getTITLE_25() , desc.getDESC_25());
-        Room room26 = new Room(26,desc.getTITLE_26() , desc.getDESC_26());
-        Room room27 = new Room(27,desc.getTITLE_27() , desc.getDESC_27());
-        Room room28 = new Room(28,desc.getTITLE_28() , desc.getDESC_28());
-        Room room29 = new Room(29,desc.getTITLE_29() , desc.getDESC_29());
-        Room room30 = new Room(30,desc.getTITLE_30() , desc.getDESC_30());
-        Room room31 = new Room(31,desc.getTITLE_31() , desc.getDESC_31());
-        room31.setAccessible(false);
-        Room room32 = new Room(32,desc.getTITLE_32(), desc.getDESC_32());
-        Room room33 = new Room(33,desc.getTITLE_33() , desc.getDESC_33());
-        Room room34 = new Room(34,desc.getTITLE_34(), desc.getDESC_34());
-        Room room35 = new Room(35,desc.getTITLE_35() , desc.getDESC_35());
-        Room room36 = new Room(36,desc.getTITLE_36() , desc.getDESC_36());
 
-        room1.setNorth(room10);
-        room1.setEast(room5);
-        room1.setWest(room2);
+        String descFilePath = "resources/desc.txt";
+        String titleFilePath = "resources/titles.txt";
 
-        room2.setNorth(room3);
-        room2.setSouth(room1);
-        room2.setWest(room4);
+        try {
+            RoomDesc desc = new RoomDesc(descFilePath, titleFilePath);
 
-        room3.setSouth(room2);
+            // Esempio di utilizzo: ottenere la descrizione e il titolo per l'indice 1
+            String description = desc.getDescription(1);
+            String title = desc.getTitle(1);
 
-        room4.setSouth(room2);
-        room4.setDark(true);
+            System.out.println("Descrizione: " + description);
+            System.out.println("Titolo: " + title);
 
-        room5.setNorth(room8);
-        room5.setSouth(room1);
-        room5.setEast(room7);
-        room5.setWest(room6);
+            String firstDesctription = "Le sirene risuonano nel laboratorio, c'è stata una fuoriuscita di materiale radioattivo e il livello di radiazioni sta rapidamente aumentando! Il tempo stringe e devi scappare al più presto prima che sia troppo tardi! Trova un'uscita sicura e mettiti in salvo dalla minaccia radioattiva che avanza implacabile\n\n";
 
-        room6.setSouth(room5);
-
-        room7.setSouth(room5);
-
-        room8.setNorth(room9);
-        room8.setSouth(room5);
-
-        room9.setSouth(room8);
-
-        room10.setNorth(room17);
-        room10.setSouth(room1);
-        room10.setWest(room11);
-
-        room11.setSouth(room10);
-        room11.setNorth(room12);
-
-        room12.setSouth(room11);
-        room12.setNorth(room13);
-
-        room13.setNorth(room15);
-        room13.setSouth(room12);
-        room13.setEast(room16);
-        room13.setWest(room14);
-
-        room14.setSouth(room13);
-
-        room15.setSouth(room13);
-
-        room16.setSouth(room13);
-
-        room17.setNorth(room18);
-        room17.setSouth(room10);
-        room17.setEast(room23);
-        room17.setWest(room19);
-
-        room18.setSouth(room17);
-
-        room19.setNorth(room20);
-        room19.setSouth(room17);
-
-        room20.setNorth(room21);
-        room20.setSouth(room19);
-        room20.setEast(room17);
-        room20.setWest(room221);
-
-        room21.setSouth(room20);
-
-        room221.setSouth(room20);
-
-        room222.setSouth(room20);
-
-        room23.setNorth(room32);
-        room23.setEast(room24);
-        room23.setSouth(room17);
-
-        room24.setNorth(room26);
-        room24.setSouth(room23);
-        room24.setWest(room25);
-
-        room25.setSouth(room24);
-
-        room26.setNorth(room27);
-        room26.setSouth(room24);
-
-        room27.setSouth(room26);
-        room27.setEast(room29);
-        room27.setWest(room28);
-
-        room28.setSouth(room27);
-
-        room29.setNorth(room30);
-        room29.setSouth(room27);
-
-        room30.setNorth(room31);
-        room30.setSouth(room29);
-
-        room31.setSouth(room30);
-
-        room32.setNorth(room33);
-        room32.setSouth(room23);
-
-        room33.setNorth(room34);
-        room33.setSouth(room32);
-
-        room34.setNorth(room35);
-        room34.setEast(room36);
-        room34.setSouth(room33);
-
-        room35.setSouth(room34);
-
-        room36.setSouth(room34);
-
-        getRooms().add(room1);
-        getRooms().add(room2);
-        getRooms().add(room3);
-        getRooms().add(room4);
-        getRooms().add(room5);
-        getRooms().add(room6);
-        getRooms().add(room7);
-        getRooms().add(room8);
-        getRooms().add(room9);
-        getRooms().add(room10);
-        getRooms().add(room11);
-        getRooms().add(room12);
-        getRooms().add(room13);
-        getRooms().add(room14);
-        getRooms().add(room15);
-        getRooms().add(room16);
-        getRooms().add(room17);
-        getRooms().add(room18);
-        getRooms().add(room19);
-        getRooms().add(room20);
-        getRooms().add(room21);
-        getRooms().add(room221);
-        getRooms().add(room222);
-        getRooms().add(room23);
-        getRooms().add(room24);
-        getRooms().add(room25);
-        getRooms().add(room26);
-        getRooms().add(room27);
-        getRooms().add(room28);
-        getRooms().add(room29);
-        getRooms().add(room30);
-        getRooms().add(room31);
-        getRooms().add(room32);
-        getRooms().add(room33);
-        getRooms().add(room34);
-        getRooms().add(room35);
-        getRooms().add(room36);
-
-        setCurrentRoom(room1);
-
-        AdvObjectContainer toolbox = new AdvObjectContainer(1, "Cassetta per gli attrezzi", "Una cassetta per gli attrezzi");
-        toolbox.setAlias(new String[]{"cassetta", "attrezzi", "cassetta per gli attrezzi"});
-
-        AdvObjectContainer generator = new AdvObjectContainer(11, "Generatore", "Una generatore di energia");
-        generator.setAlias(new String[]{"generatore", "generatore di energia"});
-
-        AdvObjectContainer valve = new AdvObjectContainer(18, "Cisterna", "Una cisterna, potrebbe essere spenta o accesa");
-        valve.setAlias(new String[]{"cisterna"});
-
-        AdvObjectContainer drawer = new AdvObjectContainer(13, "Cassetto", "Un cassetto, forse contiene qualcosa");
-        drawer.setAlias(new String[]{"cassetto", "cassetta", "drawer"});
-
-        AdvObjectContainer wardrobe = new AdvObjectContainer(15, "Armadio", "Un armadio di acciaio.");
-        wardrobe.setAlias(new String[]{"armadio", "wardrobe", "armadio di acciaio"});
-
-        AdvObject hammer = new AdvObject(2, "Martello", "Un martello");
-        hammer.setAlias(new String[]{"martello", "martello da muratore", "martello da carpentiere", "martello da falegname", "martello da fabbro"});
-
-        AdvObject torch = new AdvObject(3, "Torcia", "Una torcia");
-        torch.setAlias(new String[]{"torcia", "lanterna", "lanterna elettrica", "torcia elettrica"});
-
-        AdvObject metalKey = new AdvObject(4, "Chiave", "Una chiave metallica");
-        metalKey.setAlias(new String[]{"chiave", "chiave metallica", "chiave di metallo", "chiave di ferro", "chiave ferrea"});
-
-        AdvObject redKeyCard = new AdvObject(5, "RedKeycard", "Una KeyCard rossa");
-        redKeyCard.setAlias(new String[]{"redkeycard", "rk", "red keycard"  });
-
-        AdvObject yellowKeyCard = new AdvObject(6, "YellowKeycard", "Una KeyCard gialla");
-        yellowKeyCard.setAlias(new String[]{"yellowkeycard", "yk", "yellow keycard"});
-
-        AdvObject paper = new AdvObject(7, "Pezzo di carta", "123..-.-.,,-.721");
-        paper.setAlias(new String[]{"carta", "pezzo di carta", "foglio", "foglio di carta", "pezzo di foglio", "pezzo di foglio di carta"});
-
-        AdvObject memo = new AdvObject(8, "Post It", "-.-.--,,loco,,..--.-.");
-        memo.setAlias(new String[]{"postit", "memo"});
-
-        AdvObject bracelet = new AdvObject(9, "Bracciale", "-.-11--,..,.,,..11.-.");
-        bracelet.setAlias(new String[]{"bracciale", "braccialetto", "bracciale di metallo", "braccialetto di metallo", "bracciale metallico", "braccialetto metallico"});
-
-        AdvObject palmares = new AdvObject(10, "Palmares", "Palmares elettronico, potrebbe essere utile per qualcosa");
-        palmares.setAlias(new String[]{"palmares", "palmares elettronico"});
-
-        AdvObject commander = new AdvObject(12, "Telecomando", "Telecomando elettronico, per usarlo dovresti avere la password dell'amministratore");
-        commander.setAlias(new String[]{"telecomando", "telecomando elettronico"});
-
-        AdvObject rock = new AdvObject(14, "Roccia", "Una roccia solida");
-        rock.setAlias(new String[]{"roccia", "masso", "pietra", "sasso"});
-
-        AdvObject pengold = new AdvObject(16, "Penna d'oro", "Una penna di color oro");
-        pengold.setAlias(new String[]{"penna", "penna d'oro", "penna oro", "penna di oro", "penna dorata", "penna color oro"});
-
-        AdvObject tools = new AdvObject(17, "Strumentazione", "Strumentazione tecnica");
-        tools.setAlias(new String[]{"strumentazione", "strumentazione tecnica", "strumenti", "strumenti tecnici"});
-
-        AdvObject shutter = new AdvObject(19, "Saracinesca", "Una saracinesca, potrebbe essere aperta o chiusa");
-        shutter.setAlias(new String[]{"saracinesca"});
-        shutter.setOpenable(true);
+            Room room1 = new Room(1, desc.getTitle(0), firstDesctription + desc.getDescription(0));
+            Room room2 = new Room(2, desc.getTitle(1), desc.getDescription(1));
+            Room room3 = new Room(3, desc.getTitle(2), desc.getDescription(2));
+            Room room4 = new Room(4, desc.getTitle(3), desc.getDescription(3));
+            Room room5 = new Room(5, desc.getTitle(4), desc.getDescription(4));
+            Room room6 = new Room(6, desc.getTitle(5), desc.getDescription(5));
+            Room room7 = new Room(7, desc.getTitle(6), desc.getDescription(6));
+            Room room8 = new Room(8, desc.getTitle(7), desc.getDescription(7));
+            Room room9 = new Room(9, desc.getTitle(8), desc.getDescription(8));
+            room9.setAccessible(false);
+            Room room10 = new Room(10, desc.getTitle(9), desc.getDescription(9));
+            Room room11 = new Room(11, desc.getTitle(10), desc.getDescription(10));
+            Room room12 = new Room(12, desc.getTitle(11), desc.getDescription(11));
+            Room room13 = new Room(13, desc.getTitle(12), desc.getDescription(12));
+            room13.setAccessible(false);
+            Room room14 = new Room(14, desc.getTitle(13), desc.getDescription(13));
+            Room room15 = new Room(15, desc.getTitle(14), desc.getDescription(14));
+            Room room16 = new Room(16, desc.getTitle(15), desc.getDescription(15));
+            Room room17 = new Room(17, desc.getTitle(16), desc.getDescription(16));
+            Room room18 = new Room(18, desc.getTitle(17), desc.getDescription(17));
+            Room room19 = new Room(19, desc.getTitle(18), desc.getDescription(18));
+            Room room20 = new Room(20, desc.getTitle(19), desc.getDescription(19));
+            Room room21 = new Room(21, desc.getTitle(20), desc.getDescription(20));
+            room21.setAccessible(false);
+            Room room221 = new Room(221, desc.getTitle(21), desc.getDescription(21));
+            room221.setAccessible(false);
+            Room room222 = new Room(222, desc.getTitle(22), desc.getDescription(22));
+            Room room23 = new Room(23, desc.getTitle(23), desc.getDescription(23));
+            Room room24 = new Room(24, desc.getTitle(24), desc.getDescription(24));
+            Room room25 = new Room(25, desc.getTitle(25), desc.getDescription(25));
+            Room room26 = new Room(26, desc.getTitle(26), desc.getDescription(26));
+            Room room27 = new Room(27, desc.getTitle(27), desc.getDescription(27));
+            Room room28 = new Room(28, desc.getTitle(28), desc.getDescription(28));
+            Room room29 = new Room(29, desc.getTitle(29), desc.getDescription(29));
+            Room room30 = new Room(30, desc.getTitle(30), desc.getDescription(30));
+            Room room31 = new Room(31, desc.getTitle(31), desc.getDescription(31));
+            room31.setAccessible(false);
+            Room room32 = new Room(32, desc.getTitle(32), desc.getDescription(32));
+            Room room33 = new Room(33, desc.getTitle(33), desc.getDescription(33));
+            Room room34 = new Room(34, desc.getTitle(34), desc.getDescription(34));
+            Room room35 = new Room(35, desc.getTitle(35), desc.getDescription(35));
+            Room room36 = new Room(36, desc.getTitle(36), desc.getDescription(36));
 
 
-        toolbox.setOpenable(true);
-        toolbox.setPickupable(false);
-        toolbox.add(hammer);
-        drawer.setOpenable(true);
-        drawer.setPickupable(false);
-        drawer.add(paper);
-        wardrobe.setOpenable(true);
-        wardrobe.setPickupable(false);
-        torch.setSwitchable(true);
-        palmares.setUsable(true);
-        palmares.setLocakble(true);
-        palmares.setPassword("12311loco11721");
-        commander.setUsable(true);
-        commander.setLocakble(true);
-        commander.setPassword("3215");
-        generator.setOpenable(false);
-        generator.setSwitchable(true);
-        valve.setOpenable(false);
-        valve.setSwitchable(true);
-        yellowKeyCard.setPickupable(true);
 
-        getListObjects().add(metalKey);
-        getListObjects().add(toolbox);
-        getListObjects().add(hammer);
-        getListObjects().add(torch);
-        getListObjects().add(yellowKeyCard);
-        getListObjects().add(redKeyCard);
-        getListObjects().add(paper);
-        getListObjects().add(memo);
-        getListObjects().add(bracelet);
-        getListObjects().add(palmares);
-        getListObjects().add(commander);
-        getListObjects().add(generator);
-        getListObjects().add(drawer);
-        getListObjects().add(rock);
-        getListObjects().add(wardrobe);
-        getListObjects().add(pengold);
-        getListObjects().add(tools);
-        getListObjects().add(valve);
-        getListObjects().add(shutter);
+            room1.setNorth(room10);
+            room1.setEast(room5);
+            room1.setWest(room2);
 
-        room7.getObjects().add(valve);
-        room1.getObjects().add(rock);
-        room4.getObjects().add(metalKey);
-        room3.getObjects().add(wardrobe);
-        room10.getObjects().add(torch);
-        room6.getObjects().add(toolbox);
-        room9.getObjects().add(generator);
-        room9.setKey(hammer);
-        room18.getObjects().add(yellowKeyCard);
-        room18.getObjects().add(pengold);
-        room31.setKey(yellowKeyCard);
-        room31.getObjects().add(redKeyCard);
-        room14.getObjects().add(drawer);
-        room13.getObjects().add(memo);
-        room13.setKey(metalKey);
-        room15.getObjects().add(palmares);
-        room21.setKey(redKeyCard);
-        room21.getObjects().add(commander);
-        room16.getObjects().add(bracelet);
-        room24.getObjects().add(tools);
-        room221.getObjects().add(shutter);
+            room2.setNorth(room3);
+            room2.setSouth(room1);
+            room2.setWest(room4);
 
+            room3.setSouth(room2);
+
+            room4.setSouth(room2);
+            room4.setDark(true);
+
+            room5.setNorth(room8);
+            room5.setSouth(room1);
+            room5.setEast(room7);
+            room5.setWest(room6);
+
+            room6.setSouth(room5);
+
+            room7.setSouth(room5);
+
+            room8.setNorth(room9);
+            room8.setSouth(room5);
+
+            room9.setSouth(room8);
+
+            room10.setNorth(room17);
+            room10.setSouth(room1);
+            room10.setWest(room11);
+
+            room11.setSouth(room10);
+            room11.setNorth(room12);
+
+            room12.setSouth(room11);
+            room12.setNorth(room13);
+
+            room13.setNorth(room15);
+            room13.setSouth(room12);
+            room13.setEast(room16);
+            room13.setWest(room14);
+
+            room14.setSouth(room13);
+
+            room15.setSouth(room13);
+
+            room16.setSouth(room13);
+
+            room17.setNorth(room18);
+            room17.setSouth(room10);
+            room17.setEast(room23);
+            room17.setWest(room19);
+
+            room18.setSouth(room17);
+
+            room19.setNorth(room20);
+            room19.setSouth(room17);
+
+            room20.setNorth(room21);
+            room20.setSouth(room19);
+            room20.setEast(room17);
+            room20.setWest(room221);
+
+            room21.setSouth(room20);
+
+            room221.setSouth(room20);
+
+            room222.setSouth(room20);
+
+            room23.setNorth(room32);
+            room23.setEast(room24);
+            room23.setSouth(room17);
+
+            room24.setNorth(room26);
+            room24.setSouth(room23);
+            room24.setWest(room25);
+
+            room25.setSouth(room24);
+
+            room26.setNorth(room27);
+            room26.setSouth(room24);
+
+            room27.setSouth(room26);
+            room27.setEast(room29);
+            room27.setWest(room28);
+
+            room28.setSouth(room27);
+
+            room29.setNorth(room30);
+            room29.setSouth(room27);
+
+            room30.setNorth(room31);
+            room30.setSouth(room29);
+
+            room31.setSouth(room30);
+
+            room32.setNorth(room33);
+            room32.setSouth(room23);
+
+            room33.setNorth(room34);
+            room33.setSouth(room32);
+
+            room34.setNorth(room35);
+            room34.setEast(room36);
+            room34.setSouth(room33);
+
+            room35.setSouth(room34);
+
+            room36.setSouth(room34);
+
+            getRooms().add(room1);
+            getRooms().add(room2);
+            getRooms().add(room3);
+            getRooms().add(room4);
+            getRooms().add(room5);
+            getRooms().add(room6);
+            getRooms().add(room7);
+            getRooms().add(room8);
+            getRooms().add(room9);
+            getRooms().add(room10);
+            getRooms().add(room11);
+            getRooms().add(room12);
+            getRooms().add(room13);
+            getRooms().add(room14);
+            getRooms().add(room15);
+            getRooms().add(room16);
+            getRooms().add(room17);
+            getRooms().add(room18);
+            getRooms().add(room19);
+            getRooms().add(room20);
+            getRooms().add(room21);
+            getRooms().add(room221);
+            getRooms().add(room222);
+            getRooms().add(room23);
+            getRooms().add(room24);
+            getRooms().add(room25);
+            getRooms().add(room26);
+            getRooms().add(room27);
+            getRooms().add(room28);
+            getRooms().add(room29);
+            getRooms().add(room30);
+            getRooms().add(room31);
+            getRooms().add(room32);
+            getRooms().add(room33);
+            getRooms().add(room34);
+            getRooms().add(room35);
+            getRooms().add(room36);
+
+            setCurrentRoom(room1);
+
+            AdvObjectContainer toolbox = new AdvObjectContainer(1, "Cassetta per gli attrezzi", "Una cassetta per gli attrezzi");
+            toolbox.setAlias(new String[]{"cassetta", "attrezzi", "cassetta per gli attrezzi"});
+
+            AdvObjectContainer generator = new AdvObjectContainer(11, "Generatore", "Una generatore di energia");
+            generator.setAlias(new String[]{"generatore", "generatore di energia"});
+
+            AdvObjectContainer valve = new AdvObjectContainer(18, "Cisterna", "Una cisterna, potrebbe essere spenta o accesa");
+            valve.setAlias(new String[]{"cisterna"});
+
+            AdvObjectContainer drawer = new AdvObjectContainer(13, "Cassetto", "Un cassetto, forse contiene qualcosa");
+            drawer.setAlias(new String[]{"cassetto", "cassetta", "drawer"});
+
+            AdvObjectContainer wardrobe = new AdvObjectContainer(15, "Armadio", "Un armadio di acciaio.");
+            wardrobe.setAlias(new String[]{"armadio", "wardrobe", "armadio di acciaio"});
+
+            AdvObject hammer = new AdvObject(2, "Martello", "Un martello");
+            hammer.setAlias(new String[]{"martello", "martello da muratore", "martello da carpentiere", "martello da falegname", "martello da fabbro"});
+
+            AdvObject torch = new AdvObject(3, "Torcia", "Una torcia");
+            torch.setAlias(new String[]{"torcia", "lanterna", "lanterna elettrica", "torcia elettrica"});
+
+            AdvObject metalKey = new AdvObject(4, "Chiave", "Una chiave metallica");
+            metalKey.setAlias(new String[]{"chiave", "chiave metallica", "chiave di metallo", "chiave di ferro", "chiave ferrea"});
+
+            AdvObject redKeyCard = new AdvObject(5, "RedKeycard", "Una KeyCard rossa");
+            redKeyCard.setAlias(new String[]{"redkeycard", "rk", "red keycard"  });
+
+            AdvObject yellowKeyCard = new AdvObject(6, "YellowKeycard", "Una KeyCard gialla");
+            yellowKeyCard.setAlias(new String[]{"yellowkeycard", "yk", "yellow keycard"});
+
+            AdvObject paper = new AdvObject(7, "Pezzo di carta", "123..-.-.,,-.721");
+            paper.setAlias(new String[]{"carta", "pezzo di carta", "foglio", "foglio di carta", "pezzo di foglio", "pezzo di foglio di carta"});
+
+            AdvObject memo = new AdvObject(8, "Post It", "-.-.--,,loco,,..--.-.");
+            memo.setAlias(new String[]{"postit", "memo"});
+
+            AdvObject bracelet = new AdvObject(9, "Bracciale", "-.-11--,..,.,,..11.-.");
+            bracelet.setAlias(new String[]{"bracciale", "braccialetto", "bracciale di metallo", "braccialetto di metallo", "bracciale metallico", "braccialetto metallico"});
+
+            AdvObject palmares = new AdvObject(10, "Palmares", "Palmares elettronico, potrebbe essere utile per qualcosa");
+            palmares.setAlias(new String[]{"palmares", "palmares elettronico"});
+
+            AdvObject commander = new AdvObject(12, "Telecomando", "Telecomando elettronico, per usarlo dovresti avere la password dell'amministratore");
+            commander.setAlias(new String[]{"telecomando", "telecomando elettronico"});
+
+            AdvObject rock = new AdvObject(14, "Roccia", "Una roccia solida");
+            rock.setAlias(new String[]{"roccia", "masso", "pietra", "sasso"});
+
+            AdvObject pengold = new AdvObject(16, "Penna d'oro", "Una penna di color oro");
+            pengold.setAlias(new String[]{"penna", "penna d'oro", "penna oro", "penna di oro", "penna dorata", "penna color oro"});
+
+            AdvObject tools = new AdvObject(17, "Strumentazione", "Strumentazione tecnica");
+            tools.setAlias(new String[]{"strumentazione", "strumentazione tecnica", "strumenti", "strumenti tecnici"});
+
+            AdvObject shutter = new AdvObject(19, "Saracinesca", "Una saracinesca, potrebbe essere aperta o chiusa");
+            shutter.setAlias(new String[]{"saracinesca"});
+            shutter.setOpenable(true);
+
+
+            toolbox.setOpenable(true);
+            toolbox.setPickupable(false);
+            toolbox.add(hammer);
+            drawer.setOpenable(true);
+            drawer.setPickupable(false);
+            drawer.add(paper);
+            wardrobe.setOpenable(true);
+            wardrobe.setPickupable(false);
+            torch.setSwitchable(true);
+            palmares.setUsable(true);
+            palmares.setLocakble(true);
+            palmares.setPassword("12311loco11721");
+            commander.setUsable(true);
+            commander.setLocakble(true);
+            commander.setPassword("3215");
+            generator.setOpenable(false);
+            generator.setSwitchable(true);
+            valve.setOpenable(false);
+            valve.setSwitchable(true);
+            yellowKeyCard.setPickupable(true);
+
+            getListObjects().add(metalKey);
+            getListObjects().add(toolbox);
+            getListObjects().add(hammer);
+            getListObjects().add(torch);
+            getListObjects().add(yellowKeyCard);
+            getListObjects().add(redKeyCard);
+            getListObjects().add(paper);
+            getListObjects().add(memo);
+            getListObjects().add(bracelet);
+            getListObjects().add(palmares);
+            getListObjects().add(commander);
+            getListObjects().add(generator);
+            getListObjects().add(drawer);
+            getListObjects().add(rock);
+            getListObjects().add(wardrobe);
+            getListObjects().add(pengold);
+            getListObjects().add(tools);
+            getListObjects().add(valve);
+            getListObjects().add(shutter);
+
+            room7.getObjects().add(valve);
+            room1.getObjects().add(rock);
+            room4.getObjects().add(metalKey);
+            room3.getObjects().add(wardrobe);
+            room10.getObjects().add(torch);
+            room6.getObjects().add(toolbox);
+            room9.getObjects().add(generator);
+            room9.setKey(hammer);
+            room18.getObjects().add(yellowKeyCard);
+            room18.getObjects().add(pengold);
+            room31.setKey(yellowKeyCard);
+            room31.getObjects().add(redKeyCard);
+            room14.getObjects().add(drawer);
+            room13.getObjects().add(memo);
+            room13.setKey(metalKey);
+            room15.getObjects().add(palmares);
+            room21.setKey(redKeyCard);
+            room21.getObjects().add(commander);
+            room16.getObjects().add(bracelet);
+            room24.getObjects().add(tools);
+            room221.getObjects().add(shutter);
+
+        } catch (IOException e) {
+            // Gestisci eventuali errori di IO durante la lettura dei file
+            e.printStackTrace();
+        }
     }
     @Override
     public void init() throws Exception {

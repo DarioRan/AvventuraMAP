@@ -12,6 +12,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.util.List;
@@ -97,7 +98,11 @@ public class AdventureGameGUI extends JFrame {
                 } else {
                     if(isDead){
                         e.getWindow().dispose();
-                        Engine engine = new Engine(new EscapeFromLabGame());
+                        try {
+                            Engine engine = new Engine(new EscapeFromLabGame());
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
                         backgroundTimer.stopTimer();
                     } else {
                         shouldCloseGame = true; // Imposta la variabile shouldCloseGame a false se non c'è una partita in corso
