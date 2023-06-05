@@ -9,7 +9,7 @@ Corridoio contenente strumentazione tecnica.
 Sei nella stanza dei generatori, sembra che possano essere attivati.
 Tavolo della reception, sembra che ci sia un oggetto da qualche parte.
 Lungo corridio luminescente che sembra terminare in un vicolo cieco a nord. Sembra che ci sia un altro corridoio ad ovest.
-Cupo corridoio che porta a una stanza ad ovest.
+Cupo corridoio che porta a una stanza a nord.
 Sei in un ufficio del laboratorio. Ci sono scritte sul muro. Sembra che ci sia un computer a nord, una tv a ovest e una scrivania a est.
 Intravedi una tv spenta, sembra che ci sia qualcosa di importante nelle sue vicinanze.
 Intravedi un PC, sembra che possa contenere informazioni sensibili.

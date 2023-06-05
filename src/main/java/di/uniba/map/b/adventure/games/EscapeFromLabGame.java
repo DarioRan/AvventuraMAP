@@ -91,9 +91,6 @@ public class EscapeFromLabGame extends GameDescription {
             String description = desc.getDescription(1);
             String title = desc.getTitle(1);
 
-            System.out.println("Descrizione: " + description);
-            System.out.println("Titolo: " + title);
-
             String firstDesctription = "Le sirene risuonano nel laboratorio, c'è stata una fuoriuscita di materiale radioattivo e il livello di radiazioni sta rapidamente aumentando! Il tempo stringe e devi scappare al più presto prima che sia troppo tardi! Trova un'uscita sicura e mettiti in salvo dalla minaccia radioattiva che avanza implacabile\n\n";
 
             Room room1 = new Room(1, desc.getTitle(0), firstDesctription + desc.getDescription(0));
@@ -481,7 +478,6 @@ public class EscapeFromLabGame extends GameDescription {
                 return true;
             } else {
                 isKeyNeeded.setTrue();
-                System.out.println(isKeyNeeded);
                 if(canAccessRoom(nextroom)){
                     setCurrentRoom(nextroom);
                     return true;
@@ -569,9 +565,6 @@ public class EscapeFromLabGame extends GameDescription {
          * Potrebbe non esssere la soluzione ottimale.
          */
         String response = "";
-        System.out.println("\n p" + p);
-        System.out.println("\n obj" + p.getObject());
-        System.out.println("\n inv obj" + p.getInvObject());
         if (p.getObject() == null && p.getInvObject() == null) {
             response="Non c'è niente da aprire qui.";
         } else {
@@ -804,15 +797,14 @@ public class EscapeFromLabGame extends GameDescription {
                 break;
         }
 
-        System.out.println(isKeyNeeded);
-
         if (commandType == CommandType.EAST ||commandType ==  CommandType.WEST
                 || commandType ==  CommandType.SOUTH ||commandType ==  CommandType.NORD){
             if(move){
                 if(getCurrentRoom().isVisited()){
                     response = getCurrentRoom().getName();
-                    response = response + "\n================================================\n";
                 }else{
+                    response = getCurrentRoom().getName();
+                    response = response + "\n================================================\n";
                     response = response + getCurrentRoom().getDescription()+"\n";
                 }
             }
