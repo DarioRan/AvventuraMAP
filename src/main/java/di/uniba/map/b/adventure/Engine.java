@@ -38,6 +38,7 @@ public class Engine {
     private Parser parser;
     private DBManager dbManager;
     private TimerListener timer;
+    private int progressValue;
 
     public Engine(GameDescription game) {
         this.game = game;
@@ -46,7 +47,7 @@ public class Engine {
         } catch (Exception ex) {
             System.err.println(ex);
         }
-        timer = new TimerListener();
+        timer = new TimerListener(this);
         this.game.setTimer(timer);
 
         try {
@@ -63,10 +64,21 @@ public class Engine {
         }
     }
 
-
-
     public TimerListener getTimer() {
         return this.timer;
+    }
+
+    public void incrementProgressBarValue(int progressValue) {
+        this.setProgressValue(progressValue);
+        CommandGUIOutput response = executeCommand("INCREMENT_PB_VALUE");
+    }
+
+    public int getProgressValue() {
+        return this.progressValue;
+    }
+
+    public void setProgressValue(int progressValue) {
+        this.progressValue = progressValue;
     }
 
     public void loadGame(String username) throws SQLException {
@@ -161,6 +173,9 @@ public class Engine {
                     break;
                 case END:
                     commandGUIOutput = new CommandGUIOutput(CommandGUIType.END, response, null);
+                    break;
+                case INCREMENT_PB_VALUE:
+                    commandGUIOutput = new CommandGUIOutput(CommandGUIType.INCREMENT_PB_VALUE, "", String.valueOf(this.getProgressValue()));
                     break;
                 default:
                     commandGUIOutput = new CommandGUIOutput(CommandGUIType.SHOW_TEXT, response, null);

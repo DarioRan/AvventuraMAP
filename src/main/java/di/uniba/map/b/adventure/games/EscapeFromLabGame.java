@@ -74,6 +74,9 @@ public class EscapeFromLabGame extends GameDescription {
         Command help = new Command(CommandType.HELP, "help");
         help.setAlias(new String[]{"HELP", "aiuto", "comandi", "help", "istruzioni"});
         getCommands().add(help);
+        Command inc_pb_value = new Command(CommandType.INCREMENT_PB_VALUE, "INCREMENT_PB_VALUE");
+        inc_pb_value.setAlias(new String[]{"INCREMENT_PB_VALUE"});
+        getCommands().add(inc_pb_value);
 
     }
 
