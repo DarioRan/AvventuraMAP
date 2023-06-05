@@ -98,8 +98,6 @@ public class Engine {
         for (AdvObject o: game.getInventory())
         {
             inventoryIds.add(o.getId());
-            System.out.println("ID: "+o.getId());
-            System.out.println("Name: "+o.getName());
         }
         GameStatus gameStatus = new GameStatus(username, game.getCurrentRoom().getId(), inventoryIds,
                 LocalDateTime.now());
@@ -139,8 +137,6 @@ public class Engine {
                 case SOUTH:
                 case WEST:
                     commandGUIOutput = new CommandGUIOutput(CommandGUIType.MOVE, response, game.getCurrentRoom().getBackgroundImage());
-                    System.out.println("Sono in " + game.getCurrentRoom().getId());
-                    System.out.println(commType);
                     break;
                 case TURN_ON:
                     if (game.getCurrentRoom().isDark()) {
@@ -180,7 +176,7 @@ public class Engine {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Engine engine;
         engine = new Engine(new EscapeFromLabGame());
     }

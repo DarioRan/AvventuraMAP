@@ -1,0 +1,36 @@
+Atrio
+Corridoio
+Armadio
+Dormitorio
+Sala macchinari
+Cassetta degli attrezzi
+Cisterne
+Corridoio
+Sala generatori
+Tavolo reception
+Corridoio
+Corridoio
+Ufficio
+TV
+PC
+Scrivania
+Atrio
+Sala riunioni
+Corridoio
+Rampa sopraelevata
+Sala di comando
+Saracinesca
+Laboratorio
+Laboratorio - Stanza 1
+Laboratorio - Stanza 2
+Corridoio
+Corridoio
+Sgabuzzino
+Stanza segreta
+Camera di decompressione
+Laboratorio - Stanza Esperimenti
+Corridoio
+Corridoio
+Corridoio
+Spogliatoio
+Sala operatoria

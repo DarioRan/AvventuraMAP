@@ -12,6 +12,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.util.List;
@@ -97,7 +98,11 @@ public class AdventureGameGUI extends JFrame {
                 } else {
                     if(isDead){
                         e.getWindow().dispose();
-                        Engine engine = new Engine(new EscapeFromLabGame());
+                        try {
+                            Engine engine = new Engine(new EscapeFromLabGame());
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
                         backgroundTimer.stopTimer();
                     } else {
                         shouldCloseGame = true; // Imposta la variabile shouldCloseGame a false se non c'è una partita in corso
@@ -137,7 +142,6 @@ public class AdventureGameGUI extends JFrame {
                 if (username.isEmpty()) {
                     JOptionPane.showMessageDialog(input, "Il campo username non può essere vuoto.", "Errore", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    System.out.println("Username: " + username);
                     engine.saveGame(username);
                     validUsername = true;
                     shouldCloseGame = true;
@@ -439,7 +443,6 @@ public class AdventureGameGUI extends JFrame {
             case TURN_OFF:
                 this.setBackgroundImage((Image) command.getResource());
                 appendAreaText(command.getText());
-                System.out.println(command.getResource());
                 break;
             case SHOW_TEXT:
                 appendAreaText(command.getText());
