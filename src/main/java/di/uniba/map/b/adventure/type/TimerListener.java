@@ -34,7 +34,7 @@ public class TimerListener extends Thread {
             }
         }
         if (isRunning) {
-            gui.die(""); // Muori
+            //gui.die(""); // Muori
         }
     }
     public void stopTimer() {

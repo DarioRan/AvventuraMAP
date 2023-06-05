@@ -36,7 +36,6 @@ public class Engine {
 
     private final GameDescription game;
     private Parser parser;
-    private AdventureGameGUI gui;
     private DBManager dbManager;
     private TimerListener timer;
 
@@ -49,8 +48,6 @@ public class Engine {
         }
         timer = new TimerListener();
         this.game.setTimer(timer);
-        this.gui = new AdventureGameGUI(this);
-        timer.setGui(gui);
 
         try {
             Set<String> stopwords = Utils.loadFileListInSet(new File("./resources/stopwords"));
@@ -65,6 +62,8 @@ public class Engine {
             throw new RuntimeException(e);
         }
     }
+
+
 
     public TimerListener getTimer() {
         return this.timer;
@@ -88,7 +87,7 @@ public class Engine {
         System.out.println("Game loaded");
 
         CommandGUIOutput response = executeCommand("LOADGAME");
-        gui.performCommand(response);
+        //gui.performCommand(response);
 
     }
 
@@ -138,24 +137,24 @@ public class Engine {
                 case NORD:
                 case SOUTH:
                 case WEST:
-                    commandGUIOutput = new CommandGUIOutput(CommandGUIType.MOVE, response, game.getCurrentRoom().getBackgroundImage());
+                    commandGUIOutput = new CommandGUIOutput(CommandGUIType.MOVE, response, game.getCurrentRoom().getBackgroundImagePath());
                     System.out.println("Sono in " + game.getCurrentRoom().getId());
                     System.out.println(commType);
                     break;
                 case TURN_ON:
                     if (game.getCurrentRoom().isDark()) {
                         commandGUIOutput = new CommandGUIOutput(CommandGUIType.TURN_ON,
-                                response, game.getCurrentRoom().getBackgroundEnlightedImage());
+                                response, game.getCurrentRoom().getBackgroundEnlightedImagePath());
                         game.getCurrentRoom().setDark(false);
                     } else {
-                        commandGUIOutput = new CommandGUIOutput(CommandGUIType.TURN_ON, response, game.getCurrentRoom().getBackgroundImage());
+                        commandGUIOutput = new CommandGUIOutput(CommandGUIType.TURN_ON, response, game.getCurrentRoom().getBackgroundImagePath());
                     }
                     break;
                 case TURN_OFF:
-                    commandGUIOutput = new CommandGUIOutput(CommandGUIType.TURN_OFF, response, game.getCurrentRoom().getBackgroundImage());
+                    commandGUIOutput = new CommandGUIOutput(CommandGUIType.TURN_OFF, response, game.getCurrentRoom().getBackgroundImagePath());
                     break;
                 case LOAD_GAME:
-                    commandGUIOutput = new CommandGUIOutput(CommandGUIType.LOAD_GAME, "Caricamento partita", game.getCurrentRoom().getId());
+                    commandGUIOutput = new CommandGUIOutput(CommandGUIType.LOAD_GAME, "Caricamento partita", String.valueOf(game.getCurrentRoom().getId()));
                     break;
                 case HELP:
                     commandGUIOutput = new CommandGUIOutput(CommandGUIType.HELP, response, null);
@@ -182,7 +181,15 @@ public class Engine {
      */
     public static void main(String[] args) {
         Engine engine;
+        Server server;
         engine = new Engine(new EscapeFromLabGame());
+        try {
+            server = new Server(engine);
+            server.start();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
 }

@@ -2,6 +2,7 @@ package di.uniba.map.b.adventure;
 
 import di.uniba.map.b.adventure.db.GameStatus;
 import di.uniba.map.b.adventure.games.EscapeFromLabGame;
+import di.uniba.map.b.adventure.parser.ParserOutput;
 import di.uniba.map.b.adventure.type.CommandGUIOutput;
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
@@ -12,9 +13,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.util.List;
+
+import di.uniba.map.b.adventure.type.CommandGUIType;
 import di.uniba.map.b.adventure.type.TimerListener;
 
 public class AdventureGameGUI extends JFrame {
@@ -28,13 +32,14 @@ public class AdventureGameGUI extends JFrame {
     private JPanel contentPanel = null;
     private JPanel backgroundPanel = null;
     private Image backgroundImage = null;
-    private final Engine engine;
+    //private final Engine engine;
     private boolean shouldCloseGame = false;
     private JProgressBar progressBar;
     private TimerListener backgroundTimer;
     private Printer printer;
     private boolean isDead = false;
 
+    private static Client client;
     public JProgressBar getProgressBar() {
         return progressBar;
     }
@@ -52,14 +57,23 @@ public class AdventureGameGUI extends JFrame {
         this.backgroundTimer = backgroundTimer;
     }
 
-    public AdventureGameGUI(Engine engine) {
+    public AdventureGameGUI() {
+        try {
+            client = new Client();
+            client.executeCommand("nord");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         setTitle("Escape from LABS");
         initMainPanel();
         initStartPanel();
         setVisible(true);
-        backgroundTimer = engine.getTimer();
-        this.engine = engine;
+        //backgroundTimer = engine.getTimer();
+        //this.engine = engine;
     }
+
 
     /**
      * Inizializza il pannello principale
@@ -92,7 +106,7 @@ public class AdventureGameGUI extends JFrame {
                     } else {
                         shouldCloseGame = true; // Imposta la variabile shouldCloseGame a false se si seleziona "No" per la conferma
                         e.getWindow().dispose(); // Chiude solo la finestra
-                        backgroundTimer.stopTimer();
+                        //backgroundTimer.stopTimer();
                     }
                 } else {
                     if(isDead){
@@ -138,7 +152,7 @@ public class AdventureGameGUI extends JFrame {
                     JOptionPane.showMessageDialog(input, "Il campo username non può essere vuoto.", "Errore", JOptionPane.ERROR_MESSAGE);
                 } else {
                     System.out.println("Username: " + username);
-                    engine.saveGame(username);
+                    //engine.saveGame(username);
                     validUsername = true;
                     shouldCloseGame = true;
                     e.getWindow().dispose();
@@ -262,7 +276,7 @@ public class AdventureGameGUI extends JFrame {
         progressBar.setBorder(BorderFactory.createEmptyBorder(0, 0, progressBarBottomPadding, 0));
         progressBar.setForeground(new Color(0, 200, 0));
         // Avvio del timer
-        backgroundTimer.start();
+        //backgroundTimer.start();
         sidePanel.add(progressBar, BorderLayout.SOUTH);
     }
 
@@ -337,7 +351,7 @@ public class AdventureGameGUI extends JFrame {
             }
         };
         printer= new Printer(textArea, 15);
-        performCommand(engine.execute());
+        performCommand(new CommandGUIOutput(CommandGUIType.SHOW_TEXT, "Benvenuto in Escape Room!"));
 
         textArea.setFont(new Font("Consolas", Font.BOLD, 18));
         textArea.setEditable(false); // Rendi la JTextArea non modificabile
@@ -413,7 +427,13 @@ public class AdventureGameGUI extends JFrame {
             Printer printer = new Printer(textArea, 15);
             printer.setDelay(15);
             String inputText = textField.getText(); // Ottieni il testo inserito nella JTextField
-            responseToGUI=engine.executeCommand(inputText); // Esegui il comando inserito nella JTextField
+            try {
+                responseToGUI=client.executeCommand(inputText); // Esegui il comando inserito nella JTextField
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            } catch (ClassNotFoundException ex) {
+                throw new RuntimeException(ex);
+            }
             performCommand(responseToGUI); // Stampa la risposta carattere per carattere nella JTextArea
             textField.setText(""); // Resetta il contenuto della JTextField
             scrollPane.setVisible(true); // Mostra la JScrollPane
@@ -430,6 +450,11 @@ public class AdventureGameGUI extends JFrame {
         backgroundPanel.repaint();
     }
 
+    public void setBackgroundImageFromPath(String path) {
+        this.backgroundImage = new ImageIcon(path).getImage();
+        backgroundPanel.repaint();
+    }
+
     public void performCommand(CommandGUIOutput command)
     {
         switch (command.getType())
@@ -437,7 +462,7 @@ public class AdventureGameGUI extends JFrame {
             case MOVE:
             case TURN_ON:
             case TURN_OFF:
-                this.setBackgroundImage((Image) command.getResource());
+                this.setBackgroundImageFromPath((String) command.getResource());
                 appendAreaText(command.getText());
                 System.out.println(command.getResource());
                 break;
@@ -445,10 +470,10 @@ public class AdventureGameGUI extends JFrame {
                 appendAreaText(command.getText());
                 break;
             case LOAD_GAME:
-                startLoadedGame((int) command.getResource());
+                startLoadedGame( Integer.valueOf(command.getResource()));
                 break;
             case END:
-                die(command.getText());
+               // die(command.getText());
                 break;
             case HELP:
                 appendAreaText(printHelp());
@@ -516,15 +541,15 @@ public class AdventureGameGUI extends JFrame {
         mainPanel.remove(startPanel);
         initLoadGameBackgroundPanel();
         initOutputLoadedGamesArea();
-        showSavedGames();
+        //showSavedGames();
         revalidate();
     }
-
+/*
     private void showSavedGames() throws SQLException {
 
-        List<GameStatus> savedGames = engine.getSavedGames();
+        //List<GameStatus> savedGames = engine.getSavedGames();
         Color backgroundColor = new Color(0, 0, 0, 0); // Colore di sfondo con opacità ridotta (valori RGB: 0, 0, 0, opacità)
-        scrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, savedGames.size() * 50));
+        //scrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, savedGames.size() * 50));
         scrollPane.setViewportView(new SavedGame(savedGames, engine, mainPanel, contentPanel) {
             @Override
             protected void paintComponent(Graphics g) {
@@ -548,7 +573,7 @@ public class AdventureGameGUI extends JFrame {
         isDead = true;
         backgroundTimer.stopTimer();
     }
-
+*/
 
     /**
      * Pannello che mostra le partite salvate
@@ -663,6 +688,12 @@ public class AdventureGameGUI extends JFrame {
     /**
      * Classe che implementa un timer per la progress bar
      */
+
+    public static void main(String[] args) {
+
+        AdventureGameGUI gui = new AdventureGameGUI();
+
+    }
 
 
 }
