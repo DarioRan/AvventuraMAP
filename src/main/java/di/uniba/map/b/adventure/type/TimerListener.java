@@ -1,20 +1,18 @@
 package di.uniba.map.b.adventure.type;
 
 import di.uniba.map.b.adventure.AdventureGameGUI;
+import di.uniba.map.b.adventure.Engine;
 
 public class TimerListener extends Thread {
     private volatile boolean isRunning = true;
     private int progress = 0;
 
-    private AdventureGameGUI gui;
+    private Engine engine;
     private int delay;
 
-    public void setGui(AdventureGameGUI gui) {
-        this.gui = gui;
-    }
-
-    public TimerListener() {
+    public TimerListener(Engine engine) {
         this.delay = 2500;
+        this.engine = engine;
     }
 
     @Override
@@ -23,12 +21,7 @@ public class TimerListener extends Thread {
             try {
                 Thread.sleep(delay);
                 progress += 1;
-
-                 gui.getProgressBar().setValue(progress);
-                if (progress % 20 == 0 && progress != 100) {
-                    gui.appendAreaText("Il livello delle radiazioni sta aumentando... Corri!\n");
-                }
-                gui.changeProgressBarColor(progress);
+                engine.incrementProgressBarValue(progress);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

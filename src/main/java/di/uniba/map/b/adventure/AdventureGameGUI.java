@@ -289,6 +289,14 @@ public class AdventureGameGUI extends JFrame {
             progressBar.setForeground(new Color(red, green - 3, 0));
     }
 
+    public void incrementProgressBarValue(int progress){
+        this.getProgressBar().setValue(progress);
+        if (progress % 20 == 0 && progress != 100) {
+            this.appendAreaText("Il livello delle radiazioni sta aumentando... Corri!\n");
+        }
+        this.changeProgressBarColor(progress);
+    }
+
     /**
      * Inizializza il pannello di sfondo
      */
@@ -475,6 +483,9 @@ public class AdventureGameGUI extends JFrame {
                 break;
             case HELP:
                 appendAreaText(printHelp());
+                break;
+            case INCREMENT_PB_VALUE:
+                incrementProgressBarValue(Integer.valueOf(command.getResource()));
                 break;
         }
     }
