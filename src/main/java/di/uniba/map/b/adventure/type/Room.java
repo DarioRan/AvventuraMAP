@@ -39,6 +39,10 @@ public class Room {
 
     private Image backgroundEnlightedImage;
 
+    private String backgroundImagePath;
+
+    private String backgroundEnlightedImagePath;
+
     private boolean accessible = true;
 
     private AdvObject key = null;
@@ -180,12 +184,14 @@ public class Room {
 
     private void setBackgroundImage() {
         ImageIcon backgroundImageIcon = new ImageIcon("resources/"+this.id+".png");
+        backgroundImagePath= "resources/"+this.id+".png";
         Image backgroundImage = backgroundImageIcon.getImage().getScaledInstance(backgroundImageIcon.getIconWidth(), backgroundImageIcon.getIconHeight(), Image.SCALE_SMOOTH);
         this.backgroundImage = backgroundImage;
     }
 
     public void setBackgroundEnlightedImage(){
         ImageIcon backgroundImageEnglightedIcon = new ImageIcon("resources/"+this.id+"d.png");
+        backgroundEnlightedImagePath= "resources/"+this.id+"d.png";
         Image backgroundEnlightedImage = backgroundImageEnglightedIcon.getImage().getScaledInstance(backgroundImageEnglightedIcon.getIconWidth(), backgroundImageEnglightedIcon.getIconHeight(), Image.SCALE_SMOOTH);
         this.backgroundEnlightedImage = backgroundEnlightedImage;
     }
@@ -196,6 +202,14 @@ public class Room {
 
     public Image getBackgroundImage(){
         return this.backgroundImage;
+    }
+
+    public String getBackgroundImagePath(){
+        return this.backgroundImagePath;
+    }
+
+    public String getBackgroundEnlightedImagePath(){
+        return this.backgroundEnlightedImagePath;
     }
 
     public boolean isAccessible() {

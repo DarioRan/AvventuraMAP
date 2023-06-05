@@ -1,14 +1,16 @@
 package di.uniba.map.b.adventure.type;
 
-public class CommandGUIOutput {
+import java.io.Serializable;
+
+public class CommandGUIOutput implements Serializable {
 
     CommandGUIType type;
     String text;
-    Object resource;
+    String pathResource;
 
-    public CommandGUIOutput(CommandGUIType type, String text,  Object resource) {
+    public CommandGUIOutput(CommandGUIType type, String text,  String resource) {
         this.type = type;
-        this.resource = resource;
+        this.pathResource = resource;
         this.text = text;
     }
 
@@ -31,15 +33,16 @@ public class CommandGUIOutput {
         return type;
     }
 
-    public Object getResource() {
-        return resource;
+    public String getResource() {
+        return pathResource;
     }
 
     public void setType(CommandGUIType type) {
         this.type = type;
     }
 
-    public void setResource(Object resource) {
-        this.resource = resource;
+    public void setResource(String resource) {
+        this.pathResource = resource;
     }
+
 }
