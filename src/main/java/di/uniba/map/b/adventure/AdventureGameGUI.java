@@ -100,7 +100,13 @@ public class AdventureGameGUI extends JFrame {
                 if (textArea != null && !isDead) {
                     int scelta = JOptionPane.showConfirmDialog(frame, "Vuoi salvare la partita in corso?", "Conferma", JOptionPane.YES_NO_OPTION);
                     if (scelta == JOptionPane.YES_OPTION) {
-                        openUsernameInputDialog(e);
+                        try {
+                            openUsernameInputDialog(e);
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        } catch (ClassNotFoundException ex) {
+                            throw new RuntimeException(ex);
+                        }
                     } else {
                         shouldCloseGame = true; // Imposta la variabile shouldCloseGame a false se si seleziona "No" per la conferma
                         e.getWindow().dispose(); // Chiude solo la finestra
@@ -110,11 +116,11 @@ public class AdventureGameGUI extends JFrame {
                     if(isDead){
                         e.getWindow().dispose();
                         Engine engine = new Engine(new EscapeFromLabGame());
-                        backgroundTimer.stopTimer();
+                        //backgroundTimer.stopTimer();
                     } else {
                         shouldCloseGame = true; // Imposta la variabile shouldCloseGame a false se non c'è una partita in corso
                         e.getWindow().dispose(); // Chiude solo la finestra
-                        backgroundTimer.stopTimer();
+                        //backgroundTimer.stopTimer();
                     }
                 }
             }
@@ -130,7 +136,8 @@ public class AdventureGameGUI extends JFrame {
         add(mainPanel);
     }
 
-    private void openUsernameInputDialog(WindowEvent e) {
+    private void openUsernameInputDialog(WindowEvent e)
+            throws IOException, ClassNotFoundException {
         boolean validUsername = false;
 
         while (!validUsername) {
@@ -150,11 +157,12 @@ public class AdventureGameGUI extends JFrame {
                     JOptionPane.showMessageDialog(input, "Il campo username non può essere vuoto.", "Errore", JOptionPane.ERROR_MESSAGE);
                 } else {
                     System.out.println("Username: " + username);
-                    //engine.saveGame(username);
+                    client.sendResourcesToServer("username:"+username);
+                    CommandGUIOutput response = client.executeCommand("SAVEGAME");
                     validUsername = true;
                     shouldCloseGame = true;
                     e.getWindow().dispose();
-                    backgroundTimer.stopTimer();
+                    //backgroundTimer.stopTimer();
                 }
             } else {
                 validUsername = true;
@@ -507,8 +515,7 @@ public class AdventureGameGUI extends JFrame {
                 appendAreaText(printHelp());
                 break;
             case INCREMENT_PB_VALUE:
-                System.out.println("eccomi");
-                incrementProgressBarValue(Integer.valueOf(command.getResource()));
+                incrementProgressBarValue(Integer.parseInt(command.getResource()));
                 break;
         }
     }

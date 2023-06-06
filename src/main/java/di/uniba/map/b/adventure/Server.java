@@ -46,7 +46,6 @@ public class Server {
 
         System.out.println(objectOutputStream);
         while (true) {
-                    System.out.println(commandString);
                     if(commandString.startsWith("username:")){
                         String username = commandString.split(":")[1];
                         engine.setUsername(username);

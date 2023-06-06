@@ -193,8 +193,11 @@ public class Engine {
                     commandGUIOutput = new CommandGUIOutput(CommandGUIType.END, response, null);
                     break;
                 case INCREMENT_PB_VALUE:
-                    System.out.println("qui");
                     commandGUIOutput = new CommandGUIOutput(CommandGUIType.INCREMENT_PB_VALUE, String.valueOf(this.getTimer().getDelay()), String.valueOf(this.getProgressValue()));
+                    break;
+                case SAVE_GAME:
+                    this.saveGame(this.getUsername());
+                    commandGUIOutput = new CommandGUIOutput(CommandGUIType.SAVE_GAME, String.valueOf(this.getTimer().getDelay()), null);
                     break;
                 case START_TIMER:
                     commandGUIOutput = new CommandGUIOutput(CommandGUIType.START_TIMER, "", null);

@@ -34,8 +34,6 @@ public class Client {
 
         PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
 
-
-        System.out.println("Invio comando: " + command);
         out.println(command);
         response=objectReader.readObject();
         if(response instanceof CommandGUIOutput){
@@ -55,8 +53,6 @@ public class Client {
 
         PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
 
-
-        System.out.println("Invio richiesta: " + command);
         out.println(command);
         response=objectReader.readObject();
         if(response instanceof List<?>){
