@@ -27,3 +27,41 @@ L'input dell'utente viene elaborato tramite un parser. All'interno della classe 
 Una volta che il parser ha estratto le informazioni necessarie dal comando dell'utente, queste informazioni vengono utilizzate per attivare le funzioni appropriate nella classe EscapeFromLabGame. Ad esempio, se l'utente digita il comando "NORD", il parser può estrarre l'informazione che l'utente desidera muoversi verso nord e passare questa informazione alla classe EscapeFromLabGame per gestire l'azione di movimento nella direzione desiderata.
 
 In questo modo, il parser svolge un ruolo fondamentale nel consentire al gioco di interpretare e rispondere ai comandi dell'utente in modo appropriato.
+
+# Manuale Utente
+
+## Introduzione
+Ti trovi all'interno di un laboratorio scientifico avanzato, ma purtroppo, una catastrofe è imminente. 
+Il laboratorio è stato avvolto da nubi radioattive che si stanno espandendo rapidamente. 
+Il tuo obiettivo principale è quello di trovare un modo per uscire dal laboratorio il prima possibile e metterti in salvo.
+
+## Istruzioni di Gioco
+
+Il gioco utilizza un sistema di riferimento relativo per la navigazione. 
+L'ambiente è suddiviso in stanze, ognuna delle quali è collegata ad altre stanze in base alla posizione cardinale. 
+Ad esempio, se ti sposti ad ovest da una stanza, per tornare indietro dovrai utilizzare il comando "sud", lo stesso
+vale se ti sposi a nord, dovrai utilizzare il comando "sud" per tornare indietro.
+
+### Comandi di Navigazione
+- `nord` - Ti sposti verso nord nella stanza successiva.
+- `sud` - Ti sposti verso sud nella stanza precedente.
+- `est` - Ti sposti verso est nella stanza adiacente.
+- `ovest` - Ti sposti verso ovest nella stanza adiacente.
+
+### Comandi dell'Inventario
+- `inventario` - Mostra l'inventario degli oggetti che hai raccolto.
+- `prendi [nome oggetto]` - Raccoglie un oggetto presente nella stanza e lo aggiunge al tuo inventario.
+
+### Comandi di Interazione con gli Oggetti
+- `accendi [nome oggetto]` - Accende un oggetto che può essere acceso, come una luce o un interruttore.
+- `spegni [nome oggetto]` - Spegne un oggetto che è stato acceso in precedenza.
+- `sblocca [nome oggetto]` - Sblocca un oggetto che è stato chiuso o bloccato.
+- `apri [nome oggetto]` - Apre un oggetto che può essere aperto, come una cassa.
+- `usa [nome oggetto]` - Utilizza un oggetto che può essere utilizzato, come un computer.
+
+### Comandi di Interazione con le Stanze
+- `osserva` - Osserva la stanza in cui ti trovi e mostra una descrizione degli oggetti al suo interno.
+
+Durante il gioco, sarai in grado di utilizzare questi comandi per esplorare l'ambiente.
+
+## Mappa di gioco![mappagioco.jpg](resources%2Fmappagioco.jpg)
