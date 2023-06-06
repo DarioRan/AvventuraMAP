@@ -202,7 +202,7 @@ public class Engine {
                     break;
                 case SAVE_GAME:
                     this.saveGame(this.getUsername());
-                    commandGUIOutput = new CommandGUIOutput(CommandGUIType.SAVE_GAME, String.valueOf(this.getTimer().getDelay()), null);
+                    commandGUIOutput = new CommandGUIOutput(CommandGUIType.SAVE_GAME, "", null);
                     break;
                 case START_TIMER:
                     commandGUIOutput = new CommandGUIOutput(CommandGUIType.START_TIMER, "", null);
@@ -254,7 +254,7 @@ public class Engine {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Engine engine;
         engine = new Engine(new EscapeFromLabGame());
     }
