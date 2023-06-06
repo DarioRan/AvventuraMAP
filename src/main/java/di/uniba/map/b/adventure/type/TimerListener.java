@@ -21,7 +21,6 @@ public class TimerListener extends Thread {
     public void run() {
         while (progress < 100 && isRunning) {
             try {
-                System.out.println("Timer partito");
                 Thread.sleep(delay);
                 progress += 1;
                 engine.incrementProgressBarValue(progress);
