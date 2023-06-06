@@ -361,7 +361,7 @@ public class AdventureGameGUI extends JFrame {
                 g2.dispose();
             }
         };
-        printer= new Printer(textArea, 15);
+        printer= new Printer(textArea, 10);
         String firstDesctription = "Le sirene risuonano nel laboratorio, c'è stata una fuoriuscita di materiale radioattivo e il livello di radiazioni sta rapidamente aumentando!" +
                 " Il tempo stringe e devi scappare al più presto prima che sia troppo tardi! Trova un'uscita sicura e mettiti in salvo dalla minaccia radioattiva che avanza " +
                 "implacabile\n\nINDIZIO: digita HELP per visualizzare i comandi disponibili\n\n";
@@ -437,8 +437,8 @@ public class AdventureGameGUI extends JFrame {
 
         textField.addActionListener(e -> {
             CommandGUIOutput responseToGUI;
-            Printer printer = new Printer(textArea, 15);
-            printer.setDelay(15);
+            Printer printer = new Printer(textArea, 10);
+            printer.setDelay(10);
             String inputText = textField.getText(); // Ottieni il testo inserito nella JTextField
             try {
                 responseToGUI=client.executeCommand(inputText); // Esegui il comando inserito nella JTextField
@@ -675,7 +675,7 @@ public class AdventureGameGUI extends JFrame {
         private int delay;
 
         public Printer() {
-            this.delay = 15;
+            this.delay = 10;
         }
         public Printer(JTextArea textArea, int delay) {
             this.textArea = textArea;
@@ -725,7 +725,9 @@ public class AdventureGameGUI extends JFrame {
                 try {
                     Thread.sleep(delay);
                     CommandGUIOutput response = client.executeCommand("INCREMENTPBVALUE");
-                    setDelay(Integer.parseInt(response.getText()));
+                    try{
+                        setDelay(Integer.valueOf(response.getText()));
+                    }catch (NumberFormatException e){}
                     performCommand(response);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
