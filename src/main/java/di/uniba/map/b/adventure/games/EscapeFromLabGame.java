@@ -86,6 +86,10 @@ public class EscapeFromLabGame extends GameDescription {
         Command saveGame = new Command(CommandType.SAVE_GAME, "SAVEGAME");
         saveGame.setAlias(new String[]{"SAVEGAME","savegame"});
         getCommands().add(saveGame);
+        Command stopTimer = new Command(CommandType.STOP_TIMER, "STOPTIMER");
+        stopTimer.setAlias(new String[]{"STOPTIMER","stoptimer"});
+        getCommands().add(stopTimer);
+
     }
 
     /**

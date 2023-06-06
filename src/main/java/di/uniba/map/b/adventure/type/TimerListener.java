@@ -31,7 +31,7 @@ public class TimerListener extends Thread {
             }
         }
         if (isRunning) {
-            //gui.die(""); // Muori
+            engine.endGame(); // Muori
         }
     }
     public void stopTimer() {

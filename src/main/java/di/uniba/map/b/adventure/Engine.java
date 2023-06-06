@@ -138,6 +138,11 @@ public class Engine {
         }
     }
 
+    public void endGame(){
+        System.out.println("helo");
+        this.getTimer().stopTimer();
+    }
+
     public CommandGUIOutput execute() {
         String response;
         System.out.println("================================");
@@ -202,6 +207,10 @@ public class Engine {
                 case START_TIMER:
                     commandGUIOutput = new CommandGUIOutput(CommandGUIType.START_TIMER, "", null);
                     this.startTimer();
+                    break;
+                case STOP_TIMER:
+                    commandGUIOutput = new CommandGUIOutput(CommandGUIType.STOP_TIMER, "", null);
+                    this.endGame();
                     break;
                 default:
                     commandGUIOutput = new CommandGUIOutput(CommandGUIType.SHOW_TEXT, response, null);
