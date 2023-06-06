@@ -3,6 +3,7 @@ package di.uniba.map.b.adventure;
 import di.uniba.map.b.adventure.db.GameStatus;
 import di.uniba.map.b.adventure.games.EscapeFromLabGame;
 import di.uniba.map.b.adventure.parser.ParserOutput;
+import di.uniba.map.b.adventure.type.Command;
 import di.uniba.map.b.adventure.type.CommandGUIOutput;
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
@@ -59,10 +60,7 @@ public class AdventureGameGUI extends JFrame {
     public AdventureGameGUI() {
         try {
             client = new Client();
-            client.executeCommand("nord");
         } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
         setTitle("Escape from LABS");
@@ -206,7 +204,13 @@ public class AdventureGameGUI extends JFrame {
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                startGame(); // Carica il gioco
+                try {
+                    startGame(); // Carica il gioco
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                } catch (ClassNotFoundException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         JButton loadGameButton = new JButton() {
@@ -239,7 +243,7 @@ public class AdventureGameGUI extends JFrame {
     /**
      * Inizializza il pannello laterale
      */
-    private void initSidePanel(){
+    private void initSidePanel() throws IOException, ClassNotFoundException {
         // Immagine laterale
         ImageIcon latImage = new ImageIcon("resources/logo3.jpg");
         Image lat = latImage.getImage().getScaledInstance(600, 1900, Image.SCALE_SMOOTH);
@@ -267,16 +271,20 @@ public class AdventureGameGUI extends JFrame {
     /**
      * Inizializza la barra di avanzamento
      */
-    private void initProgressBar(JPanel sidePanel){
+    private void initProgressBar(JPanel sidePanel)
+            throws IOException, ClassNotFoundException {
+        CommandGUIOutput response;
         progressBar = new JProgressBar(0, 100);
         progressBar.setStringPainted(true);
         progressBar.setPreferredSize(new Dimension(240, 50));
         int progressBarBottomPadding = 10; // Spazio desiderato dal bordo inferiore
         progressBar.setBorder(BorderFactory.createEmptyBorder(0, 0, progressBarBottomPadding, 0));
         progressBar.setForeground(new Color(0, 200, 0));
-        // Avvio del timer
-        //backgroundTimer.start();
         sidePanel.add(progressBar, BorderLayout.SOUTH);
+        // Avvio del timer
+        client.executeCommand("STARTTIMER");
+        ProgressBarListener progressBarListener = new ProgressBarListener();
+        progressBarListener.start();
     }
 
     public void changeProgressBarColor(int progress){
@@ -289,7 +297,8 @@ public class AdventureGameGUI extends JFrame {
             progressBar.setForeground(new Color(red, green - 3, 0));
     }
 
-    public void incrementProgressBarValue(int progress){
+    public void incrementProgressBarValue(int progress)
+    {
         this.getProgressBar().setValue(progress);
         if (progress % 20 == 0 && progress != 100) {
             this.appendAreaText("Il livello delle radiazioni sta aumentando... Corri!\n");
@@ -343,7 +352,7 @@ public class AdventureGameGUI extends JFrame {
     /**
      * Inizializza il pannello di output
      */
-    private void initOutputArea(){
+    private void initOutputArea() throws IOException, ClassNotFoundException {
 
         // Crea la JTextArea
         Color background = new Color(0, 0, 0, 150); // Colore di sfondo con opacità ridotta (valori RGB: 0, 0, 0, opacità)
@@ -441,7 +450,13 @@ public class AdventureGameGUI extends JFrame {
             } catch (ClassNotFoundException ex) {
                 throw new RuntimeException(ex);
             }
-            performCommand(responseToGUI); // Stampa la risposta carattere per carattere nella JTextArea
+            try {
+                performCommand(responseToGUI); // Stampa la risposta carattere per carattere nella JTextArea
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            } catch (ClassNotFoundException ex) {
+                throw new RuntimeException(ex);
+            }
             textField.setText(""); // Resetta il contenuto della JTextField
             scrollPane.setVisible(true); // Mostra la JScrollPane
             textArea.setCaretPosition(textArea.getDocument().getLength()); // Scrolla la JTextArea fino alla fine del testo
@@ -463,7 +478,7 @@ public class AdventureGameGUI extends JFrame {
     }
 
     public void performCommand(CommandGUIOutput command)
-    {
+            throws IOException, ClassNotFoundException {
         switch (command.getType())
         {
             case MOVE:
@@ -485,6 +500,7 @@ public class AdventureGameGUI extends JFrame {
                 appendAreaText(printHelp());
                 break;
             case INCREMENT_PB_VALUE:
+                System.out.println("eccomi");
                 incrementProgressBarValue(Integer.valueOf(command.getResource()));
                 break;
         }
@@ -529,16 +545,17 @@ public class AdventureGameGUI extends JFrame {
         return help;
     }
 
-    private void startGame() {
+    private void startGame() throws IOException, ClassNotFoundException {
         mainPanel.remove(startPanel);
-        initSidePanel();
         initBackgroundPanel(1);
         initOutputArea();
         initInputArea();
+        initSidePanel();
         revalidate();
     }
 
-    private void startLoadedGame(int id) {
+    private void startLoadedGame(int id)
+            throws IOException, ClassNotFoundException {
         initSidePanel();
         initBackgroundPanel(id);
         initOutputArea();
@@ -692,6 +709,24 @@ public class AdventureGameGUI extends JFrame {
             textArea.append("\n"); // Aggiungi un a capo alla fine del testo
         }
 
+    }
+
+    public class ProgressBarListener extends Thread{
+        public void run(){
+            while (true){
+                try {
+                    Thread.sleep(500);
+                    CommandGUIOutput response = client.executeCommand("INCREMENTPBVALUE");
+                    performCommand(response);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
     }
 
     /**

@@ -20,6 +20,7 @@ import di.uniba.map.b.adventure.type.TimerListener;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.sql.SQLOutput;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,8 @@ public class Engine {
     private DBManager dbManager;
     private TimerListener timer;
     private int progressValue;
+    private Server server;
+
 
     public Engine(GameDescription game) {
         this.game = game;
@@ -47,16 +50,20 @@ public class Engine {
         } catch (Exception ex) {
             System.err.println(ex);
         }
-        timer = new TimerListener(this);
-        this.game.setTimer(timer);
-
         try {
             Set<String> stopwords = Utils.loadFileListInSet(new File("./resources/stopwords"));
             parser = new Parser(stopwords);
         } catch (IOException ex) {
             System.err.println(ex);
         }
-
+        timer = new TimerListener(this);
+        this.game.setTimer(timer);
+        try {
+            server = new Server(this);
+            server.start();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         try {
             dbManager=new DBManager();
         } catch (SQLException e) {
@@ -68,9 +75,13 @@ public class Engine {
         return this.timer;
     }
 
-    public void incrementProgressBarValue(int progressValue) {
+    private void startTimer(){
+        this.getTimer().start();
+    }
+
+    public void incrementProgressBarValue(int progressValue)
+            throws IOException {
         this.setProgressValue(progressValue);
-        CommandGUIOutput response = executeCommand("INCREMENT_PB_VALUE");
     }
 
     public int getProgressValue() {
@@ -136,6 +147,7 @@ public class Engine {
         CommandGUIOutput commandGUIOutput;
         CommandType commType;
         ParserOutput p = parser.parse(command, game.getCommands(), game.getCurrentRoom().getObjects(), game.getInventory());
+        System.out.println(p.getCommand().getName());
         if (p == null || p.getCommand() == null) {
             response = response + "Non capisco quello che mi vuoi dire.\n";
         } else {
@@ -171,7 +183,12 @@ public class Engine {
                     commandGUIOutput = new CommandGUIOutput(CommandGUIType.END, response, null);
                     break;
                 case INCREMENT_PB_VALUE:
+                    System.out.println("qui");
                     commandGUIOutput = new CommandGUIOutput(CommandGUIType.INCREMENT_PB_VALUE, "", String.valueOf(this.getProgressValue()));
+                    break;
+                case START_TIMER:
+                    commandGUIOutput = new CommandGUIOutput(CommandGUIType.START_TIMER, "", null);
+                    this.startTimer();
                     break;
                 default:
                     commandGUIOutput = new CommandGUIOutput(CommandGUIType.SHOW_TEXT, response, null);
@@ -192,15 +209,10 @@ public class Engine {
      */
     public static void main(String[] args)  {
         Engine engine;
-        Server server;
         try {
             engine = new Engine(new EscapeFromLabGame());
-            server = new Server(engine);
-            server.start();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
-
 }

@@ -38,9 +38,11 @@ public class Server {
     public void start() throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(clientSocket.getOutputStream());
+        this.objectOutputStream = objectOutputStream;
         CommandGUIOutput commandGUI = null;
         String commandString = bufferedReader.readLine();
 
+        System.out.println(objectOutputStream);
         while (true) {
                     System.out.println(commandString);
                     commandGUI=engine.executeCommand(commandString);
@@ -52,7 +54,9 @@ public class Server {
     }
 
     public void sendCommand(CommandGUIOutput commandGUIOutput) throws IOException {
+        System.out.println(commandGUIOutput.getType());
         objectOutputStream.writeObject(commandGUIOutput);
         objectOutputStream.flush();
     }
+
 }

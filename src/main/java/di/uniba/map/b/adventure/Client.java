@@ -43,7 +43,5 @@ public class Client {
         {
             return new CommandGUIOutput(CommandGUIType.UNKNOWN);
         }
-
-
     }
 }
