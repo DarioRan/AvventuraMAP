@@ -80,6 +80,13 @@ public class EscapeFromLabGame extends GameDescription {
         Command start_timer = new Command(CommandType.START_TIMER, "STARTTIMER");
         start_timer.setAlias(new String[]{"STARTTIMER","starttimer"});
         getCommands().add(start_timer);
+        Command start_loading_games = new Command(CommandType.START_LOADING_GAMES, "STARTLOADINGGAMES");
+        start_loading_games.setAlias(new String[]{"STARTLOADINGGAMES","startloadinggames"});
+        getCommands().add(start_loading_games);
+        Command getSavedGames = new Command(CommandType.GET_SAVED_GAMES, "GETSAVEDGAMES");
+        getSavedGames.setAlias(new String[]{"GETSAVEDGAMES","getsavedgames"});
+        getCommands().add(getSavedGames);
+
 
     }
 

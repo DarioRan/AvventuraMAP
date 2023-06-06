@@ -15,6 +15,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.SQLException;
 
 public class Server {
     Engine engine;
@@ -35,22 +36,31 @@ public class Server {
 
     }
 
-    public void start() throws IOException {
+    public void start() throws IOException, SQLException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(clientSocket.getOutputStream());
         this.objectOutputStream = objectOutputStream;
         CommandGUIOutput commandGUI = null;
+        Object resource = null;
         String commandString = bufferedReader.readLine();
 
         System.out.println(objectOutputStream);
         while (true) {
                     System.out.println(commandString);
-                    commandGUI=engine.executeCommand(commandString);
-                    objectOutputStream.writeObject(commandGUI);
+                    if(commandString.startsWith("username:")){
+                        String username = commandString.split(":")[1];
+                        engine.setUsername(username);
+                    } else if(commandString.equals("GETSAVEDGAMES")){
+                        resource = engine.sendResourcesToClient(commandString);
+                        objectOutputStream.writeObject(resource);
+                    } else{
+                        commandGUI=engine.executeCommand(commandString);
+                        objectOutputStream.writeObject(commandGUI);
+
+                    }
                     objectOutputStream.flush();
                     commandString = bufferedReader.readLine();
         }
-
     }
 
     public void sendCommand(CommandGUIOutput commandGUIOutput) throws IOException {

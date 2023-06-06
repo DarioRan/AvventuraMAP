@@ -234,6 +234,10 @@ public class AdventureGameGUI extends JFrame {
                     loadGame(); // Avvia il gioco
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                } catch (ClassNotFoundException ex) {
+                    throw new RuntimeException(ex);
                 }
             }
         });
@@ -493,6 +497,7 @@ public class AdventureGameGUI extends JFrame {
                 appendAreaText(command.getText());
                 break;
             case LOAD_GAME:
+
                 startLoadedGame( Integer.valueOf(command.getResource()));
                 break;
             case END:
@@ -565,20 +570,24 @@ public class AdventureGameGUI extends JFrame {
         revalidate();
     }
 
-    private void loadGame() throws SQLException {
+    private void loadGame()
+            throws SQLException, IOException, ClassNotFoundException {
         mainPanel.remove(startPanel);
         initLoadGameBackgroundPanel();
         initOutputLoadedGamesArea();
-        //showSavedGames();
+        showSavedGames();
         revalidate();
     }
-/*
-    private void showSavedGames() throws SQLException {
 
-        //List<GameStatus> savedGames = engine.getSavedGames();
+    private void showSavedGames()
+            throws SQLException, IOException, ClassNotFoundException {
+
+        List<GameStatus> savedGames =
+                (List<GameStatus>) client.getResourcesFromServer("GETSAVEDGAMES");
+
         Color backgroundColor = new Color(0, 0, 0, 0); // Colore di sfondo con opacità ridotta (valori RGB: 0, 0, 0, opacità)
-        //scrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, savedGames.size() * 50));
-        scrollPane.setViewportView(new SavedGame(savedGames, engine, mainPanel, contentPanel) {
+        scrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, savedGames.size() * 50));
+        scrollPane.setViewportView(new SavedGame(savedGames, mainPanel, contentPanel) {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
@@ -593,7 +602,7 @@ public class AdventureGameGUI extends JFrame {
         scrollPane.revalidate();
         scrollPane.repaint();
     }
-
+/*
     public void die(String command){
         appendAreaText(command + "Il livello delle radiazioni è aumentato troppo, ti senti stanco e non riesci " +
                 "più a correre. Ti accasci a terra e muori. \n\nGAME OVER");
@@ -606,11 +615,11 @@ public class AdventureGameGUI extends JFrame {
     /**
      * Pannello che mostra le partite salvate
      */
-    public static class SavedGame extends JPanel {
+    public class SavedGame extends JPanel {
         /**
          * Create the panel.
          */
-        public SavedGame(List<GameStatus> savedGames, Engine engine, JPanel mainPanel, JPanel contentPanel) {
+        public SavedGame(List<GameStatus> savedGames, JPanel mainPanel, JPanel contentPanel) {
             setLayout(new GridLayout(savedGames.size(), 1)); // Imposta il layout con una riga per ogni partita salvata
             this.setOpaque(false);
             this.setPreferredSize(new Dimension(this.getPreferredSize().width, savedGames.size() * 50)); // Imposta la dimensione del pannello
@@ -658,8 +667,13 @@ public class AdventureGameGUI extends JFrame {
                         mainPanel.revalidate();
                         mainPanel.repaint();
                         try {
-                            engine.loadGame(game.getUsername()); // Carica la partita
-                        } catch (SQLException ex) {
+                            client.sendResourcesToServer("username:"+game.getUsername());
+                            CommandGUIOutput response = client.executeCommand("LOADGAME"); // Carica la partita
+                            performCommand(response); // Esegue il comando
+
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        } catch (ClassNotFoundException ex) {
                             throw new RuntimeException(ex);
                         }
                     }

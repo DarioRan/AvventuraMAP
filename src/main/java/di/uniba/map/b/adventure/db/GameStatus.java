@@ -3,11 +3,12 @@ package di.uniba.map.b.adventure.db;
 import di.uniba.map.b.adventure.type.Inventory;
 import di.uniba.map.b.adventure.type.Room;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameStatus {
+public class GameStatus implements Serializable {
 
     String username;
     Integer lastRoom_id;

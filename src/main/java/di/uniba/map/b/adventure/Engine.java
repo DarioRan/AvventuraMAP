@@ -41,7 +41,7 @@ public class Engine {
     private TimerListener timer;
     private int progressValue;
     private Server server;
-
+    private String username;
 
     public Engine(GameDescription game) {
         this.game = game;
@@ -59,13 +59,15 @@ public class Engine {
         timer = new TimerListener(this);
         this.game.setTimer(timer);
         try {
+            dbManager=new DBManager();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        try {
             server = new Server(this);
             server.start();
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
-        try {
-            dbManager=new DBManager();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -92,6 +94,14 @@ public class Engine {
         this.progressValue = progressValue;
     }
 
+    public void setUsername(String username){
+        this.username = username;
+    }
+
+    public String getUsername(){
+        return this.username;
+    }
+
     public void loadGame(String username) throws SQLException {
         GameStatus gameStatus = null;
         try {
@@ -108,10 +118,6 @@ public class Engine {
         game.setInventory(inventory);
 
         System.out.println("Game loaded");
-
-        CommandGUIOutput response = executeCommand("LOADGAME");
-        //gui.performCommand(response);
-
     }
 
     public void saveGame(String username)
@@ -144,12 +150,11 @@ public class Engine {
         return new CommandGUIOutput(CommandGUIType.SHOW_TEXT, response);
     }
 
-    public CommandGUIOutput executeCommand(String command) {
+    public CommandGUIOutput executeCommand(String command) throws SQLException {
         String response =command + "\n\n";
         CommandGUIOutput commandGUIOutput;
         CommandType commType;
         ParserOutput p = parser.parse(command, game.getCommands(), game.getCurrentRoom().getObjects(), game.getInventory());
-        System.out.println(p.getCommand().getName());
         if (p == null || p.getCommand() == null) {
             response = response + "Non capisco quello che mi vuoi dire.\n";
         } else {
@@ -178,6 +183,7 @@ public class Engine {
                     commandGUIOutput = new CommandGUIOutput(CommandGUIType.TURN_OFF, response, game.getCurrentRoom().getBackgroundImagePath());
                     break;
                 case LOAD_GAME:
+                    this.loadGame(this.getUsername());
                     commandGUIOutput = new CommandGUIOutput(CommandGUIType.LOAD_GAME, "Caricamento partita", String.valueOf(game.getCurrentRoom().getId()));
                     break;
                 case HELP:
@@ -203,6 +209,31 @@ public class Engine {
 
         return commandGUIOutput = new CommandGUIOutput(CommandGUIType.SHOW_TEXT, response, null);
     }
+
+    public Object sendResourcesToClient(String request) throws SQLException {
+        String response = "";
+        Object resources = null;
+        CommandType commType;
+        ParserOutput p = parser.parse(request, game.getCommands(), game.getCurrentRoom().getObjects(), game.getInventory());
+        if (p == null || p.getCommand() == null) {
+            response = response + "Non capisco quello che mi vuoi dire.\n";
+        } else {
+            commType = p.getCommand().getType();
+            switch (commType) {
+                case GET_SAVED_GAMES:
+                    System.out.println("GET_SAVED_GAMES");
+                    resources = this.getSavedGames();
+                    break;
+                default:
+                    resources = null;
+                    break;
+            }
+            return resources;
+        }
+
+        return resources = null;
+    }
+
 
     public List<GameStatus> getSavedGames() throws SQLException {
 
