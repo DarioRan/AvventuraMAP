@@ -572,7 +572,7 @@ public class AdventureGameGUI extends JFrame {
             throws SQLException, IOException, ClassNotFoundException {
 
         List<GameStatus> savedGames =
-                (List<GameStatus>) client.getResourcesFromServer("GETSAVEDGAMES");
+                (List<GameStatus>) client.getResourcesFromServer("resources:GETSAVEDGAMES");
 
         Color backgroundColor = new Color(0, 0, 0, 0); // Colore di sfondo con opacità ridotta (valori RGB: 0, 0, 0, opacità)
         scrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, savedGames.size() * 50));

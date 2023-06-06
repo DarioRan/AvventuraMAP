@@ -49,8 +49,9 @@ public class Server {
                     if(commandString.startsWith("username:")){
                         String username = commandString.split(":")[1];
                         engine.setUsername(username);
-                    } else if(commandString.equals("GETSAVEDGAMES")){
-                        resource = engine.sendResourcesToClient(commandString);
+                    } else if(commandString.startsWith("resources:")){
+                        String resourceRequest = commandString.split(":")[1];
+                        resource = engine.sendResourcesToClient(resourceRequest);
                         objectOutputStream.writeObject(resource);
                     } else{
                         commandGUI=engine.executeCommand(commandString);

@@ -139,7 +139,6 @@ public class Engine {
     }
 
     public void endGame(){
-        System.out.println("helo");
         this.getTimer().stopTimer();
     }
 
