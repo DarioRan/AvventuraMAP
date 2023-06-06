@@ -362,6 +362,10 @@ public class AdventureGameGUI extends JFrame {
             }
         };
         printer= new Printer(textArea, 15);
+        String firstDesctription = "Le sirene risuonano nel laboratorio, c'è stata una fuoriuscita di materiale radioattivo e il livello di radiazioni sta rapidamente aumentando!" +
+                " Il tempo stringe e devi scappare al più presto prima che sia troppo tardi! Trova un'uscita sicura e mettiti in salvo dalla minaccia radioattiva che avanza " +
+                "implacabile\n\nINDIZIO: digita HELP per visualizzare i comandi disponibili\n\n";
+        performCommand(new CommandGUIOutput(CommandGUIType.SHOW_TEXT,firstDesctription));
         textArea.setFont(new Font("Consolas", Font.BOLD, 18));
         textArea.setEditable(false); // Rendi la JTextArea non modificabile
         textArea.setOpaque(false); // Rendi lo sfondo trasparente
@@ -480,7 +484,6 @@ public class AdventureGameGUI extends JFrame {
                 appendAreaText(command.getText());
                 break;
             case LOAD_GAME:
-
                 startLoadedGame( Integer.parseInt(command.getResource()));
                 break;
             case END:

@@ -73,21 +73,6 @@ public class EscapeFromLabGame extends GameDescription {
         Command help = new Command(CommandType.HELP, "help");
         help.setAlias(new String[]{"HELP", "aiuto", "comandi", "help", "istruzioni"});
         getCommands().add(help);
-        Command inc_pb_value = new Command(CommandType.INCREMENT_PB_VALUE, "INCREMENTPBVALUE");
-        inc_pb_value.setAlias(new String[]{"INCREMENTPBVALUE","incrementpbvalue"});
-        getCommands().add(inc_pb_value);
-        Command start_timer = new Command(CommandType.START_TIMER, "STARTTIMER");
-        start_timer.setAlias(new String[]{"STARTTIMER","starttimer"});
-        getCommands().add(start_timer);
-        Command getSavedGames = new Command(CommandType.GET_SAVED_GAMES, "GETSAVEDGAMES");
-        getSavedGames.setAlias(new String[]{"GETSAVEDGAMES","getsavedgames"});
-        getCommands().add(getSavedGames);
-        Command saveGame = new Command(CommandType.SAVE_GAME, "SAVEGAME");
-        saveGame.setAlias(new String[]{"SAVEGAME","savegame"});
-        getCommands().add(saveGame);
-        Command stopTimer = new Command(CommandType.STOP_TIMER, "STOPTIMER");
-        stopTimer.setAlias(new String[]{"STOPTIMER","stoptimer"});
-        getCommands().add(stopTimer);
 
     }
 
@@ -106,9 +91,7 @@ public class EscapeFromLabGame extends GameDescription {
             String description = desc.getDescription(1);
             String title = desc.getTitle(1);
 
-            String firstDesctription = "Le sirene risuonano nel laboratorio, c'è stata una fuoriuscita di materiale radioattivo e il livello di radiazioni sta rapidamente aumentando! Il tempo stringe e devi scappare al più presto prima che sia troppo tardi! Trova un'uscita sicura e mettiti in salvo dalla minaccia radioattiva che avanza implacabile\n\n";
-
-            Room room1 = new Room(1, desc.getTitle(0), firstDesctription + desc.getDescription(0));
+            Room room1 = new Room(1, desc.getTitle(0), desc.getDescription(0));
             Room room2 = new Room(2, desc.getTitle(1), desc.getDescription(1));
             Room room3 = new Room(3, desc.getTitle(2), desc.getDescription(2));
             Room room4 = new Room(4, desc.getTitle(3), desc.getDescription(3));
@@ -692,20 +675,20 @@ public class EscapeFromLabGame extends GameDescription {
                 response="Non puoi accendere questo oggetto.";
             }
         } else {
-                if(getCurrentRoom().getId()==9)
-                {
-                    Room.setPowered(true);
-                    response="Hai acceso il generatore.";
-                }
-                else if(getCurrentRoom().getId()==7)
-                {
-                    response="Hai acceso la cisterna. \n\nGrave errore! Il materiale radioattivo sta fuoriuscendo!\n";
-                    getTimer().setDelay(2500);
-                }
-                else
-                {
-                    response="Non hai niente da accendere.";
-                }
+            if(getCurrentRoom().getId()==9)
+            {
+                Room.setPowered(true);
+                response="Hai acceso il generatore.";
+            }
+            else if(getCurrentRoom().getId()==7)
+            {
+                response="Hai acceso la cisterna. \n\nGrave errore! Il materiale radioattivo sta fuoriuscendo!\n";
+                getTimer().setDelay(2500);
+            }
+            else
+            {
+                response="Non hai niente da accendere.";
+            }
         }
         return response;
     }
