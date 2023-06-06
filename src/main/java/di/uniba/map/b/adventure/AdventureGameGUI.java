@@ -283,7 +283,7 @@ public class AdventureGameGUI extends JFrame {
         sidePanel.add(progressBar, BorderLayout.SOUTH);
         // Avvio del timer
         client.executeCommand("STARTTIMER");
-        ProgressBarListener progressBarListener = new ProgressBarListener();
+        ProgressBarListener progressBarListener = new ProgressBarListener(3000);
         progressBarListener.start();
     }
 
@@ -712,11 +712,18 @@ public class AdventureGameGUI extends JFrame {
     }
 
     public class ProgressBarListener extends Thread{
+
+        private int delay;
+
+        public ProgressBarListener(int delay){
+            this.delay = delay;
+        }
         public void run(){
             while (true){
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(delay);
                     CommandGUIOutput response = client.executeCommand("INCREMENTPBVALUE");
+                    setDelay(Integer.parseInt(response.getText()));
                     performCommand(response);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -726,6 +733,10 @@ public class AdventureGameGUI extends JFrame {
                     throw new RuntimeException(e);
                 }
             }
+        }
+
+        public void setDelay(int delay){
+            this.delay = delay;
         }
     }
 

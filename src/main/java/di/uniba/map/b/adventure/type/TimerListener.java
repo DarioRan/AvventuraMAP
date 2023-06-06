@@ -13,7 +13,7 @@ public class TimerListener extends Thread {
     private int delay;
 
     public TimerListener(Engine engine) {
-        this.delay = 2500;
+        this.delay = 3000;
         this.engine = engine;
     }
 
