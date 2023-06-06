@@ -106,6 +106,9 @@ public class AdventureGameGUI extends JFrame {
                 } else if(isDead){
                     shouldCloseGame = true;
                     e.getWindow().dispose();
+                } else {
+                    shouldCloseGame = true;
+                    e.getWindow().dispose();
                 }
             }
         });
@@ -293,7 +296,7 @@ public class AdventureGameGUI extends JFrame {
     public void incrementProgressBarValue(int progress)
             throws IOException, ClassNotFoundException {
         this.getProgressBar().setValue(progress);
-        if (progress % 20 == 0 && progress != 100) {
+        if (progress % 20 == 0 && progress != 100 && progress != 0) {
             this.appendAreaText("Il livello delle radiazioni sta aumentando... Corri!\n");
         } else if (progress == 100) {
             this.die("");
