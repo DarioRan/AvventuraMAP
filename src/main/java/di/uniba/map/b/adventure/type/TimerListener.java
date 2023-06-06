@@ -8,12 +8,11 @@ import java.io.IOException;
 public class TimerListener extends Thread {
     private volatile boolean isRunning = true;
     private int progress = 0;
-
     private Engine engine;
     private int delay;
 
     public TimerListener(Engine engine) {
-        this.delay = 3000;
+        this.delay = 500;
         this.engine = engine;
     }
 
@@ -29,9 +28,6 @@ public class TimerListener extends Thread {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        }
-        if (isRunning) {
-            engine.endGame(); // Muori
         }
     }
     public void stopTimer() {

@@ -103,18 +103,8 @@ public class AdventureGameGUI extends JFrame {
                             throw new RuntimeException(ex);
                         }
                     }
-                } else {
-                    if(isDead){
-                        Engine engine = new Engine(new EscapeFromLabGame());
-                    } else {
-                        shouldCloseGame = true; // Imposta la variabile shouldCloseGame a false se non c'è una partita in corso
-                    }
-                    try {
-                        client.executeCommand("STOPTIMER");
-                        progressBarListener.stopListener();
-                    } catch (IOException | ClassNotFoundException ex) {
-                        throw new RuntimeException(ex);
-                    }
+                } else if(isDead){
+                    shouldCloseGame = true;
                     e.getWindow().dispose();
                 }
             }
@@ -151,13 +141,14 @@ public class AdventureGameGUI extends JFrame {
                     JOptionPane.showMessageDialog(input, "Il campo username non può essere vuoto.", "Errore", JOptionPane.ERROR_MESSAGE);
                 } else {
                     System.out.println("Username: " + username);
+                    client.executeCommand("STOPTIMER");
+                    progressBarListener.stopListener();
                     client.sendResourcesToServer("username:"+username);
                     client.executeCommand("SAVEGAME");
                     validUsername = true;
                     shouldCloseGame = true;
                     e.getWindow().dispose();
-                    client.executeCommand("STOPTIMER");
-                    progressBarListener.stopListener();
+
                 }
             } else {
                 validUsername = true;
@@ -596,9 +587,10 @@ public class AdventureGameGUI extends JFrame {
     }
 
     public void die(String command) throws IOException, ClassNotFoundException {
+        textField.setEditable(false);
+        progressBarListener.stopListener();
         appendAreaText(command + "Il livello delle radiazioni è aumentato troppo, ti senti stanco e non riesci " +
                 "più a correre. Ti accasci a terra e muori. \n\nGAME OVER");
-        textField.setEditable(false);
         isDead = true;
         client.executeCommand("STOPTIMER");
     }
