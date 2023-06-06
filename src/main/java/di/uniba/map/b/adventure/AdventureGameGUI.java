@@ -363,8 +363,6 @@ public class AdventureGameGUI extends JFrame {
             }
         };
         printer= new Printer(textArea, 15);
-        performCommand(new CommandGUIOutput(CommandGUIType.SHOW_TEXT, "Benvenuto in Escape Room!"));
-
         textArea.setFont(new Font("Consolas", Font.BOLD, 18));
         textArea.setEditable(false); // Rendi la JTextArea non modificabile
         textArea.setOpaque(false); // Rendi lo sfondo trasparente
