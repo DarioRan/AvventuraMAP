@@ -699,7 +699,7 @@ public class EscapeFromLabGame extends GameDescription {
             else if(getCurrentRoom().getId()==7)
             {
                 response="Hai acceso la cisterna. \n\nGrave errore! Il materiale radioattivo sta fuoriuscendo!\n";
-                getTimer().setDelay(2500);
+                getTimer().setDelay(3500);
             }
             else
             {
@@ -723,7 +723,7 @@ public class EscapeFromLabGame extends GameDescription {
             else {
                 if(getCurrentRoom().getId()==7)
                 {
-                    getTimer().setDelay(5000);
+                    getTimer().setDelay(6000);
                     response="Hai spento la cisterna.\n\n" +
                             "Buona notizia! Fortunatamente, la fuoriuscita del materiale radioattivo si è rallentata, offrendoti un prezioso respiro. " +
                             "Tuttavia, non abbassare la guardia! C'è materiale radioattivo ovunque! Continua a muoverti con cautela e cerca di trovare un'uscita sicura il prima possibile!\n " ;
