@@ -35,9 +35,9 @@ public class AdventureGameGUI extends JFrame {
     private Image backgroundImage = null;
     private boolean shouldCloseGame = false;
     private JProgressBar progressBar;
-    private TimerListener backgroundTimer;
     private Printer printer;
     private boolean isDead = false;
+    ProgressBarListener progressBarListener = null;
 
     private static Client client;
     public JProgressBar getProgressBar() {
@@ -46,15 +46,6 @@ public class AdventureGameGUI extends JFrame {
 
     public void setProgressBar(JProgressBar progressBar) {
         this.progressBar = progressBar;
-    }
-
-    public TimerListener getBackgroundTimer() {
-        return backgroundTimer;
-    }
-
-    public void setBackgroundTimer(
-            TimerListener backgroundTimer) {
-        this.backgroundTimer = backgroundTimer;
     }
 
     public AdventureGameGUI() {
@@ -67,8 +58,6 @@ public class AdventureGameGUI extends JFrame {
         initMainPanel();
         initStartPanel();
         setVisible(true);
-        //backgroundTimer = engine.getTimer();
-        //this.engine = engine;
     }
 
 
@@ -101,26 +90,32 @@ public class AdventureGameGUI extends JFrame {
                     if (scelta == JOptionPane.YES_OPTION) {
                         try {
                             openUsernameInputDialog(e);
-                        } catch (IOException ex) {
-                            throw new RuntimeException(ex);
-                        } catch (ClassNotFoundException ex) {
+                        } catch (IOException | ClassNotFoundException ex) {
                             throw new RuntimeException(ex);
                         }
                     } else {
                         shouldCloseGame = true; // Imposta la variabile shouldCloseGame a false se si seleziona "No" per la conferma
                         e.getWindow().dispose(); // Chiude solo la finestra
-                        //backgroundTimer.stopTimer();
+                        try {
+                            client.executeCommand("STOPTIMER");
+                            progressBarListener.stopListener();
+                        } catch (IOException | ClassNotFoundException ex) {
+                            throw new RuntimeException(ex);
+                        }
                     }
                 } else {
                     if(isDead){
-                        e.getWindow().dispose();
                         Engine engine = new Engine(new EscapeFromLabGame());
-                        //backgroundTimer.stopTimer();
                     } else {
                         shouldCloseGame = true; // Imposta la variabile shouldCloseGame a false se non c'è una partita in corso
-                        e.getWindow().dispose(); // Chiude solo la finestra
-                        //backgroundTimer.stopTimer();
                     }
+                    try {
+                        client.executeCommand("STOPTIMER");
+                        progressBarListener.stopListener();
+                    } catch (IOException | ClassNotFoundException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    e.getWindow().dispose();
                 }
             }
         });
@@ -157,11 +152,12 @@ public class AdventureGameGUI extends JFrame {
                 } else {
                     System.out.println("Username: " + username);
                     client.sendResourcesToServer("username:"+username);
-                    CommandGUIOutput response = client.executeCommand("SAVEGAME");
+                    client.executeCommand("SAVEGAME");
                     validUsername = true;
                     shouldCloseGame = true;
                     e.getWindow().dispose();
-                    //backgroundTimer.stopTimer();
+                    client.executeCommand("STOPTIMER");
+                    progressBarListener.stopListener();
                 }
             } else {
                 validUsername = true;
@@ -214,9 +210,7 @@ public class AdventureGameGUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 try {
                     startGame(); // Carica il gioco
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                } catch (ClassNotFoundException ex) {
+                } catch (IOException | ClassNotFoundException ex) {
                     throw new RuntimeException(ex);
                 }
             }
@@ -239,11 +233,7 @@ public class AdventureGameGUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 try {
                     loadGame(); // Avvia il gioco
-                } catch (SQLException ex) {
-                    throw new RuntimeException(ex);
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                } catch (ClassNotFoundException ex) {
+                } catch (SQLException | ClassNotFoundException | IOException ex) {
                     throw new RuntimeException(ex);
                 }
             }
@@ -295,7 +285,7 @@ public class AdventureGameGUI extends JFrame {
         sidePanel.add(progressBar, BorderLayout.SOUTH);
         // Avvio del timer
         client.executeCommand("STARTTIMER");
-        ProgressBarListener progressBarListener = new ProgressBarListener(3000);
+        progressBarListener = new ProgressBarListener(3000);
         progressBarListener.start();
     }
 
@@ -310,10 +300,12 @@ public class AdventureGameGUI extends JFrame {
     }
 
     public void incrementProgressBarValue(int progress)
-    {
+            throws IOException, ClassNotFoundException {
         this.getProgressBar().setValue(progress);
         if (progress % 20 == 0 && progress != 100) {
             this.appendAreaText("Il livello delle radiazioni sta aumentando... Corri!\n");
+        } else if (progress == 100) {
+            this.die("");
         }
         this.changeProgressBarColor(progress);
     }
@@ -457,16 +449,12 @@ public class AdventureGameGUI extends JFrame {
             String inputText = textField.getText(); // Ottieni il testo inserito nella JTextField
             try {
                 responseToGUI=client.executeCommand(inputText); // Esegui il comando inserito nella JTextField
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            } catch (ClassNotFoundException ex) {
+            } catch (IOException | ClassNotFoundException ex) {
                 throw new RuntimeException(ex);
             }
             try {
                 performCommand(responseToGUI); // Stampa la risposta carattere per carattere nella JTextArea
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            } catch (ClassNotFoundException ex) {
+            } catch (IOException | ClassNotFoundException ex) {
                 throw new RuntimeException(ex);
             }
             textField.setText(""); // Resetta il contenuto della JTextField
@@ -504,10 +492,10 @@ public class AdventureGameGUI extends JFrame {
                 break;
             case LOAD_GAME:
 
-                startLoadedGame( Integer.valueOf(command.getResource()));
+                startLoadedGame( Integer.parseInt(command.getResource()));
                 break;
             case END:
-               // die(command.getText());
+                die(command.getText());
                 break;
             case HELP:
                 appendAreaText(printHelp());
@@ -523,7 +511,7 @@ public class AdventureGameGUI extends JFrame {
     }
 
     public String printHelp(){
-        String help = ("Il tuo obbiettivo principale è uscire vivo dal laboratorio in cui ti trovi intrappolato.\n" +
+        return ("Il tuo obbiettivo principale è uscire vivo dal laboratorio in cui ti trovi intrappolato.\n" +
                 "Per farcela dovrai affrontare molti enigmi che metteranno a dura prova la tua astuzia.\n" +
                 "\n" +
                 "Per muoverti usa:\n" +
@@ -554,7 +542,6 @@ public class AdventureGameGUI extends JFrame {
                 "\n" +
                 "- INV elenca gli oggetti nel tuo inventario\n" +
                 "- HELP ti ripete questa descrizione.\n");
-        return help;
     }
 
     private void startGame() throws IOException, ClassNotFoundException {
@@ -607,15 +594,14 @@ public class AdventureGameGUI extends JFrame {
         scrollPane.revalidate();
         scrollPane.repaint();
     }
-/*
-    public void die(String command){
+
+    public void die(String command) throws IOException, ClassNotFoundException {
         appendAreaText(command + "Il livello delle radiazioni è aumentato troppo, ti senti stanco e non riesci " +
                 "più a correre. Ti accasci a terra e muori. \n\nGAME OVER");
         textField.setEditable(false);
         isDead = true;
-        backgroundTimer.stopTimer();
+        client.executeCommand("STOPTIMER");
     }
-*/
 
     /**
      * Pannello che mostra le partite salvate
@@ -736,11 +722,13 @@ public class AdventureGameGUI extends JFrame {
 
         private int delay;
 
+        private volatile boolean isRunning = true;
+
         public ProgressBarListener(int delay){
             this.delay = delay;
         }
         public void run(){
-            while (true){
+            while (isRunning){
                 try {
                     Thread.sleep(delay);
                     CommandGUIOutput response = client.executeCommand("INCREMENTPBVALUE");
@@ -748,17 +736,19 @@ public class AdventureGameGUI extends JFrame {
                     performCommand(response);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                } catch (ClassNotFoundException e) {
+                } catch (IOException | ClassNotFoundException e) {
                     throw new RuntimeException(e);
                 }
             }
         }
 
+        public void stopListener(){
+            isRunning = false;
+        }
         public void setDelay(int delay){
             this.delay = delay;
         }
+
     }
 
     /**

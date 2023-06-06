@@ -55,7 +55,6 @@ public class Server {
                     } else{
                         commandGUI=engine.executeCommand(commandString);
                         objectOutputStream.writeObject(commandGUI);
-
                     }
                     objectOutputStream.flush();
                     commandString = bufferedReader.readLine();
