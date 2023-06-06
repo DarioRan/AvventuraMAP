@@ -6,6 +6,8 @@ import di.uniba.map.b.adventure.parser.ParserOutput;
 import di.uniba.map.b.adventure.type.AdvObject;
 import di.uniba.map.b.adventure.type.AdvObjectContainer;
 import di.uniba.map.b.adventure.type.Command;
+import di.uniba.map.b.adventure.type.CommandGUIOutput;
+import di.uniba.map.b.adventure.type.CommandGUIType;
 import di.uniba.map.b.adventure.type.CommandType;
 import di.uniba.map.b.adventure.type.Room;
 
@@ -73,7 +75,21 @@ public class EscapeFromLabGame extends GameDescription {
         Command help = new Command(CommandType.HELP, "help");
         help.setAlias(new String[]{"HELP", "aiuto", "comandi", "help", "istruzioni"});
         getCommands().add(help);
-
+        Command saveGame = new Command(CommandType.SAVE_GAME, "help");
+        saveGame.setAlias(new String[]{"HELP", "aiuto", "comandi", "help", "istruzioni"});
+        getCommands().add(saveGame);
+        Command incrementPbValue = new Command(CommandType.INCREMENT_PB_VALUE, "INCREMENTPBVALUE");
+        incrementPbValue.setAlias(new String[]{"INCREMENTPBVALUE", "incrementpbvalue"});
+        getCommands().add(incrementPbValue);
+        Command getSavedGames = new Command(CommandType.GET_SAVED_GAMES, "GETSAVEDGAMES");
+        getSavedGames.setAlias(new String[]{"GETSAVEDGAMES", "getsavedgames"});
+        getCommands().add(getSavedGames);
+        Command startTimer = new Command(CommandType.START_TIMER, "STARTTIMER");
+        startTimer.setAlias(new String[]{"STARTTIMER", "starttimer"});
+        getCommands().add(startTimer);
+        Command stopTimer = new Command(CommandType.STOP_TIMER, "STOPTIMER");
+        stopTimer.setAlias(new String[]{"STOPTIMER", "stoptimer"});
+        getCommands().add(stopTimer);
     }
 
     /**
