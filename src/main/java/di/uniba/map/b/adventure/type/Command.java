@@ -9,46 +9,57 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-
 /**
- *
- * @author pierpaolo
+ * Classe che rappresenta un comando.
  */
 public class Command {
-
+    /**
+     * Enumerazione che rappresenta il tipo di comando.
+     */
     private final CommandType type;
-
+    /**
+     * Nome del comando.
+     */
     private final String name;
-
+    /**
+     * Set di alias del comando.
+     */
     private Set<String> alias;
-
-    public Command(CommandType type, String name) {
-        this.type = type;
-        this.name = name;
+    /**
+     * Costruttore della classe.
+     * @param typeParam tipo del comando
+     * @param nameParam nome del comando
+     */
+    public Command(final CommandType typeParam,final String nameParam) {
+        this.type = typeParam;
+        this.name = nameParam;
     }
 
-    public Command(CommandType type, String name, Set<String> alias) {
-        this.type = type;
-        this.name = name;
-        this.alias = alias;
-    }
-
+    /**
+     * metodo che restituisce il nome del comando.
+     * @return name nome del comando
+     */
     public String getName() {
         return name;
     }
-
+    /**
+     * metodo che restituisce il set di alias del comando.
+     * @return alias set di alias del comando
+     */
     public Set<String> getAlias() {
         return alias;
     }
-
-    public void setAlias(Set<String> alias) {
-        this.alias = alias;
-    }
-
-    public void setAlias(String[] alias) {
+    /**
+     * metodo che setta il set di alias del comando.
+     * @param alias set di alias del comando
+     */
+    public void setAlias(final String[] alias) {
         this.alias = new HashSet<>(Arrays.asList(alias));
     }
-
+    /**
+     * metodo che restituisce il tipo del comando.
+     * @return type tipo del comando
+     */
     public CommandType getType() {
         return type;
     }
@@ -61,7 +72,7 @@ public class Command {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }

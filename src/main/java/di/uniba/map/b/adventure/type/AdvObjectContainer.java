@@ -12,7 +12,7 @@ public class AdvObjectContainer extends AdvObject {
      */
     private List<AdvObject> list = new ArrayList<>();
     /**
-     * Costruttore di default.
+     * Costruttore della classe.
      * @param id id dell'oggetto
      * @param name nome dell'oggetto
      * @param description descrizione dell'oggetto
