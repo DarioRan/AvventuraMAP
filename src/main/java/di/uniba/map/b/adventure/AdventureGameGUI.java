@@ -1,26 +1,18 @@
 package di.uniba.map.b.adventure;
 
 import di.uniba.map.b.adventure.db.GameStatus;
-import di.uniba.map.b.adventure.games.EscapeFromLabGame;
-import di.uniba.map.b.adventure.parser.ParserOutput;
-import di.uniba.map.b.adventure.type.Command;
 import di.uniba.map.b.adventure.type.CommandGUIOutput;
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.util.List;
-
 import di.uniba.map.b.adventure.type.CommandGUIType;
-import di.uniba.map.b.adventure.type.TimerListener;
 
 public class AdventureGameGUI extends JFrame {
 
@@ -29,7 +21,6 @@ public class AdventureGameGUI extends JFrame {
     private JTextArea textArea = null;
     private JScrollPane scrollPane = null;
     private JTextField textField = null;
-    private JPanel sidePanel = null;
     private JPanel contentPanel = null;
     private JPanel backgroundPanel = null;
     private Image backgroundImage = null;
@@ -199,14 +190,11 @@ public class AdventureGameGUI extends JFrame {
         };
         startButton.setBounds(buttonX, buttonY, buttonWidth, buttonHeight);
         startButton.setFont(new Font("Arial", Font.BOLD, 16));
-        startButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    startGame(); // Carica il gioco
-                } catch (IOException | ClassNotFoundException ex) {
-                    throw new RuntimeException(ex);
-                }
+        startButton.addActionListener(e -> {
+            try {
+                startGame(); // Carica il gioco
+            } catch (IOException | ClassNotFoundException ex) {
+                throw new RuntimeException(ex);
             }
         });
         JButton loadGameButton = new JButton() {
@@ -222,14 +210,11 @@ public class AdventureGameGUI extends JFrame {
         };
         loadGameButton.setBounds(buttonX, buttonY2, buttonWidth, buttonHeight);
         loadGameButton.setFont(new Font("Arial", Font.BOLD, 16));
-        loadGameButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    loadGame(); // Avvia il gioco
-                } catch (SQLException | ClassNotFoundException | IOException ex) {
-                    throw new RuntimeException(ex);
-                }
+        loadGameButton.addActionListener(e -> {
+            try {
+                loadGame(); // Avvia il gioco
+            } catch (SQLException | ClassNotFoundException | IOException ex) {
+                throw new RuntimeException(ex);
             }
         });
         startPanel.add(startButton); // Aggiungi il pulsante al pannello di avvio
@@ -283,7 +268,7 @@ public class AdventureGameGUI extends JFrame {
         progressBarListener.start();
     }
 
-    public void changeProgressBarColor(int progress){
+    public void changeProgressBarColor(){
         Color color = progressBar.getForeground();
         int red = color.getRed();
         int green = color.getGreen();
@@ -301,7 +286,7 @@ public class AdventureGameGUI extends JFrame {
         } else if (progress == 100) {
             this.die("");
         }
-        this.changeProgressBarColor(progress);
+        this.changeProgressBarColor();
     }
 
     /**
@@ -480,7 +465,7 @@ public class AdventureGameGUI extends JFrame {
             case MOVE:
             case TURN_ON:
             case TURN_OFF:
-                this.setBackgroundImageFromPath((String) command.getResource());
+                this.setBackgroundImageFromPath(command.getResource());
                 appendAreaText(command.getText());
                 break;
             case SHOW_TEXT:
@@ -567,7 +552,7 @@ public class AdventureGameGUI extends JFrame {
     }
 
     private void showSavedGames()
-            throws SQLException, IOException, ClassNotFoundException {
+            throws IOException, ClassNotFoundException {
 
         List<GameStatus> savedGames =
                 (List<GameStatus>) client.getResourcesFromServer("resources:GETSAVEDGAMES");
@@ -658,9 +643,7 @@ public class AdventureGameGUI extends JFrame {
                             CommandGUIOutput response = client.executeCommand("LOADGAME"); // Carica la partita
                             performCommand(response); // Esegue il comando
 
-                        } catch (IOException ex) {
-                            throw new RuntimeException(ex);
-                        } catch (ClassNotFoundException ex) {
+                        } catch (IOException | ClassNotFoundException ex) {
                             throw new RuntimeException(ex);
                         }
                     }
@@ -673,13 +656,10 @@ public class AdventureGameGUI extends JFrame {
     /**
      * Classe per la stampa del testo con un effetto di scrittura
      */
-    public class Printer {
-        private JTextArea textArea;
+    public static class Printer {
+        private final JTextArea textArea;
         private int delay;
 
-        public Printer() {
-            this.delay = 10;
-        }
         public Printer(JTextArea textArea, int delay) {
             this.textArea = textArea;
             this.delay = delay;
@@ -729,8 +709,8 @@ public class AdventureGameGUI extends JFrame {
                     Thread.sleep(delay);
                     CommandGUIOutput response = client.executeCommand("INCREMENTPBVALUE");
                     try{
-                        setDelay(Integer.valueOf(response.getText()));
-                    }catch (NumberFormatException e){}
+                        setDelay(Integer.parseInt(response.getText()));
+                    }catch (NumberFormatException ignored){}
                     performCommand(response);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -754,9 +734,7 @@ public class AdventureGameGUI extends JFrame {
      */
 
     public static void main(String[] args) {
-
         AdventureGameGUI gui = new AdventureGameGUI();
-
     }
 
 
