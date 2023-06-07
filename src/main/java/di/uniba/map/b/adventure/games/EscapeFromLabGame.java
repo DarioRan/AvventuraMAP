@@ -729,7 +729,7 @@ public class EscapeFromLabGame extends GameDescription {
             else if(getCurrentRoom().getId()==7)
             {
                 response="Hai acceso la cisterna. \n\nGrave errore! Il materiale radioattivo sta fuoriuscendo!\n";
-                getTimer().setDelay(3500);
+                getTimer().setDelay(9000);
             }
             else
             {
