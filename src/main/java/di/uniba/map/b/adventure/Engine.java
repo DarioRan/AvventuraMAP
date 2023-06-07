@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package di.uniba.map.b.adventure;
 
 import di.uniba.map.b.adventure.db.DBManager;
@@ -20,29 +15,54 @@ import di.uniba.map.b.adventure.type.TimerListener;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.sql.SQLOutput;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 /**
- * ATTENZIONE: l'Engine è molto spartano, in realtà demanda la logica alla
- * classe che implementa GameDescription e si occupa di gestire I/O sul
- * terminale.
- *
- * @author pierpaolo
+ * Classe che indica il motore del gioco.
  */
 public class Engine {
 
+    /**
+     * Gioco in esecuzione.
+     */
     private final GameDescription game;
+    /**
+     * Parser per il gioco.
+     */
     private Parser parser;
+
+    /**
+     * Gestore del database.
+     */
     private DBManager dbManager;
+
+    /**
+     * Timer per il gioco.
+     */
     private TimerListener timer;
+
+    /**
+     * progressValue per la progress bar.
+     */
     private int progressValue;
+
+    /**
+     * Server per il gioco.
+     */
     private Server server;
+
+    /**
+     * Username del giocatore.
+     */
     private String username;
 
+    /**
+     * Costruttore della classe.
+     * @param game gioco in esecuzione
+     */
     public Engine(GameDescription game) {
         this.game = game;
         try {
@@ -66,42 +86,73 @@ public class Engine {
         try {
             server = new Server(this);
             server.start();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (SQLException e) {
+        } catch (IOException | SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
+    /**
+     * Metodo che restituisce il timer del gioco.
+     * @return timer del gioco
+     */
     public TimerListener getTimer() {
         return this.timer;
     }
 
+    /**
+     * Metodo che fa partire il timer del gioco.
+     */
     private void startTimer(){
         this.getTimer().start();
     }
 
+    /**
+     * Metodo che incrementa il valore della progress bar.
+     * @param progressValue valore della progress bar
+     * @throws IOException eccezione
+     */
     public void incrementProgressBarValue(int progressValue)
             throws IOException {
         this.setProgressValue(progressValue);
     }
 
+    /**
+     * Metodo che restituisce il valore della progress bar.
+     * @return valore della progress bar
+     */
     public int getProgressValue() {
         return this.progressValue;
     }
 
+    /**
+     * Metodo che setta il valore della progress bar.
+     * @param progressValue valore della progress bar
+     */
     public void setProgressValue(int progressValue) {
         this.progressValue = progressValue;
     }
 
+    /**
+     * Metodo che restituisce il username del gioco in esecuzione.
+     * @param username username del giocatore
+     */
     public void setUsername(String username){
         this.username = username;
     }
 
+    /**
+     * Metodo che restituisce il username del gioco in esecuzione.
+     * @return username del giocatore
+     */
     public String getUsername(){
         return this.username;
     }
 
+    /**
+     * Metodo che carica il gioco salvato precedentemente di un utente.
+     * @param username username del giocatore
+     * @throws SQLException eccezione
+     */
     public void loadGame(String username) throws SQLException {
         GameStatus gameStatus = null;
         try {
@@ -120,6 +171,10 @@ public class Engine {
         System.out.println("Game loaded");
     }
 
+    /**
+     * Metodo che salva nel database lo stato del gioco.
+     * @param username username del giocatore
+     */
     public void saveGame(String username)
     {
         List<Integer> inventoryIds = new ArrayList<>();
@@ -138,10 +193,17 @@ public class Engine {
         }
     }
 
+    /**
+     * Metodo che termina il gioco.
+     */
     public void endGame(){
         this.getTimer().stopTimer();
     }
 
+    /**
+     * Metodo che fa partire l'engine.
+     * @return output del comando
+     */
     public CommandGUIOutput execute() {
         String response;
         System.out.println("================================");
@@ -154,6 +216,12 @@ public class Engine {
         return new CommandGUIOutput(CommandGUIType.SHOW_TEXT, response);
     }
 
+    /**
+     * Metodo che esegue il comando inserito dall'utente.
+     * @param command comando inserito dall'utente
+     * @return output del comando
+     * @throws SQLException eccezione
+     */
     public CommandGUIOutput executeCommand(String command) throws SQLException {
         String response =command + "\n\n";
         CommandGUIOutput commandGUIOutput;
@@ -221,6 +289,12 @@ public class Engine {
         return commandGUIOutput = new CommandGUIOutput(CommandGUIType.SHOW_TEXT, response, null);
     }
 
+    /**
+     * Metodo che invia le risorse al client.
+     * @param request richiesta del client
+     * @return risorse da inviare al client
+     * @throws SQLException eccezione
+     */
     public Object sendResourcesToClient(String request) throws SQLException {
         String response = "";
         Object resources = null;
@@ -245,12 +319,17 @@ public class Engine {
         return resources = null;
     }
 
-
+    /**
+     * Metodo che carica una partita salvata.
+     * @return output del comando
+     * @throws SQLException eccezione
+     */
     public List<GameStatus> getSavedGames() throws SQLException {
 
         return dbManager.getAllSavedGame();
     }
     /**
+     * Main del gioco che fa partire l'engine.
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
