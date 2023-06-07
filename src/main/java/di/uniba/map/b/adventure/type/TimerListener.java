@@ -35,7 +35,7 @@ public class TimerListener extends Thread {
      */
 
     public TimerListener(Engine engine) {
-        this.delay = 3500;
+        this.delay = 6000;
         this.engine = engine;
     }
 
