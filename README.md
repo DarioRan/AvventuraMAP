@@ -1,6 +1,6 @@
-## Avventura testuale "Escape From Lab"
+# Avventura testuale "Escape From Lab"
 
-### Descrizione del caso di studio:
+## Descrizione del caso di studio:
 
 Il caso di studio consiste in un'applicazione Java che simula un'avventura testuale all'interno di un misterioso laboratorio. L'obiettivo del giocatore è quello di scappare dal laboratorio risolvendo enigmi, collezionando oggetti utili e interagendo con l'ambiente circostante.
 
@@ -28,14 +28,145 @@ Una volta che il parser ha estratto le informazioni necessarie dal comando dell'
 
 In questo modo, il parser svolge un ruolo fondamentale nel consentire al gioco di interpretare e rispondere ai comandi dell'utente in modo appropriato.
 
-# Manuale Utente
+## Diagramma delle classi
 
-## Introduzione
+```mermaid
+classDiagram
+
+    class DBManager {
+        - conn: Connection
+        + initTables()
+        + getGameStatus(username: String): GameStatus
+        + insertNewGameStatus(gamestatus: GameStatus): int
+        + getAllSavedGame(): List<GameStatus>
+    }
+
+    class GameStatus {
+        - username: String
+        - lastRoomId: Integer
+        - inventory: List[Integer]
+        - time: LocalDateTime
+        + getters and setters
+    }
+
+
+    
+    class EscapeFromLabGame {
+        - initCommands(): void
+        - initRooms(): void
+        - commands of direction
+        - commands for interaction with objects
+        - checkInventory(): String
+        - checkRoom(): String
+        - nextMove(p: ParserOutput): String
+    }
+    
+    class AdvObject {
+        - id: int
+        - name: String
+        - description: String
+        - alias: Set&lt;String&gt;
+        + getters and setters
+    }
+
+    class AdvObjectContainer {
+        // Attributi e metodi di AdvObjectContainer
+    }
+
+
+    class CommandGUIOutput {
+        // Attributi e metodi di CommandGUIOutput
+    }
+
+
+    class Room {
+        - id: int
+        - name: String
+        - description: String
+        - objects: List&lt;AdvObject&gt;
+        + getters and setters
+    }
+
+
+    class Engine {
+        + loadGame(username: String): void
+        + saveGame(username: String): void
+        + execute(): CommandGUIOutput
+        + executeCommand(command: String): CommandGUIOutput
+    }
+
+    class GameDescription {
+        <<Abstract>>
+        - rooms: List[Room]
+        - commands: List[Command]
+        - inventory: List[AdvObject]
+        - objectsInGame: List[AdvObject]
+        - currentRoom: Room 
+        + init(): void
+        + nextMove(p: ParserOutput): String
+        + getters and setters
+    }
+
+    class Parser {
+        - stopwords: Set&lt;String&gt;
+        + checkForCommand(token: String, commands: List&lt;Command&gt;): int
+        + checkForObject(token: String, objects: List&lt;AdvObject&gt;): int
+        + checkForAuxText(tokens: List&lt;String&gt;): String
+        + parse(command: String, commands: List&lt;Command&gt;), objects: List&lt;AdvObject&gt;), inventory: List&lt;AdvObject&gt;)): ParserOutput
+    }
+
+    class AdventureGameGUI {
+        - components of gui 
+        + performCommand(command: CommandGUIOutput): void
+        + appendAreaText(text: String): void
+        + printHelp(): String
+        + startGame(): void
+        + startLoadedGame(id: int): void
+        + loadGame(): void
+        + showSavedGames(): void
+        + die(string: String): void
+    }
+
+    class Client{
+        - socket: Socket
+        + executeCommand(command: String): CommandGUIOutput 
+        + getResourceFromServer(command: String): Object
+        + sendResourcesToServer(resource: String)
+    }
+
+    class Server{
+        - clientSocket: Socket
+        - serverSocket: ServerSocket 
+        + start()
+    }
+
+    AdventureGameGUI -- Client 
+    Client "1" ..> "1"  CommandGUIOutput : comunica
+    Server ..> CommandGUIOutput
+    Engine "1" -- "1" Server : comunica
+    Engine ..> Parser
+    Engine ..> ParserOutput
+    Engine "1" --> GameDescription
+    EscapeFromLabGame ..> ParserOutput
+    EscapeFromLabGame ..|> GameDescription
+    GameDescription "1" -- "*" Room
+    Room "1" -- "*" AdvObject
+    AdvObjectContainer --|> AdvObject
+    Engine "1" ..> "1" DBManager
+    Engine "1" --> "1" GameStatus
+    DBManager "1" --> "1" GameStatus
+
+direction RL
+```
+
+## Manuale Utente
+
+### Introduzione
 Ti trovi all'interno di un laboratorio scientifico avanzato, ma purtroppo, una catastrofe è imminente. 
 Il laboratorio è stato avvolto da nubi radioattive che si stanno espandendo rapidamente. 
 Il tuo obiettivo principale è quello di trovare un modo per uscire dal laboratorio il prima possibile e metterti in salvo.
 
-## Istruzioni di Gioco
+### Istruzioni di Gioco
 
 Il gioco utilizza un sistema di riferimento relativo per la navigazione. 
 L'ambiente è suddiviso in stanze, ognuna delle quali è collegata ad altre stanze in base alla posizione cardinale. 
