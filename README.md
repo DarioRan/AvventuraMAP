@@ -43,25 +43,65 @@ Ad esempio, se ti sposti ad ovest da una stanza, per tornare indietro dovrai uti
 vale se ti sposi a nord, dovrai utilizzare il comando "sud" per tornare indietro.
 
 ### Comandi di Navigazione
-- `nord` - Ti sposti verso nord nella stanza successiva.
-- `sud` - Ti sposti verso sud nella stanza precedente.
-- `est` - Ti sposti verso est nella stanza adiacente.
-- `ovest` - Ti sposti verso ovest nella stanza adiacente.
+- `nord` oppure `N` - Ti sposti verso nord nella stanza successiva.
+- `sud` oppure `S`- Ti sposti verso sud nella stanza precedente.
+- `est` oppure `E`- Ti sposti verso est nella stanza adiacente.
+- `ovest` oppure `O` - Ti sposti verso ovest nella stanza adiacente.
 
 ### Comandi dell'Inventario
-- `inventario` - Mostra l'inventario degli oggetti che hai raccolto.
+- `inventario` oppure `INV` - Mostra l'inventario degli oggetti che hai raccolto.
 - `prendi [nome oggetto]` - Raccoglie un oggetto presente nella stanza e lo aggiunge al tuo inventario.
 
 ### Comandi di Interazione con gli Oggetti
 - `accendi [nome oggetto]` - Accende un oggetto che può essere acceso, come una luce o un interruttore.
 - `spegni [nome oggetto]` - Spegne un oggetto che è stato acceso in precedenza.
-- `sblocca [nome oggetto]` - Sblocca un oggetto che è stato chiuso o bloccato.
+- `sblocca [nome oggetto] "[password]"` - Sblocca un oggetto che è stato chiuso o bloccato.
 - `apri [nome oggetto]` - Apre un oggetto che può essere aperto, come una cassa.
 - `usa [nome oggetto]` - Utilizza un oggetto che può essere utilizzato, come un computer.
 
 ### Comandi di Interazione con le Stanze
 - `osserva` - Osserva la stanza in cui ti trovi e mostra una descrizione degli oggetti al suo interno.
 
-Durante il gioco, sarai in grado di utilizzare questi comandi per esplorare l'ambiente.
+### Comando di Aiuto
+- `help` - Mostra l'elenco dei comandi disponibili.
+- 
+### Comando di Fine Gioco
+- `muori` - Termina il gioco.
 
 ## Mappa di gioco![mappagioco.jpg](resources%2Fmappagioco.jpg)
+
+## Soluzione del gioco
+
+- (E,E) 
+- SPEGNI CISTERNA 
+- (S,S,N) 
+- PRENDI TORCIA 
+- (S,O,O) 
+- ACCENDI TORCIA 
+- PRENDI CHIAVE 
+- (S,S,E,O) 
+- APRI CASSETTA 
+- PRENDI MARTELLO 
+- (S,N,N) 
+- ACCENDI GENERATORE 
+- (S,S,S,N,O,N,N) 
+- PRENDI POSTIT 
+- (E) 
+- PRENDI BRACCIALE 
+- (S,O) 
+- APRI CASSETTO 
+- PRENDI PEZZO DI CARTA 
+- (S,N) 
+- PRENDI PALMARES 
+- SBLOCCA PALMARES "12311loco11721" 
+- USA PALMARES 
+- (S,S,S,S,N,N) 
+- PRENDI YELLOWKEYCARD 
+- (S,E,E,N,N,E,N,N) 
+- PRENDI REDKEYCARD 
+- (S,S,S,S,S,S,S,O,N,N) 
+- PRENDI TELECOMANDO 
+- SBLOCCA TELECOMANDO "3215" 
+- USA TELECOMANDO 
+- (S,O) 
+- APRI SARACINESCA
