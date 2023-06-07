@@ -1,51 +1,51 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package di.uniba.map.b.adventure.type;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
- *
- * @author pierpaolo
+ * Classe che rappresenta un oggetto contenitore.
  */
 public class AdvObjectContainer extends AdvObject {
-
+    /**
+     * Lista di oggetti contenuti.
+     */
     private List<AdvObject> list = new ArrayList<>();
-
-    public AdvObjectContainer(int id) {
-        super(id);
-    }
-
-    public AdvObjectContainer(int id, String name) {
-        super(id, name);
-    }
-
-    public AdvObjectContainer(int id, String name, String description) {
+    /**
+     * Costruttore di default.
+     * @param id id dell'oggetto
+     * @param name nome dell'oggetto
+     * @param description descrizione dell'oggetto
+     */
+    public AdvObjectContainer(final int id,final String name,final String description) {
         super(id, name, description);
     }
-
-    public AdvObjectContainer(int id, String name, String description, String[] alias) {
-        super(id, name, description, alias);
-    }
-
+    /**
+     * metodo che restituisce la lista di oggetti contenuti.
+     * @return list lista di oggetti contenuti
+     */
     public List<AdvObject> getList() {
         return list;
     }
-
-    public void setList(List<AdvObject> list) {
-        this.list = list;
+    /**
+     * metodo che setta la lista di oggetti contenuti.
+     * @param listParam lista di oggetti contenuti
+     */
+    public void setList(final List<AdvObject> listParam) {
+        this.list = listParam;
     }
-
-    public void add(AdvObject o) {
+    /**
+     * metodo che aggiunge un oggetto alla lista di oggetti contenuti.
+     * @param o oggetto da aggiungere
+     */
+    public void add(final AdvObject o) {
         list.add(o);
     }
-
-    public void remove(AdvObject o) {
+    /**
+     * metodo che rimuove un oggetto dalla lista di oggetti contenuti.
+     * @param o oggetto da rimuovere
+     */
+    public void remove(final AdvObject o) {
         list.remove(o);
     }
 
