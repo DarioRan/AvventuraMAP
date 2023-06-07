@@ -1,151 +1,241 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package di.uniba.map.b.adventure.type;
 
 import javax.swing.ImageIcon;
 import java.awt.Image;
 import java.util.ArrayList;
 import java.util.List;
-
 /**
- *
- * @author pierpaolo
+ * Classe che rappresenta una stanza.
  */
 public class Room {
-
+    /**
+     *  private static boolean che rappresenta lo stato della corrente di una stanza.
+     */
     private static boolean powered = false;
+    /**
+     * private final int che rappresenta l'id della stanza.
+     */
     private final int id;
-
+    /**
+     * private String che rappresenta il nome della stanza.
+     */
     private String name;
-
+    /**
+     * private String che rappresenta la descrizione della stanza.
+     */
     private String description;
-
+    /**
+     * private String che rappresenta il testo che viene visualizzato quando si entra nella stanza.
+     */
     private String look;
-
+    /**
+     * private boolean che rappresenta la visibilità della stanza.
+     */
     private boolean visible = true;
-
+    /**
+     * stanza adiacente a sud.
+     */
     private Room south = null;
-
+    /**
+     * stanza adiacente a nord.
+     */
     private Room north = null;
-
+    /**
+     * stanza adiacente a est.
+     */
     private Room east = null;
-
+    /**
+     * stanza adiacente a ovest.
+     */
     private Room west = null;
-
+    /**
+     * background della stanza.
+     */
     private Image backgroundImage;
-
+    /**
+     * background illuminato della stanza.
+     */
     private Image backgroundEnlightedImage;
-
+    /**
+     * percorso del background della stanza.
+     */
     private String backgroundImagePath;
-
+    /**
+     * percorso del background illuminato della stanza.
+     */
     private String backgroundEnlightedImagePath;
-
+    /**
+     * private boolean che rappresenta l'accessibilità della stanza.
+     */
     private boolean accessible = true;
-
+    /**
+     * private AdvObject che rappresenta la chiave della stanza.
+     */
     private AdvObject key = null;
-
+    /**
+     * private boolean che rappresenta se la stanza è stata visitata o meno.
+     */
     private boolean isVisited = false;
-
+    /**
+     * private boolean che rappresenta se la stanza è buia o meno.
+     */
     private boolean isDark = false;
-
-
+    /**
+     * private final List che rappresenta la lista degli oggetti presenti nella stanza.
+     */
     private final List<AdvObject> objects=new ArrayList<>();
 
-    public Room(int id) {
-        this.id = id;
-    }
-
-    public Room(int id, String name, String description) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        setBackgroundImage();
-    }
-
-    public Room(int id, String name, String description, boolean accessible, AdvObject key) {
+    /**
+     * Costruttore della classe.
+     * @param id
+     * @param name
+     * @param description
+     */
+    public Room(final int id,final String name,final String description) {
         this.id = id;
         this.name = name;
         this.description = description;
         setBackgroundImage();
-        this.accessible = accessible;
-        this.key = key;
     }
 
+    /**
+     * metodo che restituisce l'id della stanza.
+     * @return id id della stanza
+     */
     public int getId() {
         return id;
     }
-
+    /**
+     * metodo che restituisce il nome della stanza.
+     * @return name nome della stanza
+     */
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    /**
+     * metodo che settta il nome della stanza.
+     * @param name
+     */
+    public void setName(final String name) {
         this.name = name;
     }
-
+    /**
+     * metodo che restituisce la descrizione della stanza.
+     * @return description descrizione della stanza
+     */
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    /**
+     * meoto che setta la descrizione della stanza.
+     * @param description
+     */
+    public void setDescription(final String description) {
         this.description = description;
     }
 
+    /**
+     * metodo che restituisce se la stanza è visibile o meno
+     * @return visible
+     */
     public boolean isVisible() {
         return visible;
     }
 
-    public void setVisible(boolean visible) {
+    /**
+     * metodo che setta la visibilità della stanza.
+     * @param visible
+     */
+    public void setVisible(final boolean visible) {
         this.visible = visible;
     }
 
+    /**
+     * metodo che restituisce la stanza adiacente a sud.
+     * @return south stanza adiacente a sud
+     */
     public Room getSouth() {
         return south;
     }
-
-    public void setSouth(Room south) {
+    /**
+     * metodo che setta la stanza adiacente a sud.
+     * @param south stanza adiacente a sud
+     */
+    public void setSouth(final Room south) {
         this.south = south;
     }
-
+    /**
+     * metodo che restituisce la stanza adiacente a nord.
+     * @return north stanza adiacente a nord
+     */
     public Room getNorth() {
         return north;
     }
-
-    public void setNorth(Room north) {
+    /**
+     * metodo che setta la stanza adiacente a nord.
+     * @param north stanza adiacente a nord
+     */
+    public void setNorth(final Room north) {
         this.north = north;
     }
-
+    /**
+     * metodo che restituisce la stanza adiacente a est.
+     * @return east stanza adiacente a est
+     */
     public Room getEast() {
         return east;
     }
-
-    public void setEast(Room east) {
+    /**
+     * metodo che setta la stanza adiacente a est.
+     * @param east stanza adiacente a est
+     */
+    public void setEast(final Room east) {
         this.east = east;
     }
-
+    /**
+     * metodo che restituisce la stanza adiacente a ovest.
+     * @return west stanza adiacente a ovest
+     */
     public Room getWest() {
         return west;
     }
-
-    public void setWest(Room west) {
+/**
+     * metodo che setta la stanza adiacente a ovest.
+     * @param west stanza adiacente a ovest
+     */
+    public void setWest(final Room west) {
         this.west = west;
     }
-
+    /**
+     * metodo che restituisce gli oggetti presenti nella stanza.
+     * @return objects oggetti presenti nella stanza
+     */
     public List<AdvObject> getObjects() {
         return objects;
     }
-    public void addObject(AdvObjectContainer object){
+
+    /**
+     * metodo che aggiunge un oggetto alla stanza.
+     * @param object
+     */
+    public void addObject(final AdvObjectContainer object){
         this.objects.add(object);
     }
 
+    /**
+     * metodo che restituisce se la stanza ha corrente o meno.
+     * @return powered
+     */
     public static boolean isPowered() {
         return powered;
     }
-
-    public static void setPowered(boolean powered) {
+    /**
+     * metodo che setta se la stanza ha corrente o meno.
+     * @param powered
+     */
+    public static void setPowered(final boolean powered) {
         Room.powered = powered;
     }
 
@@ -157,7 +247,7 @@ public class Room {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
@@ -174,13 +264,6 @@ public class Room {
         return true;
     }
 
-    public String getLook() {
-        return look;
-    }
-
-    public void setLook(String look) {
-        this.look = look;
-    }
 
     private void setBackgroundImage() {
         ImageIcon backgroundImageIcon = new ImageIcon("resources/"+this.id+".png");
@@ -211,36 +294,61 @@ public class Room {
     public String getBackgroundEnlightedImagePath(){
         return this.backgroundEnlightedImagePath;
     }
-
+    /**
+     * metodo che restituisce se la stanza è accessibile o meno.
+     * @return accessible
+     */
     public boolean isAccessible() {
         return accessible;
     }
-
-    public boolean setAccessible(boolean accessible) {
+    /**
+     * metodo che setta se la stanza è accessibile o meno.
+     * @param accessible
+     */
+    public boolean setAccessible(final boolean accessible) {
         return this.accessible = accessible;
     }
-
+    /**
+     * metodo che restituisce se la stanza è stata visitata o meno.
+     * @return isVisited
+     */
     public boolean isVisited(){
         return this.isVisited;
     }
-
-    public void setVisited(boolean isVisited){
+    /**
+     * metodo che setta se la stanza è stata visitata o meno.
+     * @param isVisited
+     */
+    public void setVisited(final boolean isVisited){
         this.isVisited = isVisited;
     }
-
+    /**
+     * metodo che restituisce se la stanza è buia o meno.
+     * @return isDark
+     */
     public boolean isDark(){
         return this.isDark;
     }
-
-    public void setDark(boolean isDark){
+    /**
+     * metodo che setta se la stanza è buia o meno.
+     * @param isDark
+     */
+    public void setDark(final boolean isDark){
         this.isDark = isDark;
     }
-
+    /**
+     * metodo che restituisce la chiave della stanza.
+     * @return key
+     */
     public AdvObject getKey() {
         return key;
     }
-
-    public AdvObject setKey(AdvObject key) {
+    /**
+     * metodo che setta la chiave della stanza.
+     * @param key
+     * @return key
+     */
+    public AdvObject setKey(final AdvObject key) {
         return this.key = key;
     }
 }
