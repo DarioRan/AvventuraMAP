@@ -79,4 +79,20 @@ public class TimerListener extends Thread {
     public int getDelay() {
         return this.delay;
     }
+
+    /**
+     * Metodo che restituisce il progresso della progress bar
+     * @return int che indica il progresso della progress bar
+     */
+    public int getProgress() {
+        return this.progress;
+    }
+
+    /**
+     * Metodo che setta il progresso della progress bar
+     * @param progress int che indica il progresso della progress bar
+     */
+    public void setProgress(int progress) {
+        this.progress = progress;
+    }
 }

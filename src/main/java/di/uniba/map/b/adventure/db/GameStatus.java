@@ -24,6 +24,17 @@ public class GameStatus implements Serializable {
      */
     private LocalDateTime time;
 
+    /**
+     * Integer che rappresenta il progresso della progress bar.
+     */
+    private Integer progress;
+
+    /**
+     * Integer che rappresenta il tempo di attesa tra un incremento e l'altro della progress bar.
+     */
+    private Integer delay;
+
+
 
     /**
      * Costruttore della classe GameStatus.
@@ -32,11 +43,13 @@ public class GameStatus implements Serializable {
      * @param inventoryIds lista di oggetti in inventario.
      * @param time tempo di salvataggio.
      */
-    public GameStatus(String username, Integer lastRoomId, List<Integer> inventoryIds, LocalDateTime time) {
+    public GameStatus(String username, Integer lastRoomId, List<Integer> inventoryIds, LocalDateTime time, Integer progress, Integer delay) {
         this.username = username;
         this.lastRoom_id = lastRoomId;
         this.inventory = inventoryIds;
         this.time = time;
+        this.progress = progress;
+        this.delay = delay;
     }
 
     /**
@@ -53,6 +66,38 @@ public class GameStatus implements Serializable {
      */
     public Integer getLastRoomId() {
         return lastRoom_id;
+    }
+
+    /**
+     * getter per il progresso della progress bar.
+     * @return progress.
+     */
+    public Integer getProgress() {
+        return progress;
+    }
+
+    /**
+     * setter per il progresso della progress bar.
+     * @param progress progresso della progress bar.
+     */
+    public void setProgress(Integer progress) {
+        this.progress = progress;
+    }
+
+    /**
+     * getter per il tempo di attesa tra un incremento e l'altro della progress bar.
+     * @return delay.
+     */
+    public Integer getDelay() {
+        return delay;
+    }
+
+    /**
+     * setter per il tempo di attesa tra un incremento e l'altro della progress bar.
+     * @param delay tempo di attesa tra un incremento e l'altro della progress bar.
+     */
+    public void setDelay(Integer delay) {
+        this.delay = delay;
     }
 
     /**
