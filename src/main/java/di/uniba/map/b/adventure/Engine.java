@@ -164,6 +164,12 @@ public class Engine {
         Integer lastRoom_id = gameStatus.getLastRoomId();
         List<AdvObject> inventory = game.filterObjects((AdvObject o) -> idsInventory.contains(o.getId()));
         List<Room> lastRoom = game.filterRoom((Room room)->room.getId() == lastRoom_id);
+        Integer progressValue = gameStatus.getProgress();
+        Integer timerDelay = gameStatus.getDelay();
+
+        this.setProgressValue(progressValue);
+        this.getTimer().setDelay(timerDelay);
+        this.getTimer().setProgress(progressValue);
 
         game.setCurrentRoom(lastRoom.get(0));
         game.setInventory(inventory);
@@ -181,11 +187,9 @@ public class Engine {
         for (AdvObject o: game.getInventory())
         {
             inventoryIds.add(o.getId());
-            System.out.println("ID: "+o.getId());
-            System.out.println("Name: "+o.getName());
         }
         GameStatus gameStatus = new GameStatus(username, game.getCurrentRoom().getId(), inventoryIds,
-                LocalDateTime.now());
+                LocalDateTime.now(),this.getProgressValue(), this.getTimer().getDelay());
         try {
             dbManager.insertNewGameStatus(gameStatus);
         } catch (SQLException e) {
