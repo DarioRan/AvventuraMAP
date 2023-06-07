@@ -182,7 +182,6 @@ public class AdventureGameGUI extends JFrame {
                 if (username.isEmpty()) {
                     JOptionPane.showMessageDialog(input, "Il campo username non può essere vuoto.", "Errore", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    System.out.println("Username: " + username);
                     client.executeCommand("STOPTIMER");
                     progressBarListener.stopListener();
                     client.sendResourcesToServer("username:" + username);
@@ -527,7 +526,6 @@ public class AdventureGameGUI extends JFrame {
             case TURN_OFF:
                 this.setBackgroundImageFromPath(command.getResource());
                 appendAreaText(command.getText());
-                System.out.println(command.getResource());
                 break;
             case SHOW_TEXT:
                 appendAreaText(command.getText());

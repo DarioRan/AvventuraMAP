@@ -64,7 +64,6 @@ public class Server {
         Object resource = null;
         String commandString = bufferedReader.readLine();
 
-        System.out.println(objectOutputStream);
         while (true) {
                     if(commandString.startsWith("username:")){
                         String username = commandString.split(":")[1];

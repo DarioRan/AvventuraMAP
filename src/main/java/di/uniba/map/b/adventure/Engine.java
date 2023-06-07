@@ -243,8 +243,6 @@ public class Engine {
                 case SOUTH:
                 case WEST:
                     commandGUIOutput = new CommandGUIOutput(CommandGUIType.MOVE, response, game.getCurrentRoom().getBackgroundImagePath());
-                    System.out.println("Sono in " + game.getCurrentRoom().getId());
-                    System.out.println(commType);
                     break;
                 case TURN_ON:
                     if (game.getCurrentRoom().isDark()) {
@@ -310,7 +308,6 @@ public class Engine {
             commType = p.getCommand().getType();
             switch (commType) {
                 case GET_SAVED_GAMES:
-                    System.out.println("GET_SAVED_GAMES");
                     resources = this.getSavedGames();
                     break;
                 default:
