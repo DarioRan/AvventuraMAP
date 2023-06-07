@@ -308,7 +308,6 @@ public class Engine {
             commType = p.getCommand().getType();
             switch (commType) {
                 case GET_SAVED_GAMES:
-                    System.out.println("GET_SAVED_GAMES");
                     resources = this.getSavedGames();
                     break;
                 default:
