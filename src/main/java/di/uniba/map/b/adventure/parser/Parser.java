@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package di.uniba.map.b.adventure.parser;
 
 import di.uniba.map.b.adventure.Utils;
@@ -11,18 +6,31 @@ import di.uniba.map.b.adventure.type.Command;
 import java.util.List;
 import java.util.Set;
 
+
 /**
- *
- * @author pierpaolo
+ * Classe che rappresenta il parser del gioco.
  */
 public class Parser {
 
+    /**
+     * Insieme di parole da ignorare durante il parsing.
+     */
     private final Set<String> stopwords;
 
+    /**
+     * Costruttore del parser.
+     * @param stopwords Insieme di parole da ignorare durante il parsing.
+     */
     public Parser(Set<String> stopwords) {
         this.stopwords = stopwords;
     }
 
+    /**
+     * Metodo che controlla se il token è un comando.
+     * @param token Token da controllare.
+     * @param commands Lista dei comandi.
+     * @return Indice del comando se è presente, -1 altrimenti.
+     */
     private int checkForCommand(String token, List<Command> commands) {
         for (int i = 0; i < commands.size(); i++) {
             if (commands.get(i).getName().equals(token) || commands.get(i).getAlias().contains(token)) {
@@ -32,6 +40,12 @@ public class Parser {
         return -1;
     }
 
+    /**
+     * Metodo che controlla se il token è un oggetto.
+     * @param token Token da controllare.
+     * @param obejcts Lista degli oggetti.
+     * @return Indice dell'oggetto se è presente, -1 altrimenti.
+     */
     private int checkForObject(String token, List<AdvObject> obejcts) {
         for (int i = 0; i < obejcts.size(); i++) {
             if (obejcts.get(i).getName().equals(token) || obejcts.get(i).getAlias().contains(token)) {
@@ -41,6 +55,11 @@ public class Parser {
         return -1;
     }
 
+    /**
+     * Metodo che controlla se il token è un testo ausiliario.
+     * @param tokens Token da controllare.
+     * @return Indice dell'oggetto se è presente, -1 altrimenti.
+     */
     private String checkForAuxText(List<String> tokens)
     {
         for (String s: tokens)
@@ -52,9 +71,13 @@ public class Parser {
         return null;
     }
 
-    /* ATTENZIONE: il parser è implementato in modo abbastanza independete dalla lingua, ma riconosce solo 
-    * frasi semplici del tipo <azione> <oggetto> <oggetto>. Eventuali articoli o preposizioni vengono semplicemente
-    * rimossi.
+    /**
+     * Metodo che effettua il parsing del comando.
+     * @param command Comando da parsare.
+     * @param commands Lista dei comandi.
+     * @param objects Lista degli oggetti.
+     * @param inventory Lista degli oggetti nell'inventario.
+     * @return Oggetto di tipo ParserOutput che contiene il comando, l'oggetto e l'oggetto dell'inventario.
      */
     public ParserOutput parse(String command, List<Command> commands, List<AdvObject> objects, List<AdvObject> inventory) {
         List<String> tokens = Utils.parseString(command, stopwords);
