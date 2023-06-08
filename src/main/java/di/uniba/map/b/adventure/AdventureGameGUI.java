@@ -135,6 +135,7 @@ public class AdventureGameGUI extends JFrame {
                         try {
                             client.executeCommand("STOPTIMER");
                             progressBarListener.stopListener();
+                            textField.setEditable(false);
                         } catch (IOException | ClassNotFoundException ex) {
                             throw new RuntimeException(ex);
                         }
@@ -184,6 +185,7 @@ public class AdventureGameGUI extends JFrame {
                 } else {
                     client.executeCommand("STOPTIMER");
                     progressBarListener.stopListener();
+                    textField.setEditable(false);
                     client.sendResourcesToServer("username:" + username);
                     client.executeCommand("SAVEGAME");
                     validUsername = true;

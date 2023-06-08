@@ -8,7 +8,7 @@ Due grosse cisterne sono dinanzi a te, sembra che le loro valvole possano essere
 Corridoio contenente strumentazione tecnica.
 Sei nella stanza dei generatori, sembra che possano essere attivati.
 Tavolo della reception, sembra che ci sia un oggetto da qualche parte.
-Lungo corridio luminescente che sembra terminare in un vicolo cieco a nord. Sembra che ci sia un altro corridoio ad ovest.
+Lungo corridio luminescente. Sembra che ci sia un altro corridoio a nord.
 Cupo corridoio che porta a una stanza a nord.
 Sei in un ufficio del laboratorio. Ci sono scritte sul muro. Sembra che ci sia un computer a nord, una tv a ovest e una scrivania a est.
 Intravedi una tv spenta, sembra che ci sia qualcosa di importante nelle sue vicinanze.
@@ -27,7 +27,7 @@ Sei in un corridoio con una via che porta a Nord.
 Sei in un corridoio con una stanza a Ovest e una a Est.
 Sei in uno sgabuzzino.
 Sembri di essere all'interno di una stanza segreta, a nord c'è una porta.
-Sei all'interno di una camera di decompressione. Sembra che ci sia una porta a est.
+Sei all'interno di una camera di decompressione. Sembra che ci sia una porta a nord.
 Sei all'interno di una stanza in cui sono stati eseguiti degli esperimenti, ci sono tracce di sangue e un odore nauseante. E' presente una scrivania.
 Sei in un corridoio con una via che porta a Nord.
 Sei in un corridoio con una via che porta a Nord.
