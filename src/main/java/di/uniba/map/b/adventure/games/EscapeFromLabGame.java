@@ -133,22 +133,21 @@ public class EscapeFromLabGame extends GameDescription {
             room21.setAccessible(false);
             Room room221 = new Room(221, desc.getTitle(21), desc.getDescription(21));
             room221.setAccessible(false);
-            Room room222 = new Room(222, desc.getTitle(22), desc.getDescription(22));
-            Room room23 = new Room(23, desc.getTitle(23), desc.getDescription(23));
-            Room room24 = new Room(24, desc.getTitle(24), desc.getDescription(24));
-            Room room25 = new Room(25, desc.getTitle(25), desc.getDescription(25));
-            Room room26 = new Room(26, desc.getTitle(26), desc.getDescription(26));
-            Room room27 = new Room(27, desc.getTitle(27), desc.getDescription(27));
-            Room room28 = new Room(28, desc.getTitle(28), desc.getDescription(28));
-            Room room29 = new Room(29, desc.getTitle(29), desc.getDescription(29));
-            Room room30 = new Room(30, desc.getTitle(30), desc.getDescription(30));
-            Room room31 = new Room(31, desc.getTitle(31), desc.getDescription(31));
+            Room room23 = new Room(23, desc.getTitle(22), desc.getDescription(22));
+            Room room24 = new Room(24, desc.getTitle(23), desc.getDescription(23));
+            Room room25 = new Room(25, desc.getTitle(24), desc.getDescription(24));
+            Room room26 = new Room(26, desc.getTitle(25), desc.getDescription(25));
+            Room room27 = new Room(27, desc.getTitle(26), desc.getDescription(26));
+            Room room28 = new Room(28, desc.getTitle(27), desc.getDescription(27));
+            Room room29 = new Room(29, desc.getTitle(28), desc.getDescription(28));
+            Room room30 = new Room(30, desc.getTitle(29), desc.getDescription(29));
+            Room room31 = new Room(31, desc.getTitle(30), desc.getDescription(30));
             room31.setAccessible(false);
-            Room room32 = new Room(32, desc.getTitle(32), desc.getDescription(32));
-            Room room33 = new Room(33, desc.getTitle(33), desc.getDescription(33));
-            Room room34 = new Room(34, desc.getTitle(34), desc.getDescription(34));
-            Room room35 = new Room(35, desc.getTitle(35), desc.getDescription(35));
-            Room room36 = new Room(36, desc.getTitle(36), desc.getDescription(36));
+            Room room32 = new Room(32, desc.getTitle(31), desc.getDescription(31));
+            Room room33 = new Room(33, desc.getTitle(32), desc.getDescription(32));
+            Room room34 = new Room(34, desc.getTitle(33), desc.getDescription(33));
+            Room room35 = new Room(35, desc.getTitle(34), desc.getDescription(34));
+            Room room36 = new Room(36, desc.getTitle(35), desc.getDescription(35));
 
 
 
@@ -219,7 +218,6 @@ public class EscapeFromLabGame extends GameDescription {
 
             room221.setSouth(room20);
 
-            room222.setSouth(room20);
 
             room23.setNorth(room32);
             room23.setEast(room24);
@@ -284,7 +282,6 @@ public class EscapeFromLabGame extends GameDescription {
             getRooms().add(room20);
             getRooms().add(room21);
             getRooms().add(room221);
-            getRooms().add(room222);
             getRooms().add(room23);
             getRooms().add(room24);
             getRooms().add(room25);
