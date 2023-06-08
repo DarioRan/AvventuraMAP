@@ -334,7 +334,7 @@ public class Engine {
      * Main del gioco che fa partire l'engine.
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Engine engine;
         try {
             engine = new Engine(new EscapeFromLabGame());

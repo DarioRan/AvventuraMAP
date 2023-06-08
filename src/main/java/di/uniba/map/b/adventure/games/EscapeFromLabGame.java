@@ -459,9 +459,11 @@ public class EscapeFromLabGame extends GameDescription {
                 return true;
             } else {
                 isKeyNeeded.setTrue();
-                if (canAccessRoom(nextroom)) {
+                if(canAccessRoom(nextroom)){
                     setCurrentRoom(nextroom);
-                    return true; } else {
+                    return true;
+                }
+                else {
                     return false;
                 }
             }
