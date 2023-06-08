@@ -1,5 +1,6 @@
 package di.uniba.map.b.adventure.games;
 
+import di.uniba.map.b.adventure.Engine;
 import di.uniba.map.b.adventure.GameDescription;
 import di.uniba.map.b.adventure.misc.RoomDesc;
 import di.uniba.map.b.adventure.parser.ParserOutput;
@@ -18,6 +19,10 @@ import org.apache.commons.lang3.mutable.MutableBoolean;
  */
 public class EscapeFromLabGame extends GameDescription {
 
+    /**
+     * Oggetto di tipo Engine.
+     */
+    private Engine engine;
     /**
      * Costruttore della classe EscapeFromLabGame.
      * Chiama il costruttore della classe astratta GameDescription.
@@ -432,6 +437,14 @@ public class EscapeFromLabGame extends GameDescription {
         initCommands();
         initRooms();
     }
+
+    /**
+     * Imposta l'engine del gioco.
+     * @param engine l'engine del gioco
+     */
+    public void setEngine(Engine engine) {
+        this.engine = engine;
+    }
     /**
      * metodo booleano che controlla il movimento del giocatore verso nord
      * @param isKeyNeeded
@@ -629,6 +642,8 @@ public class EscapeFromLabGame extends GameDescription {
                                     " avventurosa e sull'incredibile fortuna di essere riuscito a scappare.\n\n\n\n\n\n\n" +
                                     "" +
                                     "COMPLIMENTI, HAI COMPLETATO IL GIOCO!";
+
+                        engine.endGame();
                         }
                     }
                 } else {

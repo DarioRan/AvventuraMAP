@@ -166,4 +166,6 @@ public abstract class GameDescription {
      */
     public abstract String nextMove(ParserOutput p);
 
+    public void setEngine(Engine engine) {
+    }
 }

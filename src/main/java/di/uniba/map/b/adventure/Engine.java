@@ -67,6 +67,7 @@ public class Engine {
         this.game = game;
         try {
             this.game.init();
+            this.game.setEngine(this);
         } catch (Exception ex) {
             System.err.println(ex);
         }
