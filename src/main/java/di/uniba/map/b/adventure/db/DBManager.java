@@ -1,20 +1,26 @@
 package di.uniba.map.b.adventure.db;
 
 import java.sql.Connection;
-import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-
+/**
+ * Classe che gestisce la connessione al database.
+ */
 public class DBManager {
-    Connection conn;
+    /**
+     * Connessione al database.
+     */
+    private Connection conn;
+    /**
+     * Costruttore della classe.
+     * @throws SQLException
+     */
     public DBManager() throws SQLException {
         //connessione con oggetto Properties
         Properties dbprops = new Properties();
@@ -25,88 +31,110 @@ public class DBManager {
 
         initTables();
     }
-
+    /**
+     * Metodo che inizializza le tabelle del database.
+     * @throws SQLException eccezione lanciata in caso di errore di connessione al database.
+     */
     private void initTables() throws SQLException {
         Statement createTable = conn.createStatement();
-        String query = "CREATE TABLE IF NOT EXISTS GAMESTATUS (Username VARCHAR PRIMARY KEY," +
-                "LastRoom INTEGER NOT NULL," +
-                "Inventory VARCHAR, " +
-                "Time TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+        String query = "CREATE TABLE IF NOT EXISTS GAMESTATUS (Username VARCHAR PRIMARY KEY,"
+                +
+                "LastRoom INTEGER NOT NULL,"
+                + "Inventory VARCHAR, "
+                + "Time TIMESTAMP DEFAULT CURRENT_TIMESTAMP," +
+                "Progress INTEGER NOT NULL," +
+                "Delay INTEGER NOT NULL)";
         createTable.executeUpdate(query);
         createTable.close();
     }
-
-
-    public GameStatus getGameStatus(String username) throws SQLException {
-
+    /**
+     * Metodo che restituisce lo stato di gioco di un utente.
+     * @param username nome utente.
+     * @return stato di gioco.
+     * @throws SQLException eccezione lanciata in caso di errore di connessione al database.
+     */
+    public GameStatus getGameStatus(final String username) throws SQLException {
         Statement getStatement = conn.createStatement();
         String lastRoomId="";
         String username1;
-        List<Integer> inventory_ids = new ArrayList<Integer>();
+        String progress;
+        String delay;
+        List<Integer> inventoryIds = new ArrayList<Integer>();
         String query = "SELECT * FROM GameStatus WHERE username = '" + username + "'";
-        ResultSet rs=getStatement.executeQuery(query);
+        ResultSet rs = getStatement.executeQuery(query);
         if (rs.next()) {
             username1 = rs.getString("Username");
             lastRoomId = rs.getString("LastRoom");
             String inventory = rs.getString("Inventory");
             Timestamp time = rs.getTimestamp("Time");
-            if(!inventory.equals("")){
-                for(String id : inventory.split(","))
-                {
-                    inventory_ids.add(Integer.valueOf(id));
+            progress = rs.getString("Progress");
+            delay = rs.getString("Delay");
+            if (!inventory.equals("")){
+                for(String id : inventory.split(",")) {
+                    inventoryIds.add(Integer.valueOf(id));
                 }
             }
-            return new GameStatus(username, Integer.valueOf(lastRoomId), inventory_ids, time.toLocalDateTime());
+            return new GameStatus(username, Integer.valueOf(lastRoomId), inventoryIds,
+                    time.toLocalDateTime(), Integer.valueOf(progress), Integer.valueOf(delay));
         }
         return null;
 
     }
-
-    public int insertNewGameStatus(GameStatus gamestatus) throws SQLException {
-        int statusCode=0;
-        Statement UpdateStatement = conn.createStatement();
-        String query = "SELECT * FROM GameStatus WHERE username = '" + gamestatus.username + "'";
-        ResultSet rs=UpdateStatement.executeQuery(query);
+    /**
+     * Metodo che inserisce un nuovo stato di gioco nel database
+     * @param gamestatus stato di gioco
+     * @return codice di stato
+     * @throws SQLException eccezione lanciata in caso di errore di connessione al database.
+     */
+    public int insertNewGameStatus(final GameStatus gamestatus) throws SQLException {
+        int statusCode = 0;
+        Statement updateStatement = conn.createStatement();
+        String query = "SELECT * FROM GameStatus WHERE username = '" + gamestatus.getUsername() + "'";
+        ResultSet rs = updateStatement.executeQuery(query);
         if (rs.next()) {
-            query = "UPDATE GameStatus SET LastRoom = '"+gamestatus.getLastRoomId().toString()+"', Inventory = '"+gamestatus.getInventoryIdsAsString()+"' WHERE username = '" + gamestatus.username + "'";
-            statusCode=UpdateStatement.executeUpdate(query);
-        }
-        else
-        {
-            query = "INSERT INTO GameStatus (Username, LastRoom, Inventory) VALUES ('"+gamestatus.getUsername()+"', '"+gamestatus.getLastRoomId().toString()+"', '"+gamestatus.getInventoryIdsAsString()+"');";
-            statusCode=UpdateStatement.executeUpdate(query);
+            query = "UPDATE GameStatus SET LastRoom = '" + gamestatus.getLastRoomId().toString() + "', Inventory = '" + gamestatus.getInventoryIdsAsString() + "', Progress = '" + gamestatus.getProgress() + "', Delay = '" + gamestatus.getDelay() + "' WHERE username = '" + gamestatus.getUsername() + "'";
+            statusCode = updateStatement.executeUpdate(query); }
+        else {
+            query = "INSERT INTO GameStatus (Username, LastRoom, Inventory, Progress, Delay) VALUES ('" + gamestatus.getUsername() + "', '" + gamestatus.getLastRoomId().toString() + "', '" + gamestatus.getInventoryIdsAsString() + "', '" + gamestatus.getProgress() + "', '" + gamestatus.getDelay() + "');";
+            statusCode = updateStatement.executeUpdate(query);
         }
 
         return statusCode;
 
     }
-
-    public List<GameStatus> getAllSavedGame()
-    {
-        	List<GameStatus> savedGame = new ArrayList<GameStatus>();
+    /**
+     * Metodo che restituisce tutti gli stati di gioco salvati.
+     * @return lista di stati di gioco.
+     */
+    public List<GameStatus> getAllSavedGame() {
+        List<GameStatus> savedGame = new ArrayList<GameStatus>();
         	try {
                 Statement getStatement = conn.createStatement();
-                String lastRoomId="";
+                String lastRoomId = "";
                 String username1;
-                List<Integer> inventory_ids = new ArrayList<Integer>();
+                String progress;
+                String delay;
+                List<Integer> inventoryIds = new ArrayList<Integer>();
                 String query = "SELECT * FROM GameStatus";
-                ResultSet rs=getStatement.executeQuery(query);
+                ResultSet rs = getStatement.executeQuery(query);
                 while (rs.next()) {
                     username1 = rs.getString("Username");
                     lastRoomId = rs.getString("LastRoom");
                     String inventory = rs.getString("Inventory");
+                    progress = rs.getString("Progress");
+                    delay = rs.getString("Delay");
                     Timestamp time = rs.getTimestamp("Time");
-                    if(!inventory.equals("")){
-                        for(String id : inventory.split(","))
-                        {
-                            inventory_ids.add(Integer.valueOf(id));
+                    if (!inventory.equals("")) {
+                        for (String id : inventory.split(",")) {
+                            inventoryIds.add(Integer.valueOf(id));
                         }
                     }
-                    savedGame.add(new GameStatus(username1, Integer.valueOf(lastRoomId), inventory_ids, time.toLocalDateTime()));
+                    savedGame.add(new GameStatus(username1,
+                            Integer.valueOf(lastRoomId),
+                            inventoryIds,
+                            time.toLocalDateTime(),Integer.valueOf(progress),Integer.valueOf(delay)));
                 }
                 return savedGame;
-
-
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }

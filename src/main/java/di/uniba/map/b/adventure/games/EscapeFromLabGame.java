@@ -1,5 +1,6 @@
 package di.uniba.map.b.adventure.games;
 
+import di.uniba.map.b.adventure.Engine;
 import di.uniba.map.b.adventure.GameDescription;
 import di.uniba.map.b.adventure.misc.RoomDesc;
 import di.uniba.map.b.adventure.parser.ParserOutput;
@@ -8,23 +9,32 @@ import di.uniba.map.b.adventure.type.AdvObjectContainer;
 import di.uniba.map.b.adventure.type.Command;
 import di.uniba.map.b.adventure.type.CommandType;
 import di.uniba.map.b.adventure.type.Room;
-
 import java.io.IOException;
 import java.util.Iterator;
-
 import org.apache.commons.lang3.mutable.MutableBoolean;
 
+/**
+ * Classe che implementa il gioco EscapeFromLab.
+ * Estende la classe astratta GameDescription.
+ */
 public class EscapeFromLabGame extends GameDescription {
 
-
+    /**
+     * Oggetto di tipo Engine.
+     */
+    private Engine engine;
+    /**
+     * Costruttore della classe EscapeFromLabGame.
+     * Chiama il costruttore della classe astratta GameDescription.
+     * @throws IOException
+     */
     public EscapeFromLabGame() throws IOException {
         super();
     }
-
     /**
-     * Inizializza i comandi del gioco
+     * Inizializza i comandi del gioco.
      */
-    private void initCommands(){
+    private void initCommands() {
         Command nord = new Command(CommandType.NORD, "nord");
         nord.setAlias(new String[]{"n", "N", "Nord", "NORD"});
         getCommands().add(nord);
@@ -52,12 +62,12 @@ public class EscapeFromLabGame extends GameDescription {
         Command use = new Command(CommandType.USE, "usa");
         use.setAlias(new String[]{"utilizza","attiva"});
         getCommands().add(use);
-        Command turn_on = new Command(CommandType.TURN_ON, "accendi");
-        turn_on.setAlias(new String[]{"accendi"});
-        getCommands().add(turn_on);
-        Command turn_off = new Command(CommandType.TURN_OFF, "spegni");
-        turn_off.setAlias(new String[]{"spegni"});
-        getCommands().add(turn_off);
+        Command turnOn = new Command(CommandType.TURN_ON, "accendi");
+        turnOn.setAlias(new String[]{"accendi"});
+        getCommands().add(turnOn);
+        Command turnOff = new Command(CommandType.TURN_OFF, "spegni");
+        turnOff.setAlias(new String[]{"spegni"});
+        getCommands().add(turnOff);
         Command open = new Command(CommandType.OPEN, "apri");
         open.setAlias(new String[]{"apri"});
         getCommands().add(open);
@@ -65,7 +75,7 @@ public class EscapeFromLabGame extends GameDescription {
         load.setAlias(new String[]{"LOADGAME", "loadgame"});
         getCommands().add(load);
         Command push = new Command(CommandType.PUSH, "premi");
-        push.setAlias(new String[]{"spingi", "attiva","blocca"});
+        push.setAlias(new String[]{"spingi", "attiva", "blocca"});
         getCommands().add(push);
         Command unlock = new Command(CommandType.UNLOCK, "sblocca");
         unlock.setAlias(new String[]{"sblocca"});
@@ -73,27 +83,31 @@ public class EscapeFromLabGame extends GameDescription {
         Command help = new Command(CommandType.HELP, "help");
         help.setAlias(new String[]{"HELP", "aiuto", "comandi", "help", "istruzioni"});
         getCommands().add(help);
-
+        Command saveGame = new Command(CommandType.SAVE_GAME, "SAVEGAME");
+        saveGame.setAlias(new String[]{"SAVEGAME", "savegame"});
+        getCommands().add(saveGame);
+        Command incrementPbValue = new Command(CommandType.INCREMENT_PB_VALUE, "INCREMENTPBVALUE");
+        incrementPbValue.setAlias(new String[]{"INCREMENTPBVALUE", "incrementpbvalue"});
+        getCommands().add(incrementPbValue);
+        Command getSavedGames = new Command(CommandType.GET_SAVED_GAMES, "GETSAVEDGAMES");
+        getSavedGames.setAlias(new String[]{"GETSAVEDGAMES", "getsavedgames"});
+        getCommands().add(getSavedGames);
+        Command startTimer = new Command(CommandType.START_TIMER, "STARTTIMER");
+        startTimer.setAlias(new String[]{"STARTTIMER", "starttimer"});
+        getCommands().add(startTimer);
+        Command stopTimer = new Command(CommandType.STOP_TIMER, "STOPTIMER");
+        stopTimer.setAlias(new String[]{"STOPTIMER", "stoptimer"});
+        getCommands().add(stopTimer);
     }
-
     /**
-     * Inizializza le stanze del gioco e definisce la mappa
+     * Inizializza le stanze del gioco e definisce la mappa.
      */
     private void initRooms(){
-
         String descFilePath = "resources/desc.txt";
         String titleFilePath = "resources/titles.txt";
-
         try {
             RoomDesc desc = new RoomDesc(descFilePath, titleFilePath);
-
-            // Esempio di utilizzo: ottenere la descrizione e il titolo per l'indice 1
-            String description = desc.getDescription(1);
-            String title = desc.getTitle(1);
-
-            String firstDesctription = "Le sirene risuonano nel laboratorio, c'è stata una fuoriuscita di materiale radioattivo e il livello di radiazioni sta rapidamente aumentando! Il tempo stringe e devi scappare al più presto prima che sia troppo tardi! Trova un'uscita sicura e mettiti in salvo dalla minaccia radioattiva che avanza implacabile\n\n";
-
-            Room room1 = new Room(1, desc.getTitle(0), firstDesctription + desc.getDescription(0));
+            Room room1 = new Room(1, desc.getTitle(0), desc.getDescription(0));
             Room room2 = new Room(2, desc.getTitle(1), desc.getDescription(1));
             Room room3 = new Room(3, desc.getTitle(2), desc.getDescription(2));
             Room room4 = new Room(4, desc.getTitle(3), desc.getDescription(3));
@@ -415,13 +429,27 @@ public class EscapeFromLabGame extends GameDescription {
             e.printStackTrace();
         }
     }
+    /**
+     * Inizializza i comandi.
+     */
     @Override
     public void init() throws Exception {
         initCommands();
         initRooms();
     }
 
-    private boolean goNorth(MutableBoolean isKeyNeeded){
+    /**
+     * Imposta l'engine del gioco.
+     * @param engine l'engine del gioco
+     */
+    public void setEngine(Engine engine) {
+        this.engine = engine;
+    }
+    /**
+     * metodo booleano che controlla il movimento del giocatore verso nord
+     * @param isKeyNeeded
+     */
+    private boolean goNorth(final MutableBoolean isKeyNeeded) {
         Room nextroom;
         isKeyNeeded.setFalse();
         if (getCurrentRoom().getNorth() != null) {
@@ -444,8 +472,11 @@ public class EscapeFromLabGame extends GameDescription {
         }
 
     }
-
-    private boolean goSouth(MutableBoolean isKeyNeeded){
+    /**
+     * metodo booleano che controlla il movimento del giocatore verso sud
+     * @param isKeyNeeded
+     */
+    private boolean goSouth(final MutableBoolean isKeyNeeded){
         Room nextroom;
         isKeyNeeded.setFalse();
         if (getCurrentRoom().getSouth() != null) {
@@ -467,8 +498,11 @@ public class EscapeFromLabGame extends GameDescription {
             return false;
         }
     }
-
-    private boolean goEast(MutableBoolean isKeyNeeded){
+    /**
+     * metodo booleano che controlla il movimento del giocatore verso est
+     * @param isKeyNeeded
+     */
+    private boolean goEast(final MutableBoolean isKeyNeeded){
         Room nextroom;
         isKeyNeeded.setFalse();
         if (getCurrentRoom().getEast() != null) {
@@ -478,7 +512,7 @@ public class EscapeFromLabGame extends GameDescription {
                 return true;
             } else {
                 isKeyNeeded.setTrue();
-                if(canAccessRoom(nextroom)){
+                if (canAccessRoom(nextroom)) {
                     setCurrentRoom(nextroom);
                     return true;
                 }
@@ -488,8 +522,11 @@ public class EscapeFromLabGame extends GameDescription {
             return false;
         }
     }
-
-    private boolean goWest(MutableBoolean isKeyNeeded){
+    /**
+     * metodo booleano che controlla il movimento del giocatore verso ovest
+     * @param isKeyNeeded
+     */
+    private boolean goWest(final MutableBoolean isKeyNeeded){
         Room nextroom;
         isKeyNeeded.setFalse();
         if (getCurrentRoom().getWest() != null) {
@@ -509,7 +546,10 @@ public class EscapeFromLabGame extends GameDescription {
             return false;
         }
     }
-
+    /**
+     * metodo che ritorna il contenuto dell'inventario in una stringa
+     * @return response
+     */
     private String checkInventory(){
         String response = "Nel tuo inventario ci sono:\n";
         for (AdvObject o : getInventory()) {
@@ -517,7 +557,10 @@ public class EscapeFromLabGame extends GameDescription {
         }
         return response;
     }
-
+    /**
+     * metodo che ritorna il contenuto della stanza in una stringa
+     * @return response
+     */
     private String checkRoom(){
         int count = 0;
         String response = "";
@@ -542,8 +585,11 @@ public class EscapeFromLabGame extends GameDescription {
         }
         return response;
     }
-
-    private String pickUpObject(ParserOutput p){
+    /**
+     * metodo che gestisce la raccolta e ritorna l'oggetto raccolto in una stringa
+     * @return response
+     */
+    private String pickUpObject(final ParserOutput p){
         String response = "";
         if (p.getObject() != null) {
             if (p.getObject().isPickupable()) {
@@ -558,7 +604,10 @@ public class EscapeFromLabGame extends GameDescription {
         }
         return response;
     }
-
+    /**
+     * metodo che gestisce l'apertura di un oggetto contenitore e ritorna il contenuto in una stringa
+     * @return response
+     */
     private String openObject(ParserOutput p){
         /*ATTENZIONE: quando un oggetto contenitore viene aperto, tutti gli oggetti contenuti
          * vengongo inseriti nella stanza o nell'inventario a seconda di dove si trova l'oggetto contenitore.
@@ -595,6 +644,8 @@ public class EscapeFromLabGame extends GameDescription {
                                     " avventurosa e sull'incredibile fortuna di essere riuscito a scappare.\n\n\n\n\n\n\n" +
                                     "" +
                                     "COMPLIMENTI, HAI COMPLETATO IL GIOCO!";
+
+                        engine.endGame();
                         }
                     }
                 } else {
@@ -628,7 +679,11 @@ public class EscapeFromLabGame extends GameDescription {
         }
         return response;
     }
-    public String useObject(ParserOutput p){
+    /**
+     * metodo che gestisce l'uso di un oggetto e ritorna il risultato in una stringa
+     * @return response
+     */
+    public String useObject(final ParserOutput p){
         String response = "";
         if (p.getInvObject() != null) {
             if (p.getInvObject().isUsable() && p.getInvObject().isLocakble()==false) {
@@ -647,8 +702,11 @@ public class EscapeFromLabGame extends GameDescription {
         }
         return response;
     }
-
-    public String unlockObject(ParserOutput p){
+    /**
+     * metodo che gestisce lo sblocco di un oggetto e ritorna il risultato in una stringa
+     * @return response
+     */
+    public String unlockObject(final ParserOutput p){
         String response = "";
         if (p.getInvObject() != null) {
             if (p.getInvObject().isUsable()) {
@@ -664,8 +722,11 @@ public class EscapeFromLabGame extends GameDescription {
         }
         return response;
     }
-
-    public String turnOnObject(ParserOutput p){
+    /**
+     * metodo che gestisce l'accensione di un oggetto e ritorna il risultato in una stringa
+     * @return response
+     */
+    public String turnOnObject(final ParserOutput p){
         String response = "";
         if (p.getInvObject() != null && getCurrentRoom().getId()!=9) {
             if (p.getInvObject().isSwitchable()) {
@@ -677,25 +738,28 @@ public class EscapeFromLabGame extends GameDescription {
                 response="Non puoi accendere questo oggetto.";
             }
         } else {
-                if(getCurrentRoom().getId()==9)
-                {
-                    Room.setPowered(true);
-                    response="Hai acceso il generatore.";
-                }
-                else if(getCurrentRoom().getId()==7)
-                {
-                    response="Hai acceso la cisterna. \n\nGrave errore! Il materiale radioattivo sta fuoriuscendo!\n";
-                    getTimer().setDelay(2500);
-                }
-                else
-                {
-                    response="Non hai niente da accendere.";
-                }
+            if(getCurrentRoom().getId()==9)
+            {
+                Room.setPowered(true);
+                response="Hai acceso il generatore.";
+            }
+            else if(getCurrentRoom().getId()==7)
+            {
+                response="Hai acceso la cisterna. \n\nGrave errore! Il materiale radioattivo sta fuoriuscendo!\n";
+                getTimer().setDelay(6000);
+            }
+            else
+            {
+                response="Non hai niente da accendere.";
+            }
         }
         return response;
     }
-
-    public String turnOffObject(ParserOutput p){
+    /**
+     * metodo che gestisce lo spegnimento di un oggetto e ritorna il risultato in una stringa
+     * @return response
+     */
+    public String turnOffObject(final ParserOutput p){
         String response = "";
         if (p.getObject() != null || p.getInvObject() != null) {
             if(p.getInvObject() != null){
@@ -709,7 +773,7 @@ public class EscapeFromLabGame extends GameDescription {
             else {
                 if(getCurrentRoom().getId()==7)
                 {
-                    getTimer().setDelay(5000);
+                    getTimer().setDelay(9000);
                     response="Hai spento la cisterna.\n\n" +
                             "Buona notizia! Fortunatamente, la fuoriuscita del materiale radioattivo si è rallentata, offrendoti un prezioso respiro. " +
                             "Tuttavia, non abbassare la guardia! C'è materiale radioattivo ovunque! Continua a muoverti con cautela e cerca di trovare un'uscita sicura il prima possibile!\n " ;
@@ -724,8 +788,11 @@ public class EscapeFromLabGame extends GameDescription {
         }
         return response;
     }
-
-    public boolean canAccessRoom(Room room) {
+    /**
+     * metodo che gestisce l'accesso a una stanza
+     * @return true or false
+     */
+    public boolean canAccessRoom(final Room room) {
         AdvObject key;
         if (room.isAccessible()){
             return true;
@@ -745,9 +812,12 @@ public class EscapeFromLabGame extends GameDescription {
             return false;
         }
     }
-
+    /**
+     * metodo che gestisce la prossima mossa del giocatore
+     * @return response
+     */
     @Override
-    public String nextMove(ParserOutput p) {
+    public String nextMove(final ParserOutput p) {
         //move
         String response = "";
         boolean noroom = false;
@@ -796,7 +866,6 @@ public class EscapeFromLabGame extends GameDescription {
                 response = unlockObject(p);
                 break;
         }
-
         if (commandType == CommandType.EAST ||commandType ==  CommandType.WEST
                 || commandType ==  CommandType.SOUTH ||commandType ==  CommandType.NORD){
             if(move){
@@ -821,6 +890,5 @@ public class EscapeFromLabGame extends GameDescription {
             }
         }
         return response;
-
     }
 }
