@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Classe che rappresenta una stanza.
  */
-public class Room {
+public class Room implements Ignitable,Visible,Accessible,Powerable{
     /**
      *  private static boolean che rappresenta lo stato della corrente di una stanza.
      */
