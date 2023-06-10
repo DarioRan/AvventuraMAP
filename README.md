@@ -227,7 +227,7 @@ vale se ti sposi a nord, dovrai utilizzare il comando "sud" per tornare indietro
 
 ### Comando di Aiuto
 - `help` - Mostra l'elenco dei comandi disponibili.
--
+
 ### Comando di Fine Gioco
 - `muori` - Termina il gioco.
 
