@@ -310,20 +310,19 @@ vale se ti sposi a nord, dovrai utilizzare il comando "sud" per tornare indietro
   - Object
   - int
   - boolean
-  - List&lt;Object&gt;
+  - List
 
 
 - **operations** :
-  - new() &rarr; List&lt;Object&gt;
+  - new() &rarr; List
   - add(List,Object) &rarr; List
-  - add(List, Object, int) &rarr; List
-  - indexOf(List,Object) &rarr; Object
+  - indexOf(List,Object) &rarr; int
   - size(List) &rarr; int
   - isEmpty(List) &rarr; boolean
-  - clear(List) &rarr; List
   - contains(List,Object) &rarr; boolean
-  - remove(List,Object) &rarr; List
-  - removeElement(List,int) &rarr; List
+  - removeElement(List,Object) &rarr; List
+  - equals(List,List) &rarr; boolean
+  - containsList(List,List) &rarr; boolean
 
 ### SPECIFICA SEMANTICA
 **declare**:
@@ -333,3 +332,54 @@ vale se ti sposi a nord, dovrai utilizzare il comando "sud" per tornare indietro
 - obj : Object
 
 ![spec1](resources%2Fspec1)
+
+- removeElement( new() , obj ) &rarr; new()
+- removeElement( add(l,obj ) , obj) &rarr; l
+- size( new() ) &rarr; 0
+- size( add(l , obj) ) &rarr; size(l) + 1
+- indexOf( new() , obj ) &rarr; -1
+- indexOf( add( l , obj ) , obj) &rarr; size(l)
+- contains( new() , obj ) &rarr; false
+- contains( add( l , obj ) , obj) &rarr; true
+- isEmpty( new() ) &rarr; true
+- isEmpty( add(l , obj ) ) &rarr; false
+
+
+**declare**:
+- l : List&lt;Object&gt;
+- k : List&lt;Object&gt;
+- {true, false} : boolean
+- obj1 : Object
+- obj2 : Object
+  
+**Equals**(k’,l’) // le List hanno gli stessi elementi, non perforza in ordine
+
+![spec2](resources%2Fspec2)
+
+- equals( new() , new() ) &rarr; true
+- equals( new() , add( l , obj1 ) ) &rarr; false
+- equals( add( k , obj2 ) , new() ) &rarr; false
+- equals( add( k , obj2 ) , add( l , obj1 ) ) &rarr; <br>
+**if** equals( k' , l' ) **then**
+  <br> **if** obj1 = obj2 **then** true
+     <br> **else** false
+     <br> **else** false
+
+**declare**:
+- l : List&lt;Object&gt;
+- k : List&lt;Object&gt;
+- {true, false} : boolean
+- obj1 : Object
+- obj2 : Object
+
+**containsList**(k’,l’) // k’ contenuto in l’
+
+![spec3](resources%2Fspec3)
+
+- containsList( new() , new() ) &rarr; true
+- containsList( new() , add( l , obj1 ) ) &rarr; false
+- containsList( add( k , obj2 ) , new() ) &rarr; false
+- containsList( add( k , obj2 ) , add( l , obj1 ) ) &rarr; <br>
+**if** contains( k', obj1 ) **then** <br>
+  equals(l,k') <br>
+**else** false
