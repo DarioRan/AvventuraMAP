@@ -171,7 +171,7 @@ Come scelta progettuale abbiamo deciso di non includere nel diagramma UML:
 
 - AdvObject: Rappresenta un oggetto nel gioco, con attributi come ID, nome, descrizione e alias. Fornisce anche metodi per accedere agli attributi.
 
-- AdvObjectContainer: Rappresenta un contenitore di oggetti nel gioco. Non sono specificati attributi o metodi nel diagramma.
+- AdvObjectContainer: Rappresenta un contenitore di oggetti nel gioco. Estende AdvObject
 
 - GameStatus: Rappresenta lo stato di gioco di un utente, includendo informazioni come il nome utente, l'ultimo ID della stanza, l'inventario e il tempo di gioco.
 
