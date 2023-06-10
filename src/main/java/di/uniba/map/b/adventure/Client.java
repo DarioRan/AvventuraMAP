@@ -74,24 +74,17 @@ public class Client {
      * @throws IOException Eccezione lanciata in caso di errore di I/O
      * @throws ClassNotFoundException Eccezione lanciata in caso di classe non trovata
      */
-    public Object getResourcesFromServer(String command) throws IOException, ClassNotFoundException {
+    public <T> T getResourcesFromServer(String command) throws IOException, ClassNotFoundException {
 
-        Object resource = null;
         Object response = null;
 
         PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
 
         out.println(command);
-        response=objectReader.readObject();
-        if(response instanceof List<?>){
-            resource = (List<GameStatus>) response;
-            return resource;
-        }
-        else
-        {
-            return null;
-        }
+        response = objectReader.readObject();
+        return (T) response;
     }
+
 
     /**
      * Metodo che si occupa di inviare risorse al server e di ricevere la risposta
