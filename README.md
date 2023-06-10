@@ -127,6 +127,22 @@ classDiagram
         + start()
     }
 
+    class Visible{
+        <<interface>>
+    }
+
+    class Accessible{
+        <<interface>>
+    }
+
+    class Ignitable{
+        <<interface>>
+    }
+
+    class Powerable{
+        <<interface>>
+    }
+
     AdventureGameGUI -- Client 
     Client "1" ..> "1"  CommandGUIOutput : comunica
     Server ..> CommandGUIOutput
@@ -142,6 +158,10 @@ classDiagram
     Engine "1" ..> "1" DBManager
     Engine "1" --> "1" GameStatus
     DBManager "1" --> "1" GameStatus
+    Room ..|> Accessible : implement
+    Room ..|> Visible : implement
+    Room ..|> Ignitable : implement
+    Room ..|> Powerable : implement
 
 direction RL
 ```
@@ -177,6 +197,14 @@ Come scelta progettuale abbiamo deciso di non includere nel diagramma UML:
 
 - CommandGUIOutput: Rappresenta l'output di un comando nell'interfaccia utente grafica del gioco. Viene utilizzata per comunicare tra Client e AdventureGameGUI.
 
+- Accessible: Interfaccia che prevede l'implementazione di attributi e metodi nella classe Room che realizzano la logica di una stanza accessibile.
+
+- Visible: Interfaccia che prevede l'implementazione di attributi e metodi nella classe Room che realizzano la logica di una stanza visibile.
+
+- Powerable: Interfaccia che prevede l'implementazione di attributi e metodi nella classe Room che realizzano la logica di una stanza che può essere alimentata.
+
+- Ignitable: Interfaccia che prevede l'implementazione di attributi e metodi nella classe Room che realizzano la logica di una stanza buia o accesa.
+
 ## Implementazione argomenti del corso
 
 - Thread: L'architettura del gioco utilizza thread per gestire il timer e la progressione delle radiazioni all'interno del gioco. Un thread è dedicato al timer e viene utilizzato per aggiornare la JProgressBar della GUI, che rappresenta visivamente il livello delle radiazioni. Allo stesso tempo, il client utilizza un altro thread che rimane in ascolto per rilevare l'incremento del Timer e agire di conseguenza. Questa struttura permette di gestire in modo efficiente il timer e la progressione delle radiazioni nel gioco, fornendo un'esperienza di gioco fluida e reattiva.
@@ -190,6 +218,11 @@ Come scelta progettuale abbiamo deciso di non includere nel diagramma UML:
 - SWING: Nel progetto del gioco, si è utilizzata Java Swing per creare un'interfaccia grafica interattiva e consentire all'utente di interagire con il gioco. Sono state create diverse finestre e componenti grafici per visualizzare le informazioni di gioco e fornire mezzi per l'input dell'utente.
 
 - lambda expression: Le lambda expression si sono utilizzate per ottenere una sintassi concisa. Ci ha permesso di scrivere funzioni anonime in modo più conciso rispetto all'utilizzo delle classi interne o delle classi anonime per rendere il codice più leggibile e per ridurre la quantità di codice di supporto necessario.
+  Vengono utilizzate ad esempio nel controllo della presenza di un oggetto dell'inventario nella lista degli oggetti del gioco, o in metodi relativi agli action listener della GUI.
+
+- Interfacce: Nell'architettura del gioco, si sono utilizzate le interfacce per la definizione e gestione del comportamento specifico legato all'accessibilità, all'accensione, all'alimentazione e alla visibilità della stanza nel contesto del gioco.
+
+- Generics: Le generics si sono utilizzate per generalizzare la richiesta di risorse dal Server da parte del Client.
 
 ## Manuale Utente
 
