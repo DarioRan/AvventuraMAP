@@ -198,6 +198,12 @@ Ti trovi all'interno di un laboratorio scientifico avanzato, ma purtroppo, una c
 Il laboratorio è stato avvolto da nubi radioattive che si stanno espandendo rapidamente.
 Il tuo obiettivo principale è quello di trovare un modo per uscire dal laboratorio il prima possibile e metterti in salvo.
 
+Per avviare il programma, è necessario eseguire le seguenti operazioni:
+
+- Avvia il server lanciando l'esecuzione dell'Engine. L'Engine si occuperà di creare e gestire il server per la comunicazione client-server. Questo ti permetterà di stabilire una connessione e scambiare dati tra il client e il server.
+
+- Successivamente, avvia il client eseguendo l'AdventureGameGUI. Questa classe rappresenta l'interfaccia grafica del gioco, che permette all'utente di interagire con il sistema. Il client si connetterà al server precedentemente avviato e consentirà all'utente di giocare all'avventura testuale.
+
 ### Istruzioni di Gioco
 
 Il gioco utilizza un sistema di riferimento relativo per la navigazione.
