@@ -1,6 +1,8 @@
 package di.uniba.map.b.adventure;
 
 import di.uniba.map.b.adventure.db.GameStatus;
+import di.uniba.map.b.adventure.socket.Client;
+import di.uniba.map.b.adventure.socket.PluginableClient;
 import di.uniba.map.b.adventure.type.CommandGUIOutput;
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
@@ -72,7 +74,7 @@ public class AdventureGameGUI extends JFrame {
     /**
      * Client per la gestione della connessione
      */
-    private static Client client;
+    private static PluginableClient client;
 
     /**
      * getter per la progressBar
@@ -113,6 +115,11 @@ public class AdventureGameGUI extends JFrame {
             @Override
             public void windowClosing(WindowEvent e) {
                 if (shouldCloseGame) {
+                    try {
+                        client.closeConnection();
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
                     System.exit(0); // Chiude il gioco solo se shouldCloseGame è true
                 }
             }
@@ -560,7 +567,7 @@ public class AdventureGameGUI extends JFrame {
      * @return messaggio di help
      */
     public String printHelp(){
-        return ("Il tuo obbiettivo principale è uscire vivo dal laboratorio in cui ti trovi intrappolato.\n" +
+        return ("Il tuo obiettivo principale è uscire vivo dal laboratorio in cui ti trovi intrappolato.\n" +
                 "Per farcela dovrai affrontare molti enigmi che metteranno a dura prova la tua astuzia.\n" +
                 "\n" +
                 "Per muoverti usa:\n" +

@@ -1,6 +1,8 @@
-package di.uniba.map.b.adventure;
+package di.uniba.map.b.adventure.socket;
 
+import di.uniba.map.b.adventure.Engine;
 import di.uniba.map.b.adventure.type.CommandGUIOutput;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -12,7 +14,7 @@ import java.sql.SQLException;
 /**
  * Classe che si occupa di gestire la comunicazione del server con il client
  */
-public class Server {
+public class Server implements PluginableServer {
 
     /**
      * Engine che rappresenta il motore di gioco
@@ -90,6 +92,14 @@ public class Server {
         System.out.println(commandGUIOutput.getType());
         objectOutputStream.writeObject(commandGUIOutput);
         objectOutputStream.flush();
+    }
+
+    /**
+     * Metodo che si occupa di impostare l'engine
+     * @param engine Engine da impostare
+     */
+    public void setEngine(Engine engine) {
+        this.engine = engine;
     }
 
 }

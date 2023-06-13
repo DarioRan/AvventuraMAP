@@ -1,4 +1,4 @@
-package di.uniba.map.b.adventure;
+package di.uniba.map.b.adventure.socket;
 
 import di.uniba.map.b.adventure.db.GameStatus;
 import di.uniba.map.b.adventure.type.CommandGUIOutput;
@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Classe che si occupa di gestire la comunicazione del client con il server
  */
-public class Client {
+public class Client implements PluginableClient{
 
     /**
      * Socket per la comunicazione
@@ -94,5 +94,13 @@ public class Client {
     public void sendResourcesToServer(String resource) throws IOException {
         PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
         out.println(resource);
+    }
+
+    /**
+     * Chiudi la connessione con il server
+     * @throws IOException Eccezione lanciata in caso di errore di I/O
+     */
+    public void closeConnection() throws IOException {
+        socket.close();
     }
 }
