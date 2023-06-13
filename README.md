@@ -57,12 +57,14 @@ classDiagram
     }
 
     class AdvObjectContainer {
-        // Attributi e metodi di AdvObjectContainer
+         + add()
     }
 
 
     class CommandGUIOutput {
-        // Attributi e metodi di CommandGUIOutput
+        - type : CommandGUIType
+        - text : String
+        - pathResource : String
     }
 
 
@@ -126,30 +128,38 @@ classDiagram
         - serverSocket: ServerSocket 
         + start()
     }
-
-    class Visible{
+    
+    class PluginableClient{
         <<interface>>
+    getResourcesFromServer(String) : T
+    sendResourcesToServer(String)
+    closeConnection()
+    }
+    
+    class PluginableServer {
+        <<interface>>
+         sendCommand(CommandGUIOutput)
+         start()
+         setEngine(Engine);
+    }
+    
+    class ParserOutput {
+        - command Command
+        - object: AdvObject
+        - invObject: AdvObject
+        - aux_text: String
     }
 
-    class Accessible{
-        <<interface>>
-    }
-
-    class Ignitable{
-        <<interface>>
-    }
-
-    class Powerable{
-        <<interface>>
-    }
-
-    AdventureGameGUI -- Client 
+    Client ..|> PluginableClient : implements
+    AdventureGameGUI -- PluginableClient 
     Client "1" ..> "1"  CommandGUIOutput : comunica
     Server ..> CommandGUIOutput
     Engine "1" -- "1" Server : comunica
     Engine ..> Parser
     Engine ..> ParserOutput
     Engine "1" --> GameDescription
+    Engine ..|> PluginableServer
+    Server ..|> PluginableServer : implements
     EscapeFromLabGame ..> ParserOutput
     EscapeFromLabGame ..|> GameDescription
     GameDescription "1" -- "*" Room
@@ -158,10 +168,7 @@ classDiagram
     Engine "1" ..> "1" DBManager
     Engine "1" --> "1" GameStatus
     DBManager "1" --> "1" GameStatus
-    Room ..|> Accessible : implement
-    Room ..|> Visible : implement
-    Room ..|> Ignitable : implement
-    Room ..|> Powerable : implement
+
 
 direction RL
 ```
@@ -197,13 +204,10 @@ Come scelta progettuale abbiamo deciso di non includere nel diagramma UML:
 
 - CommandGUIOutput: Rappresenta l'output di un comando nell'interfaccia utente grafica del gioco. Viene utilizzata per comunicare tra Client e AdventureGameGUI.
 
-- Accessible: Interfaccia che prevede l'implementazione di attributi e metodi nella classe Room che realizzano la logica di una stanza accessibile.
+- PluginableClient : Interfaccia in cui sono dichiarati i metodi fondamentali per far si che ci sia una comunicazione con il Server. E' stato chiamato Pluginable poichè se in futuro si volesse implementare la comunicazione tra il Client e il Server in maniera diversa, questo lo si può fare semplicemente cambiando il modo in cui viene istanziato PluginableClient con la nuova classe concreta.
 
-- Visible: Interfaccia che prevede l'implementazione di attributi e metodi nella classe Room che realizzano la logica di una stanza visibile.
+- PluginableServer : Interfaccia in cui sono dichiarati i metodi fondamentali per far si che il gioco rimanga in attesa di una richiesta del Client. Così come per PluginableClient, quest'archietettura fa si che cambiare l'implementazione della comunicazione con il Client comporterebbe semplicemente cambiare il modo in cui viene istanziata PluginableServer con la nuova classe concreta.
 
-- Powerable: Interfaccia che prevede l'implementazione di attributi e metodi nella classe Room che realizzano la logica di una stanza che può essere alimentata.
-
-- Ignitable: Interfaccia che prevede l'implementazione di attributi e metodi nella classe Room che realizzano la logica di una stanza buia o accesa.
 
 ## Implementazione argomenti del corso
 
@@ -220,7 +224,7 @@ Come scelta progettuale abbiamo deciso di non includere nel diagramma UML:
 - lambda expression: Le lambda expression si sono utilizzate per ottenere una sintassi concisa. Ci ha permesso di scrivere funzioni anonime in modo più conciso rispetto all'utilizzo delle classi interne o delle classi anonime per rendere il codice più leggibile e per ridurre la quantità di codice di supporto necessario.
   Vengono utilizzate ad esempio nel controllo della presenza di un oggetto dell'inventario nella lista degli oggetti del gioco, o in metodi relativi agli action listener della GUI.
 
-- Interfacce: Nell'architettura del gioco, si sono utilizzate le interfacce per la definizione e gestione del comportamento specifico legato all'accessibilità, all'accensione, all'alimentazione e alla visibilità della stanza nel contesto del gioco.
+- Interfacce: Sono state utilizzate le interfacce per realizzare PluginableClient e PluginableServer in funzione di una possibile scalabilità del modo in cui avviene la comunicazione Client-Server. Il vantaggio delle interfacce risiede nel fatto che in futuro non verrà richiesta ingente variazione del codice, ma solo una vaziazione del modo in cui vengono implementate.
 
 - Generics: Le generics si sono utilizzate per generalizzare la richiesta di risorse dal Server da parte del Client.
 
