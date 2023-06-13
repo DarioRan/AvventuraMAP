@@ -5,10 +5,12 @@ import di.uniba.map.b.adventure.db.GameStatus;
 import di.uniba.map.b.adventure.games.EscapeFromLabGame;
 import di.uniba.map.b.adventure.parser.Parser;
 import di.uniba.map.b.adventure.parser.ParserOutput;
+import di.uniba.map.b.adventure.socket.Server;
 import di.uniba.map.b.adventure.type.AdvObject;
 import di.uniba.map.b.adventure.type.CommandGUIOutput;
 import di.uniba.map.b.adventure.type.CommandGUIType;
 import di.uniba.map.b.adventure.type.CommandType;
+import di.uniba.map.b.adventure.socket.PluginableServer;
 import di.uniba.map.b.adventure.type.Room;
 import di.uniba.map.b.adventure.type.TimerListener;
 
@@ -52,7 +54,7 @@ public class Engine {
     /**
      * Server per il gioco.
      */
-    private Server server;
+    private PluginableServer server;
 
     /**
      * Username del giocatore.
@@ -212,7 +214,7 @@ public class Engine {
     public CommandGUIOutput execute() {
         String response;
         System.out.println("================================");
-        System.out.println("* Adventure v. 0.3 - 2021-2022 *");
+        System.out.println("* Adventure v. 0.4 - 2022-2023 *");
         System.out.println("================================");
         response = game.getCurrentRoom().getName();
         response = response + "\n================================================\n\n";
