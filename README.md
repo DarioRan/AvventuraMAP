@@ -362,7 +362,7 @@ vale se ti sposi a nord, dovrai utilizzare il comando "sud" per tornare indietro
 - obj1 : Object
 - obj2 : Object
   
-**Equals**(k’,l’) // le List hanno gli stessi elementi, non perforza in ordine
+**equals**(k’,l’) // le List hanno gli stessi elementi, non perforza in ordine
 
 ![spec2](resources%2Fspec2)
 
@@ -370,10 +370,8 @@ vale se ti sposi a nord, dovrai utilizzare il comando "sud" per tornare indietro
 - equals( new() , add( l , obj1 ) ) &rarr; false
 - equals( add( k , obj2 ) , new() ) &rarr; false
 - equals( add( k , obj2 ) , add( l , obj1 ) ) &rarr; <br>
-**if** equals( k' , l' ) **then**
-  <br> **if** obj1 = obj2 **then** true
-     <br> **else** false
-     <br> **else** false
+**if** obj1 = obj2 **then** <br>
+  equals(k, l) <br> **else** false
 
 **declare**:
 - l : List&lt;Object&gt;
@@ -391,6 +389,6 @@ vale se ti sposi a nord, dovrai utilizzare il comando "sud" per tornare indietro
 - containsList( add( k , obj2 ) , new() ) &rarr; false
 - containsList( add( k , obj2 ) , add( l , obj1 ) ) &rarr; <br>
 **if** contains( k', obj1 ) **then** <br>
-  equals(l,k') <br>
+  containsList(k',l) <br>
 **else** false
 
